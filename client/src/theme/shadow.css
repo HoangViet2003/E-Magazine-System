@@ -1,0 +1,14 @@
+
+:root {
+    --shadow1-fill: #FFF;
+    --shadow1-opacity: var(--4x, 1);
+    --shadow1-boxShadow: 0px 1px 1px 0px rgba(255, 255, 255, 0.10) inset;
+    --shadow1-filter: drop-shadow(0px 30px 60px rgba(0, 0, 0, 0.30)) drop-shadow(0px 50px 100px rgba(50, 50, 93, 0.25));
+    
+    --shadow2-fill: #FFF;
+    --shadow2-opacity: var(--4x, 1);
+    --shadow2-filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.08)) drop-shadow(0px 6px 24px rgba(0, 0, 0, 0.05));
+  }
+  
+
+  

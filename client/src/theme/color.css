@@ -1,0 +1,24 @@
+:root {
+    /* --P50: #;
+    --P75: #;
+    --P100: #;
+    --P200: #;
+    --P300: #;
+    --P400: #;
+    --P500: #; */
+    --bg-light:#FFFFFF;
+    --bg-darken:#f8f8f8;
+
+    --text-primary:#181818;
+    --text-secondary:#5c5c5c;
+    --text-tertiary:#747474;
+
+    --icon:#7c7b7b;
+    --stroke:#d7d7d7;
+    --dividers:#ededed;
+
+    --disabled-text:#8a8a8a;
+    --disabled-bg:#efefef;
+    --white:#ffffff;
+    
+}

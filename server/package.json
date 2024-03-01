@@ -1,0 +1,19 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "be-template",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --trace-warnings --verbose src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint --format codeframe .",
+    "prettier:check": "prettier --config .prettierrc.json --check .",
+    "prettier:fix": "prettier --config .prettierrc.json --write .",
+    "prepare": "git init && husky install",
+    "clean:cache": "rimraf node_modules/.cache",
+    "clean:lib": "rimraf node_modules package-lock.json",
+    "reinstall": "npm run clean:lib && npm install"
+  },
+  "author": "thang",
+  "license": "ISC"
+}

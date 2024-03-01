@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "Inter";
+  font-weight: 100;
+  src: url(../fonts/Inter/static/Inter-Thin.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 200;
+  src: url(../fonts/Inter/static/Inter-ExtraLight.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 300;
+  src: url(../fonts/Inter/static/Inter-Light.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 400;
+  src: url(../fonts/Inter/static/Inter-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 500;
+  src: url(../fonts/Inter/static/Inter-Medium.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 600;
+  src: url(../fonts/Inter/static/Inter-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 700;
+  src: url(../fonts/Inter/static/Inter-Bold.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 800;
+  src: url(../fonts/Inter/static/Inter-ExtraBold.ttf);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 900;
+  src: url(../fonts/Inter/static/Inter-Black.ttf);
+}
+
+:root {
+  --font-primary: "Inter";
+
+  --font-size-hypersmall: 8px;
+  --font-size-supersmall: 12px;
+  --font-size-small: 14px;
+  --font-size-medium: 20px;
+  --font-size-supermedium: 26px;
+  --font-size-hypermedium: 32px;
+  --font-size-mediumlarge: 40px;
+  --font-size-large: 48px;
+  --font-size-superlarge: 56px;
+
+  --line-height-hypersmall: 8px;
+  --line-height-supersmall: 12px;
+  --line-height-small: 14px;
+  --line-height-medium: 20px;
+  --line-height-supermedium: 28px;
+  --line-height-hypermedium: 32px;
+  --line-height-mediumlarge: 40px;
+  --line-height-large: 48px;
+  --line-height-superlarge: 56px;
+  --line-height-hyperlarge: 62px;
+
+  --font-weight-extraBold: 800;
+  --font-weight-bold: 700;
+  --font-weight-semiBold: 600;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --font-weight-light: 300;
+  --font-weight-extraLight: 200;
+  --font-weight-thin: 100;
+}

@@ -1,0 +1,13 @@
+:root {
+  --s-4x: 4px;
+  --s-8x: 8px;
+  --s-2xs: 12px;
+  --xs: 16px;
+  --sm: 20px;
+  --md: 24px;
+  --lg: 32px;
+  --xl: 40px;
+  --s-2xl: 48px;
+  --s-3xl: 56px;
+  /* --s-4xl: 40px; */
+}
