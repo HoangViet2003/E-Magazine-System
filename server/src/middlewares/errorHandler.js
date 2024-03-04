@@ -1,5 +1,5 @@
 const status = require("http-status");
-const { ApiError } = require("#utils");
+const { ApiError } = require("src/utils");
 
 const errorHandler = (err, req, res, _next) => {
 	if (err instanceof ApiError) {

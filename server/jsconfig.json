@@ -39,13 +39,13 @@
 				"src/routes/*/index.js"
 			],
 			"#controllers": [
-				"src/controllers/index.js"
+				"controllers/index.js"
 			],
 			"#controllers/*": [
-				"src/controllers/*.js"
+				"controllers/*.js"
 			],
 			"##controllers/*": [
-				"src/controllers/*/index.js"
+				"controllers/*/index.js"
 			],
 			"#utils": [
 				"src/utils/index.js"
