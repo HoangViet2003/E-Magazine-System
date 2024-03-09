@@ -10,7 +10,11 @@ export default function UserAvatar() {
         <img src={GridIcon} alt="grid" />
       </button>
       <Link to={"/"}>
-        <img src={User} alt="user" className="h-8 w-8" />
+        <img
+          src={User}
+          alt="user"
+          className="h-8 w-8 rounded-full object-cover"
+        />
       </Link>
     </div>
   );

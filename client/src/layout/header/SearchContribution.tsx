@@ -6,7 +6,7 @@ export default function SearchContribution() {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!keyword) return;
@@ -17,7 +17,7 @@ export default function SearchContribution() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-searchBackground flex overflow-hidden rounded flex-grow"
+      className="bg-searchBackground flex flex-grow overflow-hidden rounded"
     >
       <input
         type="text"

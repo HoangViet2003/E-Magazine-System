@@ -10,6 +10,30 @@ const router = createBrowserRouter([
         path: "/",
         element: <LandingPage />,
       },
+      {
+        path: "/dashboard",
+        element: <LandingPage />,
+      },
+      {
+        path: "/myFaculty",
+        element: <LandingPage />,
+      },
+      {
+        path: "/selectedContribution",
+        element: <LandingPage />,
+      },
+      {
+        path: "/recent",
+        element: <LandingPage />,
+      },
+      {
+        path: "/starred",
+        element: <LandingPage />,
+      },
+      {
+        path: "/trash",
+        element: <LandingPage />,
+      },
     ],
   },
 ]);
