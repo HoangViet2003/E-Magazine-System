@@ -2,7 +2,7 @@ const Header = () => {
   return (
     <>
       <div className="container">
-        <header className="header">Header</header>
+        <header className="header text-xl text-yellow-500">Header</header>
       </div>
     </>
   );
