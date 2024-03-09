@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../sequelize");
-
-const Staff = sequelize.define("Staff", {
+module.exports = (sequelize, DataTypes) => {
+const Staff = sequelize.define(
+	"Staff",
+ {
 	Id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
@@ -28,16 +28,11 @@ const Staff = sequelize.define("Staff", {
 		),
 		allowNull: false,
 	},
-	CreatedAt: {
-		type: DataTypes.DATE,
-		allowNull: false,
-		defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
-	},
-	UpdatedAt: {
-		type: DataTypes.DATE,
-		allowNull: false,
-		defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
-	},
-});
+},
 
-module.exports = Staff;
+	{
+		timestamps: true, // Automatically manages createdAt and updatedAt
+	}
+);
+    return Staff; 
+};
