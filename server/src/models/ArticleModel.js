@@ -29,5 +29,11 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 
+	// Article.belongsTo(sequelize.models.Contribution, {
+	// 	foreignKey: "ContributionId",
+	// });
+	// Article.belongsTo(sequelize.models.Student, { foreignKey: "StudentId" });
+	// Article.hasMany(sequelize.models.Comment, { foreignKey: "ArticleId" });
+
 	return Article;
 };

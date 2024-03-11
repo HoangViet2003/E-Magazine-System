@@ -19,25 +19,29 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.DATE,
 				allowNull: false,
 			},
-            Status: {
-                type: DataTypes.STRING, 
-                allowNull: false,
-            },
+			Status: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
 
-            AcademicYear: {
-                type: DataTypes.DATE, 
-                allowNull: false,  
-            }, 
-            ClosureDate: {
-                type: DataTypes.DATE, 
-                allowNull: false,
-            }, 
+			AcademicYear: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			ClosureDate: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
 		},
 
 		{
 			timestamps: true, // Automatically manages createdAt and updatedAt
 		}
 	);
+
+	// Contribution.hasMany(sequelize.models.Article, {
+	// 	foreignKey: "ContributionId",
+	// });
 
 	return Contribution;
 };

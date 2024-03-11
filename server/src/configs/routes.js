@@ -1,5 +1,5 @@
 const { catchAsync } = require("../utils");
-const { studentRoute } = require("../routes");
+const { studentRoute,authenticationRoute } = require("../routes");
 
 /**
  * @param {Object} app express application
@@ -11,7 +11,8 @@ const routes = (app) => {
 			return res.send("Hello world!");
 		})
 	);
-
+	
+	app.use("/api/v1", authenticationRoute);
 	app.use("/api/v1", studentRoute);
 };
 

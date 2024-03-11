@@ -26,5 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 
+	// Guest.belongsTo(sequelize.models.Faculty, { foreignKey: "FacultyId" });
+
 	return Guest;
 };
