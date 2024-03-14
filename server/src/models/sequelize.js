@@ -34,6 +34,12 @@ dbSequelize.sequelize = sequelize;
 
 dbSequelize.students = require("./StudentModel.js")(sequelize, DataTypes);
 
+dbSequelize.contributions = require('./ContributionModel.js')(sequelize, DataTypes); 
+
+// dbSequelize.faculty = require('./FalcultyModel.js')(sequelize, DataTypes);
+
+// dbSequelize.staffs = require('./StaffModel.js')(sequelize, DataTypes); 
+
 dbSequelize.sequelize.sync({ force: false }).then(() => {
 	console.log("Drop and re-sync db.");
 });
