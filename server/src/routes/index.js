@@ -3,6 +3,6 @@ module.exports = {
 	studentRoute: require("./studentRoute.routes"),
 	contributionRoute: require("./contributionRoute.routes"),
 	// staffRoute: require("./staffRoute")
-	articleRoute: require("./articleRoute.routes"),
+	articleRoute: require("./articleRoute.routes")
 
 };
