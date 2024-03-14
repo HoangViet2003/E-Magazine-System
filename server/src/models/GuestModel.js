@@ -7,13 +7,14 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			FacultyId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			Username: {
+			Name: {
 				type: DataTypes.STRING,
 				allowNull: false,
+			},
+			Email:{
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: true,
 			},
 			Password: {
 				type: DataTypes.STRING,
@@ -25,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: true, // Automatically manages createdAt and updatedAt
 		}
 	);
+
+	// Guest.belongsTo(sequelize.models.Faculty, { foreignKey: "FacultyId" });
 
 	return Guest;
 };

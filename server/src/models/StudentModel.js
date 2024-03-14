@@ -7,10 +7,6 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-			FacultyId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
 			Name: {
 				type: DataTypes.STRING,
 				allowNull: false,
@@ -29,6 +25,16 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: true, // Automatically manages createdAt and updatedAt
 		}
 	);
+
+	// Student.belongsTo(sequelize.models.Faculty, {
+	// 	foreignKey: "FacultyId",
+	// 	onDelete: "CASCADE", // If a Faculty is deleted, delete all related students
+	// });
+
+	// Student.hasMany(sequelize.models.Article, {
+	// 	foreignKey: "StudentId",
+	// 	onDelete: "CASCADE",
+	// });
 
 	return Student;
 };
