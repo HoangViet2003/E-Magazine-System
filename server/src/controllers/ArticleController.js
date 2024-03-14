@@ -104,6 +104,9 @@ const uploadArticle = async (req, res) => {
 	}
 };
 
+//handle update article
+
+
 module.exports = {
 	uploadArticle,
 };
