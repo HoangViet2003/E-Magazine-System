@@ -1,17 +1,16 @@
 // const dbSequelize = require("../models/sequelize");
 
-// const Staff = dbSequelize.staffs;
+// const Faculty = dbSequelize.faculty;
 
-// const addStaff = async (req, res) => {
-//     const {  Name, Email, Password, Role } = req.body;
+// //creatContribution. get contribution, search contribution
+// const createFaculty = async (req, res) => {
+//     const { Name, StaffId} = req.body;
 //     try {
-//         const staff = await Staff.create({
-//             Name,
-//             Email,
-//             Password,
-//             Role,
+//         const faculty = await Faculty.create({
+//             Name, 
+//             StaffId
 //         });
-//         return res.status(201).json(staff);
+//         return res.status(201).json(faculty);
 //     } catch (error) {
 //         return res.status(500).json({ error: error.message });
 //     }
@@ -28,5 +27,6 @@
 // // };
 
 // module.exports = {
-//     addStaff
+//     createFaculty
+//     // getAllStudents,
 // }
