@@ -9,7 +9,7 @@ const db = async () => {
 		// require("../../insertDB");
 		// eslint-disable-next-line
 		await mysql.createConnection({
-			host: "localhost",
+			host: config.DB.MYSQL_URL,
 			user: config.DB.USER,
 			password: config.DB.PASSWORD,
 			database: config.DB.DATABASE,

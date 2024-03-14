@@ -6,9 +6,8 @@ const sequelize = new Sequelize(
 	config.DB.USER,
 	config.DB.PASSWORD,
 	{
-		host: "localhost",
+		host: config.DB.MYSQL_URL,
 		dialect: config.DB.DIALECT,
-		operatorsAliases: false,
 
 		pool: {
 			max: 5,
@@ -45,6 +44,10 @@ dbSequelize.students.belongsTo(dbSequelize.faculty, {
 	onDelete: "CASCADE", // If a Faculty is deleted, delete all related students
 });
 
+dbSequelize.contribution.belongsTo(dbSequelize.students, {
+	foreignKey: "StudentId",
+});
+
 dbSequelize.students.hasMany(dbSequelize.article, {
 	foreignKey: "StudentId",
 	onDelete: "CASCADE",
@@ -68,6 +71,11 @@ dbSequelize.contribution.hasMany(dbSequelize.article, {
 	foreignKey: "ContributionId",
 });
 
+dbSequelize.contribution.belongsTo(dbSequelize.faculty, {
+	foreignKey: "FacultyId",
+
+});
+
 dbSequelize.article.belongsTo(dbSequelize.contribution, {
 	foreignKey: "ContributionId",
 });
@@ -80,7 +88,7 @@ dbSequelize.comment.belongsTo(dbSequelize.article, { foreignKey: "ArticleId" });
 dbSequelize.comment.belongsTo(dbSequelize.staff, { foreignKey: "StaffId" });
 
 
-dbSequelize.sequelize.sync({ force: false }).then(() => {
+dbSequelize.sequelize.sync({ force:false}).then(() => {
 	console.log("Drop and re-sync db.");
 });
 
