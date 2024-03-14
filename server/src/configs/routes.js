@@ -1,5 +1,5 @@
 const { catchAsync } = require("../utils");
-const { studentRoute,authenticationRoute,contributionRoute } = require("../routes");
+const { studentRoute,authenticationRoute,articleRoute } = require("../routes");
 
 /**
  * @param {Object} app express application
@@ -14,7 +14,7 @@ const routes = (app) => {
 	
 	app.use("/api/v1", authenticationRoute);
 	app.use("/api/v1", studentRoute);
-	app.use("/api/v1", contributionRoute);
+	app.use("/api/v1", articleRoute);
 };
 
 module.exports = routes;

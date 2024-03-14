@@ -41,12 +41,8 @@ dbSequelize.contribution = require("./ContributionModel.js")(sequelize, DataType
 
 dbSequelize.students.belongsTo(dbSequelize.faculty, {
 	foreignKey: "FacultyId",
-	onDelete: "CASCADE", // If a Faculty is deleted, delete all related students
 });
 
-dbSequelize.contribution.belongsTo(dbSequelize.students, {
-	foreignKey: "StudentId",
-});
 
 dbSequelize.students.hasMany(dbSequelize.article, {
 	foreignKey: "StudentId",
@@ -74,6 +70,10 @@ dbSequelize.contribution.hasMany(dbSequelize.article, {
 dbSequelize.contribution.belongsTo(dbSequelize.faculty, {
 	foreignKey: "FacultyId",
 
+});
+
+dbSequelize.contribution.belongsTo(dbSequelize.students, {
+	foreignKey: "StudentId",
 });
 
 dbSequelize.article.belongsTo(dbSequelize.contribution, {
