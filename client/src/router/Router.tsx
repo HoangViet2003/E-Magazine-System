@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import LandingPage from "../pages/landing_page/LandingPage";
 import AppLayOut from "../ui/AppLayOut";
+import Dashboard from "../pages/dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -8,11 +9,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LandingPage />,
+        element: <Dashboard />,
       },
       {
         path: "/dashboard",
-        element: <LandingPage />,
+        element: <Dashboard />,
       },
       {
         path: "/myFaculty",

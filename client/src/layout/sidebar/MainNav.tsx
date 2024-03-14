@@ -1,20 +1,20 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-export default function MainNav({ icon, activeIcon, title, to }) {
-  const location = useLocation();
-  const currentPath = location.pathname;
-
+export default function MainNav({ icon, isActive, title, to, children }) {
   const activeTab = "bg-activeTabBg text-activeTabContent font-bold";
 
   return (
     <NavLink to={to}>
       <li
-        className={`round flex items-center gap-8 px-6 py-2 ${currentPath === to ? activeTab : ""}`}
-        style={{ color: currentPath === to ? "#004AD7" : "#6B6C7E" }}
+        className={`round flex items-center gap-8 px-6 py-2 ${isActive ? activeTab : ""}`}
+        style={{ color: isActive ? "#004AD7" : "#6B6C7E" }}
       >
-        <span>
-          {currentPath === to ? <img src={activeIcon} /> : <img src={icon} />}
-        </span>
+        {children}
+        {/* <span>
+          {currentPath === to ? 
+          <img src={activeIcon} /> 
+          : <img src={icon} />}
+        </span> */}
         {title}
       </li>
     </NavLink>
