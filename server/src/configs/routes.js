@@ -1,28 +1,27 @@
-// const { catchAsync } = require("../utils");
-// const { studentRoute,authenticationRoute,articleRoute } = require("../routes");
+const { catchAsync } = require("../utils");
+const {
+	studentRoute,
+	authenticationRoute,
+	articleRoute,
+	contributionRoute
 
-// /**
-//  * @param {Object} app express application
-//  */
-// const routes = (app) => {
-// 	app.get(
-// 		"/",
-// 		catchAsync((req, res) => {
-// 			return res.send("jennie!");
-// 		}), 
-	
+} = require("../routes");
 
-// 	);
-// }
-	
-// 	app.use("/api/v1", authenticationRoute);
-// 	app.use("/api/v1", studentRoute);
-// 	app.use("/api/v1", ContributionRoute);
-//   app.use("/api/v1", articleRoute);
-	
-// }
+/**
+ * @param {Object} app express application
+ */
+const routes = (app) => {
+	app.get(
+		"/",
+		catchAsync((req, res) => {
+			return res.send("Hello world!");
+		})
+	);
 
+	app.use("/api/v1", authenticationRoute);
+	app.use("/api/v1", studentRoute);
+	app.use("/api/v1", articleRoute);
+	app.use("/api/v1", contributionRoute);
+};
 
-
-
-// module.exports = routes;
+module.exports = routes;

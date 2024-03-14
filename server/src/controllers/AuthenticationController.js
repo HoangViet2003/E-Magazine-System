@@ -8,7 +8,7 @@ const Staff = dbSequelize.staff;
 const Guest = dbSequelize.guest;
 
 //sign up for student and staff
-const signUp = catchAsync(async (req, res) => {
+const register = catchAsync(async (req, res) => {
 	try {
 		const { Name, Email, Password: plainTextPassword, Role } = req.body;
 
@@ -142,6 +142,6 @@ const login = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-	signUp,
+	register,
 	login,
 };
