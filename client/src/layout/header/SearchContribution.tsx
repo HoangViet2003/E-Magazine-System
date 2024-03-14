@@ -17,7 +17,7 @@ export default function SearchContribution() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-searchBackground flex flex-grow overflow-hidden rounded"
+      className="bg-searchBackground flex flex-grow overflow-hidden rounded ms-6"
     >
       <input
         type="text"

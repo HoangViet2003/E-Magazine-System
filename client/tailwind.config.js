@@ -2,6 +2,8 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontFamily: { BeVietnamPro: "Be Vietnam Pro, Roboto Mono" },
+
     container: {
       screens: {
         sm: "400px",
