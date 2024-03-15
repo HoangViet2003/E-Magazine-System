@@ -1,6 +1,14 @@
+import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 
-export default function MainNav({ icon, isActive, title, to, children }) {
+interface MainNavProps {
+  isActive: boolean;
+  title: string;
+  to: string;
+  children?: ReactNode;
+}
+
+const MainNav: React.FC<MainNavProps> = ({ isActive, title, to, children }) => {
   const activeTab = "bg-activeTabBg text-activeTabContent font-bold";
 
   return (
@@ -10,13 +18,10 @@ export default function MainNav({ icon, isActive, title, to, children }) {
         style={{ color: isActive ? "#004AD7" : "#6B6C7E" }}
       >
         {children}
-        {/* <span>
-          {currentPath === to ? 
-          <img src={activeIcon} /> 
-          : <img src={icon} />}
-        </span> */}
         {title}
       </li>
     </NavLink>
   );
-}
+};
+
+export default MainNav;

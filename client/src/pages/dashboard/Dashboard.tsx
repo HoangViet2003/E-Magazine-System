@@ -1,5 +1,3 @@
-import UlListIcon from "../../assets/icons/list-ul.svg";
-import InfoLineIcon from "../../assets/icons/Icon-info-circle-line.svg";
 import DropdownIcon from "../../assets/icons/arrow_drop_down_24px.svg";
 import ExportIcon from "../../assets/icons/Export Icon.svg";
 import Contributions from "./Contributions";
@@ -7,23 +5,14 @@ import SelectedRateChart from "./SelectedRateChart";
 import CommentedArticlesChart from "./CommentedArticlesChart";
 import DailyTrafficChart from "./DailyTrafficChart";
 import SubmissionTrendsChart from "./SubmissionTrendsChart";
+import MainHeader from "../../ui/MainHeader";
 
 export default function Dashboard() {
   return (
     <div>
-      <div className="flex items-center justify-between border-b border-borderColor">
+      <MainHeader>
         <h1 className="ps-6 text-xl font-normal">Dashboard</h1>
-
-        <div className="my-4">
-          <button className="p-3">
-            <img src={UlListIcon} />
-          </button>
-
-          <button className="p-3">
-            <img src={InfoLineIcon} />
-          </button>
-        </div>
-      </div>
+      </MainHeader>
 
       <div className="my-5 flex flex-col gap-5 ps-6">
         <div className="flex gap-3">

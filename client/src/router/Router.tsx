@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import LandingPage from "../pages/landing_page/LandingPage";
 import AppLayOut from "../ui/AppLayOut";
 import Dashboard from "../pages/dashboard/Dashboard";
+import MyFaculty from "../pages/my_faculty/MyFaculty";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/myFaculty",
-        element: <LandingPage />,
+        element: <MyFaculty />,
       },
       {
         path: "/selectedContribution",

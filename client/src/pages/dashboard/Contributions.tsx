@@ -17,7 +17,7 @@ export default function Contributions() {
           background="#C5D9FF"
           data={136}
           type="Articles Submitted"
-          changes="+8% from last month"
+          changePercentage={8}
         />
 
         <SummaryItem
@@ -26,7 +26,7 @@ export default function Contributions() {
           background="#DCFCE7"
           data={50}
           type="Articles Selected"
-          changes="-8% from last month"
+          changePercentage={-8}
         />
 
         <SummaryItem
@@ -35,7 +35,7 @@ export default function Contributions() {
           background="#FCF9DC"
           data={130}
           type="Contributors"
-          changes="+8% from yesterday"
+          changePercentage={-8}
         />
 
         <SummaryItem
@@ -44,16 +44,16 @@ export default function Contributions() {
           background="#F3E8FF"
           data={1134}
           type="Comments"
-          changes="+8% from yesterday"
+          changePercentage={8}
         />
 
         <SummaryItem
           icon={SaleIcon}
           iconBg="#FA5A7D"
           background="#DFE9FD"
-          data={136}
+          data={1000}
           type="Total Sales"
-          changes="+8% from month"
+          changePercentage={8}
         />
       </div>
     </div>

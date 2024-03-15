@@ -4,7 +4,7 @@ interface SummaryItemProps {
   background: string;
   data: number;
   type: string;
-  changes: string;
+  changePercentage: number;
 }
 
 const SummaryItem: React.FC<SummaryItemProps> = ({
@@ -13,7 +13,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
   background,
   data,
   type,
-  changes,
+  changePercentage,
 }) => {
   return (
     <div
@@ -28,12 +28,16 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
       </div>
       <h3 className="text-[32px] font-semibold leading-none">{data}</h3>
       <p className="text-nowrap text-base font-medium">{type}</p>
-      <span
-        className="text-nowrap text-xs font-medium"
-        style={{ color: "#4079ED" }}
-      >
-        {changes}
-      </span>
+
+      {changePercentage !== 0 && (
+        <span
+          className="text-nowrap text-xs font-medium"
+          style={{ color: changePercentage > 0 ? "#00AC4F" : "#FA5A7D" }}
+        >
+          {changePercentage > 0 && <span>+</span>}
+          {changePercentage}% from last month
+        </span>
+      )}
     </div>
   );
 };

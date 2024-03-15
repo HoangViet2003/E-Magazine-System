@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-import IncreaseIcon from "../../assets/icons/increase.svg";
+import ChangesArrow from "../../assets/icons/changesArrow";
 
 const data = [
   {
@@ -33,22 +33,31 @@ const data = [
   },
 ];
 
+const changes = 2.45;
+
 export default function DailyTrafficChart() {
   return (
     <div className="border border-borderColor p-6 shadow">
       <div className="flex justify-between">
         <div>
           <h4 className="text-sm font-medium">Daily Traffic</h4>
-          <span className="text-[34px] font-bold">2,579 </span>
+          <span className="text-[34px] font-bold">2,579</span>
           <span className="text-sm font-medium">Visitors</span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <img src={IncreaseIcon} />
-          <span className="text-xs font-bold" style={{ color: "#05CD99" }}>
-            +2.45%
-          </span>
-        </div>
+        {changes !== 0 && (
+          <div className="flex items-center gap-2">
+            <ChangesArrow isIncrease={changes > 0} />
+
+            <span
+              className="text-xs font-bold"
+              style={{ color: changes > 0 ? "#05CD99" : "#FA5A7D" }}
+            >
+              {changes > 0 && <span>+</span>}
+              {changes}%
+            </span>
+          </div>
+        )}
       </div>
 
       <div>

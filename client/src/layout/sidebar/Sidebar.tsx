@@ -69,7 +69,6 @@ export default function Sidebar() {
         {navLinks.map((navLink, index) => (
           <MainNav
             key={index} // Add a unique key prop for each iteration
-            icon={ChartpinIcon}
             isActive={currentPath === navLink.link}
             title={navLink.title}
             to={navLink.link}
