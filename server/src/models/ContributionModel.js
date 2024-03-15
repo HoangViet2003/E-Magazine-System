@@ -1,51 +1,43 @@
-module.exports = (sequelize, DataTypes) => {
-	const Contribution = sequelize.define(
-		"contribution",
-		{
-			Id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			FacultyId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			StudentId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			Title: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			UploadDate: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
-			Status: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
+const mongoose = require("mongoose");
 
-			AcademicYear: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
-			ClosureDate: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
+const contributionSchema = new mongoose.Schema(
+	{
+		facultyId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Faculty",
+			required: true,
 		},
+		studentId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+		title: {
+			type: String,
+			required: true,
+		},
+		uploadDate: {
+			type: Date,
+			required: true,
+		},
+		status: {
+			type: String,
+			required: true,
+		},
+		academicYear: {
+			type: Date,
+			required: true,
+		},
+		closureDate: {
+			type: Date,
+			required: true,
+		},
+	},
+	{
+		timestamps: true, // Automatically manages createdAt and updatedAt
+	}
+);
 
-		{
-			timestamps: true, // Automatically manages createdAt and updatedAt
-		}
-	);
+const Contribution = mongoose.model("Contribution", contributionSchema);
 
-	// Contribution.hasMany(sequelize.models.Article, {
-	// 	foreignKey: "ContributionId",
-	// });
-
-	return Contribution;
-};
+module.exports = Contribution;

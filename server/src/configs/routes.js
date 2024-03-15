@@ -1,9 +1,11 @@
 const { catchAsync } = require("../utils");
 const {
-	studentRoute,
+	userRoute,
 	authenticationRoute,
 	articleRoute,
-	contributionRoute
+	contributionRoute,
+	facultyRoute
+
 
 } = require("../routes");
 
@@ -19,9 +21,10 @@ const routes = (app) => {
 	);
 
 	app.use("/api/v1", authenticationRoute);
-	app.use("/api/v1", studentRoute);
 	app.use("/api/v1", articleRoute);
 	app.use("/api/v1", contributionRoute);
+	app.use("/api/v1", userRoute);
+	app.use("/api/v1", facultyRoute);
 };
 
 module.exports = routes;

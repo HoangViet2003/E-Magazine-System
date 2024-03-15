@@ -1,51 +1,37 @@
-module.exports = (sequelize, DataTypes) => {
-	const Article = sequelize.define(
-		"article",
-		{
-			Id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			ContributionId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			StudentId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			Content: {
-				type: DataTypes.TEXT, // Store as TEXT or VARCHAR
-				allowNull: false,
-				get() {
-					const content = this.getDataValue("Content");
-					return content ? JSON.parse(content) : [];
-				},
-				set(value) {
-					this.setDataValue("Content", JSON.stringify(value));
-				},
-			},
-			Type: {
-				type: DataTypes.ENUM("word", "image"),
-				allowNull: false,
-			},
-			isSelectedForPublication: {
-				type: DataTypes.BOOLEAN,
-				allowNull: false,
-				defaultValue: false,
-			},
+const mongoose = require("mongoose");
+
+const articleSchema = new mongoose.Schema(
+	{
+		contributionId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Contribution",
+			required: true,
 		},
-		{
-			timestamps: true, // Automatically manages createdAt and updatedAt
-		}
-	);
+		studentId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Student",
+			required: true,
+		},
+		content: {
+			type: Array, // Store as TEXT or VARCHAR
+			required: true,
+			
+		},
+		type: {
+			type: String,
+			enum: ["word", "image"],
+			required: true,
+		},
+		isSelectedForPublication: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	{
+		timestamps: true, // Automatically manages createdAt and updatedAt
+	}
+);
 
-	// Article.belongsTo(sequelize.models.Contribution, {
-	// 	foreignKey: "ContributionId",
-	// });
-	// Article.belongsTo(sequelize.models.Student, { foreignKey: "StudentId" });
-	// Article.hasMany(sequelize.models.Comment, { foreignKey: "ArticleId" });
+const Article = mongoose.model("Article", articleSchema);
 
-	return Article;
-};
+module.exports = Article;

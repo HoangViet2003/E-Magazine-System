@@ -1,9 +1,5 @@
 const jwt = require("jsonwebtoken");
-const dbSequelize = require("../models/sequelize");
-
-const Student = dbSequelize.students;
-const Staff = dbSequelize.staff;
-const Guest = dbSequelize.guest;
+const { User } = require("../models");
 
 const authenticateToken = async (req, res, next) => {
 	const authHeader = req.headers["authorization"];
@@ -15,19 +11,21 @@ const authenticateToken = async (req, res, next) => {
 		});
 
 	jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
-		if (err) return res.sendStatus(403);
+		if (err)
+			return res.status(403).send({
+				status: "error",
+				message: "Invalid token",
+			});
 
-		const staff = await Staff.findByPk(user.Id);
-		const guest = await Guest.findByPk(user.Id);
-		const student = await Student.findByPk(user.Id);
+		const userInfo = await User.findById(user._id);
 
-		if (staff) {
-			req.user = staff;
-		} else if (guest) {
-			req.user = guest;
-		} else if (student) {
-			req.user = student;
-		}
+		if (!userInfo)
+			return res.status(401).send({
+				status: "error",
+				message: "User does not exist",
+			});
+
+		req.user = userInfo;
 
 		next();
 	});
@@ -35,7 +33,7 @@ const authenticateToken = async (req, res, next) => {
 
 const authenticateMarketingCoordinator = async (req, res, next) => {
 	//Check if user is a marketing coordinator
-	if (!req.user.Role || req.user.Role !== "Marketing Coordinator") {
+	if (!req.user.role || req.user.role !== "Marketing Coordinator") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
@@ -46,7 +44,7 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
-	if (!req.user.Role || req.user.Role !== "Marketing Manager") {
+	if (!req.user.role || req.user.role !== "Marketing Manager") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
@@ -57,7 +55,7 @@ const authenticateMarketingManager = async (req, res, next) => {
 
 const authenticateAdministrator = async (req, res, next) => {
 	//Check if user is an administrator
-	if (!req.user.Role || req.user.Role !== "Administrator") {
+	if (!req.user.role || req.user.role !== "Administrator") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",

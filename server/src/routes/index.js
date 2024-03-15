@@ -1,8 +1,8 @@
 module.exports = {
 	authenticationRoute:require("./authenticationRoute.routes"),
-	studentRoute: require("./studentRoute.routes"),
+	userRoute: require("./userRoute.routes"),
 	contributionRoute: require("./contributionRoute.routes"),
-	// staffRoute: require("./staffRoute")
-	articleRoute: require("./articleRoute.routes")
+	articleRoute: require("./articleRoute.routes"),
+	facultyRoute: require("./facultyRoute.routes")
 
 };

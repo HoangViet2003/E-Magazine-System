@@ -1,17 +1,17 @@
-const dbSequelize = require("../models/sequelize");
-
-const Student = dbSequelize.students;
+const { User } = require('../models');
 
 const addStudent = async (req, res) => {
-    const { FacultyId, Name, Email, Password } = req.body;
+    const { facultyId, name, email, password,role } = req.body;
     try {
-        const student = await Student.create({
-            FacultyId,
-            Name,
-            Email,
-            Password,
+        const user = await User.create({
+            facultyId,
+            name,
+            email,
+            password,
+            role
+
         });
-        return res.status(201).json(student);
+        return res.status(201).json(user);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -20,8 +20,8 @@ const addStudent = async (req, res) => {
 
 const getAllStudents = async (req, res) => {
     try {
-        const students = await Student.findAll();
-        return res.status(200).json(students);
+        const users = await User.find();
+        return res.status(200).json(users);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

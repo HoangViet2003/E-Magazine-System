@@ -1,36 +1,53 @@
-const dbSequelize = require("../models/sequelize");
+const {Contribution} = require('../models');
 
-const Contribution= dbSequelize.contributions;
-
-//creatContribution. get contribution, search contribution
 const createContribution = async (req, res) => {
-    const { FacultyId, Title, UploadDate, Status, AcademicYear, ClosureDate } = req.body;
-    try {
-        const contribution = await Contribution.create({
-            FacultyId,
-            Title,
-            UploadDate,
-            Status,
-            AcademicYear,
-            ClosureDate
-        });
-        return res.status(201).json(contribution);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
+	try {
+		const {
+			facultyId,
+			studentId,
+			title,
+			status,
+		
+		} = req.body;
+
+        const uploadDate = new Date();
+        const academicYear = new Date();
+        const closureDate = new Date();
+
+		const newContribution = new Contribution({
+			facultyId,
+			studentId,
+			title,
+			uploadDate,
+			status,
+			academicYear,
+			closureDate,
+		});
+
+		await newContribution.save();
+
+		res.status(201).json({
+			status: "success",
+			data: newContribution,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
 };
 
-
 const getAllContributions = async (req, res) => {
-    try {
-        const contributions = await Contribution.findAll();
-        return res.status(200).json(contributions);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
+	try {
+		const contributions = await Contribution.find();
+		res.status(200).json({
+			status: "success",
+			data: contributions,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
 };
 
 module.exports = {
-    createContribution, 
+    createContribution,
     getAllContributions
 }
