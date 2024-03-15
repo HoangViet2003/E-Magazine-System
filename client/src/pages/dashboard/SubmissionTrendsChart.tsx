@@ -18,28 +18,44 @@ const data = [
     count: 100,
   },
   {
-    name: "Page B",
+    name: "Feb",
     count: 500,
   },
   {
-    name: "Page C",
+    name: "Mar",
     count: 250,
   },
   {
-    name: "Page D",
+    name: "Apr",
     count: 300,
   },
   {
-    name: "Page E",
+    name: "May",
     count: 200,
   },
   {
-    name: "Page F",
+    name: "Jun",
     count: 300,
   },
   {
-    name: "Page G",
+    name: "Aug",
     count: 400,
+  },
+  {
+    name: "Sep",
+    count: 320,
+  },
+  {
+    name: "Oct",
+    count: 370,
+  },
+  {
+    name: "Nov",
+    count: 180,
+  },
+  {
+    name: "Dec",
+    count: 270,
   },
 ];
 
