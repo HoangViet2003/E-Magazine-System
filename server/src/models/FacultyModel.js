@@ -7,12 +7,12 @@ module.exports = (sequelize, DataTypes) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
-	
+
 			Name: {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
-			MarketingCoordinatorId: {
+			StaffId: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
@@ -23,5 +23,10 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 
-	return Contribution;
+	// Faculty.hasMany(sequelize.models.Student, { foreignKey: "FacultyId", onDelete: "CASCADE" });
+	// Faculty.belongsTo(sequelize.models.Staff, {
+	// 	foreignKey: "MarketingCoordinatorId",
+	// });
+
+	return Faculty;
 };

@@ -15,6 +15,7 @@ const config = {
 		HOST: process.env.MYSQL_HOST,
 		// PORT: process.env.MONGOOSE_PORT,
 		// DATABASE: process.env.MONGOOSE_DB_NAME,
+		MYSQL_URL: process.env.MYSQL_URL,
 		USER: process.env.USER,
 		PASSWORD: process.env.PASSWORD,
 		DATABASE: process.env.DB_NAME,
