@@ -4,6 +4,9 @@ import DropdownIcon from "../../assets/icons/arrow_drop_down_24px.svg";
 import ExportIcon from "../../assets/icons/Export Icon.svg";
 import Contributions from "./Contributions";
 import SelectedRateChart from "./SelectedRateChart";
+import CommentedArticlesChart from "./CommentedArticlesChart";
+import DailyTrafficChart from "./DailyTrafficChart";
+import SubmissionTrendsChart from "./SubmissionTrendsChart";
 
 export default function Dashboard() {
   return (
@@ -22,7 +25,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-col gap-5 ps-6">
+      <div className="my-5 flex flex-col gap-5 ps-6">
         <div className="flex gap-3">
           <button className="flex items-center gap-2 rounded border border-borderColor px-2 py-3">
             <span>Timeframe: </span>
@@ -37,15 +40,16 @@ export default function Dashboard() {
             <span>Export</span>
           </button>
         </div>
-
         <Contributions />
 
+        <div className="grid grid-cols-3 gap-5">
+          <SelectedRateChart />
+          <CommentedArticlesChart />
+          <DailyTrafficChart />
+        </div>
+
         <div>
-          <div className="grid grid-cols-3 gap-5">
-            <SelectedRateChart />
-            <SelectedRateChart />
-            <SelectedRateChart />
-          </div>
+          <SubmissionTrendsChart />
         </div>
       </div>
     </div>

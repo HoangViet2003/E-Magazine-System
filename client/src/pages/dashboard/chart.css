@@ -1,8 +1,16 @@
 .recharts-sector {
     border-radius: 50%;
-    
+
 }
 
 .recharts-pie {
     object-position: re;
+}
+
+.recharts-cartesian-axis-line {
+    stroke: none;
+}
+
+.recharts-cartesian-axis-tick-line {
+    stroke: none;
 }
