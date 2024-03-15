@@ -1,4 +1,3 @@
-const dbSequelize = require("../models/sequelize");
 const fs = require("fs");
 const {
 	uploadFiles,
@@ -6,13 +5,11 @@ const {
 	getFileStream,
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
-
-const Article = dbSequelize.article;
-const Contribution = dbSequelize.contribution;
+const {Article} = require("../models");
 
 const uploadArticle = async (req, res) => {
 	try {
-		const { ContributionId, Type } = req.body;
+		const { contributionId, type } = req.body;
 		const student = req.user;
 
 		// Check if student exists
@@ -20,7 +17,7 @@ const uploadArticle = async (req, res) => {
 			return res.status(404).json({ error: "Student does not exist" });
 		}
 
-		if (Type === "word" && req.files) {
+		if (type === "word" && req.files) {
 			// If Type is "word" and Word file is uploaded
 			const filePath = req.files[0].path;
 
@@ -40,10 +37,10 @@ const uploadArticle = async (req, res) => {
 				.then(async (result) => {
 					const html = result.value; // The generated HTML
 					const newArticle = await Article.create({
-						ContributionId,
-						StudentId: student.Id,
-						Content: html,
-						Type,
+						contributionId,
+						studentId: student._id,
+						content: html,
+						type,
 					});
 
 					return res.status(201).json(newArticle);
@@ -55,7 +52,7 @@ const uploadArticle = async (req, res) => {
 						message: "Error converting Word to HTML",
 					});
 				});
-		} else if (Type === "image" && req.files && req.files.length > 0) {
+		} else if (type === "image" && req.files && req.files.length > 0) {
 			// If Type is "image" and images are uploaded
 			const uploadPromises = req.files.map(async (file) => {
 				try {
@@ -80,10 +77,10 @@ const uploadArticle = async (req, res) => {
 				.map((result) => result.value);
 
 			const newArticle = await Article.create({
-				ContributionId,
-				StudentId: student.Id,
-				Type,
-				Content: images,
+				contributionId,
+				studentId: student._id,
+				type,
+				content: images,
 			});
 
 			await newArticle.save();

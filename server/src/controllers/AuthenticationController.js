@@ -1,32 +1,26 @@
 const jwt = require("jsonwebtoken");
 const { catchAsync } = require("../utils");
 const argon2 = require("argon2");
-const dbSequelize = require("../models/sequelize");
-
-const Student = dbSequelize.students;
-const Staff = dbSequelize.staff;
-const Guest = dbSequelize.guest;
+const { User} = require("../models");
 
 //sign up for student and staff
 const register = catchAsync(async (req, res) => {
 	try {
-		const { Name, Email, Password: plainTextPassword, Role } = req.body;
+		const { name, email, password: plainTextPassword, role } = req.body;
 
 		//check if email and password,Role are provided
-		if (!Email || !plainTextPassword || !Role) {
+		if (!email || !plainTextPassword || !role || !name) {
 			return res.status(400).send({
 				status: "error",
 				message: "Email, Password and Role are required",
 			});
 		}
 
-		const Password = await argon2.hash(plainTextPassword);
+		const password = await argon2.hash(plainTextPassword);
 
-		const existingStaff = await Staff.findOne({ where: { Email: Email } });
-		const existingStudent = await Student.findOne({ where: { Email: Email } });
-		const existingGuest = await Guest.findOne({ where: { Email: Email } });
+		const userExists = await User.findOne({ email } );
 
-		if (existingStaff || existingStudent || existingGuest) {
+		if (userExists) {
 			return res.status(400).send({
 				status: "error",
 				message: "Email already exists",
@@ -35,30 +29,22 @@ const register = catchAsync(async (req, res) => {
 
 		// Create a new user if the email does not exist
 		let newUser;
-		if (Role === "Student") {
-			newUser = await Student.create({ Name, Email, Password });
-		} else if (Role === "Guest") {
-			newUser = await Guest.create({ Name, Email, Password });
-			// newUser = await Staff.create({ Name, Email, Password, Role });
-		} else if (Role === "Marketing Coordinator" || Role === "Marketing Manager" || Role === "Administrator") {
-					newUser = await Staff.create({ Name, Email, Password, Role });
-
-		}
-		else{
-			return res.status(400).send({
-				status: "error",
-				message: "Invalid Role",
-			});
-		}
+		newUser = await User.create({
+			name,
+			email,
+			password,
+			role,
+		});
+		
 
 		const access_token = jwt.sign(
-			{ Id: newUser.Id, Email: newUser.Email },
+			{ _id: newUser._id, email: newUser.email },
 			process.env.JWT_SECRET,
 			{ expiresIn: "1d" }
 		);
 
 		const refresh_token = jwt.sign(
-			{ Id: newUser.Id, Email: newUser.Email },
+			{ _id: newUser._id, email: newUser.email },
 			process.env.JWT_SECRET
 		);
 
@@ -83,28 +69,26 @@ const register = catchAsync(async (req, res) => {
 //login function
 const login = catchAsync(async (req, res) => {
 	try {
-		const { Email, Password } = req.body;
+		const { email, password } = req.body;
 
 		//check if email and password are provided
-		if (!Email || !Password) {
+		if (!email || !password) {
 			return res.status(400).send({
 				status: "error",
 				message: "Email and Password are required",
 			});
 		}
 
-		const existingStaff = await Staff.findOne({ where: { Email } });
-		const existingStudent = await Student.findOne({ where: { Email } });
+		const user = await User.findOne({email});
 
-		if (!existingStudent && !existingStaff) {
+		if (!user) {
 			return res.status(400).send({
 				status: "error",
 				message: "Email or password is incorrect",
 			});
 		}
 
-		const user = existingStaff || existingStudent;
-		const isPasswordValid = await argon2.verify(user.Password, Password);
+		const isPasswordValid = await argon2.verify(user.password, password);
 		if (!isPasswordValid) {
 			return res.status(400).send({
 				status: "error",
@@ -113,13 +97,13 @@ const login = catchAsync(async (req, res) => {
 		}
 
 		const access_token = jwt.sign(
-			{ Id: user.Id, Email: user.Email },
+			{ _id: user._id, email: user.email },
 			process.env.JWT_SECRET,
 			{ expiresIn: "1d" }
 		);
 
 		const refresh_token = jwt.sign(
-			{ Id: user.Id, Email: user.Email },
+			{ _id: user._id, email: user.email },
 			process.env.JWT_SECRET
 		);
 

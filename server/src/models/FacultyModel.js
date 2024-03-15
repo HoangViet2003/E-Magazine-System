@@ -1,32 +1,22 @@
-module.exports = (sequelize, DataTypes) => {
-	const Faculty = sequelize.define(
-		"faculty",
-		{
-			Id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-			},
+const mongoose = require("mongoose");
 
-			Name: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			StaffId: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
+const facultySchema = new mongoose.Schema(
+	{
+		name: {
+			type: String,
+			required: true,
 		},
+		marketingCoordinatorId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+	},
+	{
+		timestamps: true, // Automatically manages createdAt and updatedAt
+	}
+);
 
-		{
-			timestamps: true, // Automatically manages createdAt and updatedAt
-		}
-	);
+const Faculty = mongoose.model("Faculty", facultySchema);
 
-	// Faculty.hasMany(sequelize.models.Student, { foreignKey: "FacultyId", onDelete: "CASCADE" });
-	// Faculty.belongsTo(sequelize.models.Staff, {
-	// 	foreignKey: "MarketingCoordinatorId",
-	// });
-
-	return Faculty;
-};
+module.exports = Faculty;

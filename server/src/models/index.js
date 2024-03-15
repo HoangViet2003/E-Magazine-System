@@ -1,15 +1,11 @@
-const Student = require("./StudentModel");
-const Staff = require("./StaffModel");
-const Guest = require("./GuestModel");
+const User = require("./UserModel");
 const Faculty = require("./FacultyModel");
 const Comment = require("./CommentModel");
 const Article = require("./ArticleModel");
 const Contribution = require("./ContributionModel");
 
 module.exports = {
-    Student,
-    Staff,
-    Guest,
+    User,
     Faculty,
     Comment,
     Article,

@@ -9,7 +9,7 @@ router.post(
 	"/article",
 	authenticateToken,
 	// upload.single("Word"),
-	upload.array("Files"),
+	upload.array("files"),
 	ArticleController.uploadArticle
 );
 
