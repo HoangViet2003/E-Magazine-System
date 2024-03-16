@@ -5,7 +5,7 @@ const {
 	getFileStream,
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
-const {Article} = require("../models");
+const { Article } = require("../models");
 
 const uploadArticle = async (req, res) => {
 	try {
@@ -17,10 +17,17 @@ const uploadArticle = async (req, res) => {
 			return res.status(404).json({ error: "Student does not exist" });
 		}
 
-		if (type === "word" && req.files) {
+		if (!req.files || req.files.length === 0) {
+			return res.status(400).json({
+				status: "error",
+				message: "No file uploaded",
+			});
+		}
+
+		// Check if contribution exists
+		if (type === "word") {
 			// If Type is "word" and Word file is uploaded
 			const filePath = req.files[0].path;
-
 			if (
 				req.files[0].mimetype !==
 				"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -52,7 +59,7 @@ const uploadArticle = async (req, res) => {
 						message: "Error converting Word to HTML",
 					});
 				});
-		} else if (type === "image" && req.files && req.files.length > 0) {
+		} else if (type === "image") {
 			// If Type is "image" and images are uploaded
 			const uploadPromises = req.files.map(async (file) => {
 				try {
@@ -85,6 +92,11 @@ const uploadArticle = async (req, res) => {
 
 			await newArticle.save();
 
+			//TODO: Delete the files from the server
+			// TODO: Send email to admin
+			// TODO : Send email to student
+			// TODO: Create notification for admin
+			// TODO: Create history for contribution
 			return res.status(201).send({
 				status: "success",
 				message: "Article uploaded successfully",
@@ -102,7 +114,6 @@ const uploadArticle = async (req, res) => {
 };
 
 //handle update article
-
 
 module.exports = {
 	uploadArticle,

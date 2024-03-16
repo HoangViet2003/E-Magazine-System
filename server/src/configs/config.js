@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 
-dotenv.config({ path: path.join(__dirname, "../../.env.example") });
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 const config = {
 	BASE: {
@@ -23,7 +23,7 @@ const config = {
 	},
 	CORS: {
 		methods: ["GET", "POST", "PATCH", "DELETE"],
-		origin: ["localhost:3000", "http://localhost:3000"],
+		origin: ["*"],
 		credentials: true,
 		optionsSuccessStatus: 200,
 	},

@@ -1,29 +1,21 @@
 const mongoose = require("mongoose");
 
-const articleSchema = new mongoose.Schema(
+const historySchema = new mongoose.Schema(
 	{
 		contributionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Contribution",
 			required: true,
 		},
-		studentId: {
+		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
 		},
-		content: {
-			type: Array, // Store as TEXT or VARCHAR
-			required: true,
-		},
-		type: {
+		action: {
 			type: String,
-			enum: ["word", "image"],
+			enum: ["create", "update", "delete", "submit", "comment", "reply"],
 			required: true,
-		},
-		isSelectedForPublication: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	{
@@ -31,6 +23,6 @@ const articleSchema = new mongoose.Schema(
 	}
 );
 
-const Article = mongoose.model("Article", articleSchema);
+const History = mongoose.model("History", historySchema);
 
-module.exports = Article;
+module.exports = History;
