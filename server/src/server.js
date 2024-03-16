@@ -4,21 +4,41 @@ const express = require("express");
 // const compression = require("compression");
 // const helmet = require("helmet");
 const cors = require("cors");
+const { Server, Socket } = require("socket.io");
 // const pinoHttp = require("pino-http");
 
 // const { errorHandler } = require("#middlewares");
-const { config, pinocfg, routes, db } = require("./configs");
+const { config, pinocfg, routes, db, eventEmitter } = require("./configs");
 
 const app = express();
 // const logger = pinoHttp(pinocfg);
+const httpServer = require("http").createServer(app);
+
+const io = new Server(httpServer, {
+	cors: {
+		origin: "*",
+	},
+});
+
+io.on("connection", (socket) => {
+	socket.on("join", (id) => {
+		socket.join(id);
+
+		console.log("User has joined: ", id);
+
+		socket.emit("joined", `You has joined ${id}`);
+	});
+
+	socket.on("disconnect", () => {
+		console.log("User has left: ", id);
+	});
+});
 
 /* ------------------------ cors ------------------------ */
 app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 /* --- sanitize mongo queries data (prevent injection) -- */
 // app.use(mongoSanitize());
@@ -38,12 +58,18 @@ app.use(express.urlencoded({ extended: true }));
 /* ------------------ routes configure ------------------ */
 routes(app);
 
+eventEmitter.getInstance().setSocketIO(io);
+
 /* -------------------- error handler ------------------- */
 // app.use(errorHandler);
 
+app.get("/", (req, res) => {
+	res.send("Hello World");
+});
+
 /* ----------- connect database before listen ----------- */
 db().then(() =>
-	app.listen(config.BASE.PORT, async (err) => {
+	httpServer.listen(config.BASE.PORT, async (err) => {
 		if (err) console.log(err);
 		console.log(`Server is running at http://${config.HttpUrl}`);
 	})
