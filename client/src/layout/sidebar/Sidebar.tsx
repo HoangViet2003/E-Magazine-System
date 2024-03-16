@@ -18,7 +18,11 @@ export default function Sidebar() {
       link: "/dashboard",
       icon: (
         <ChartpinIcon
-          fill={currentPath === "/dashboard" ? "#004AD7" : "#6B6C7E"}
+          fill={
+            currentPath === "/dashboard" || currentPath === "/"
+              ? "#004AD7"
+              : "#6B6C7E"
+          }
         />
       ),
     },
@@ -68,7 +72,7 @@ export default function Sidebar() {
       <ul className="flex flex-col py-6 pe-6">
         {navLinks.map((navLink, index) => (
           <MainNav
-            key={index} // Add a unique key prop for each iteration
+            key={index} 
             isActive={currentPath === navLink.link}
             title={navLink.title}
             to={navLink.link}

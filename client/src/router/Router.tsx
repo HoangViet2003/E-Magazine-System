@@ -1,4 +1,8 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import LandingPage from "../pages/landing_page/LandingPage";
 import AppLayOut from "../ui/AppLayOut";
 import Dashboard from "../pages/dashboard/Dashboard";
@@ -9,8 +13,9 @@ const router = createBrowserRouter([
     element: <AppLayOut />,
     children: [
       {
+        index: true,
         path: "/",
-        element: <Dashboard />,
+        element: <Navigate replace to="/dashboard" />,
       },
       {
         path: "/dashboard",
