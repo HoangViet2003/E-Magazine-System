@@ -49,7 +49,7 @@ const getAllContributions = async (req, res) => {
 	}
 };
 
-const getAllContributionByMarketingCoordinator = catchAsync(async (req, res) => {
+const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	try{
 		const {facultyId} = req.body;
 
@@ -85,5 +85,6 @@ const getAllContributionByMarketingCoordinator = catchAsync(async (req, res) => 
 
 module.exports = {
     createContribution,
-    getAllContributions
+    getAllContributions,
+	getAllContributionByFaculty
 }

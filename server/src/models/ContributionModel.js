@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Article = require("./ArticleModel");
 
 const contributionSchema = new mongoose.Schema(
 	{
@@ -15,6 +16,15 @@ const contributionSchema = new mongoose.Schema(
 		title: {
 			type: String,
 			required: true,
+		},
+		files: {
+			type: Array, // Store as TEXT or VARCHAR
+			required: true,
+			default: [],
+		},
+		isSelectedForPublication: {
+			type: Boolean,
+			default: false,
 		},
 		uploadDate: {
 			type: Date,

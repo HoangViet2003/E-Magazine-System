@@ -5,7 +5,7 @@ const {
 	getFileStream,
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
-const { Article } = require("../models");
+const { Article, Contribution } = require("../models");
 
 const uploadArticle = async (req, res) => {
 	try {
@@ -23,6 +23,9 @@ const uploadArticle = async (req, res) => {
 				message: "No file uploaded",
 			});
 		}
+
+		//Find contribution by student id
+		const contribution = await Contribution.findOne({ studentId: student._id });
 
 		// Check if contribution exists
 		if (type === "word") {
@@ -43,14 +46,20 @@ const uploadArticle = async (req, res) => {
 				.convertToHtml({ path: filePath })
 				.then(async (result) => {
 					const html = result.value; // The generated HTML
-					const newArticle = await Article.create({
-						contributionId,
-						studentId: student._id,
-						content: html,
+					const newArticle = {
 						type,
-					});
+						content: html,
+					};
 
-					return res.status(201).json(newArticle);
+					//add to contribution.content
+					await contribution.files.push(newArticle);
+					contribution.save();
+
+					return res.status(201).json({
+						status: "success",
+						message: "Article uploaded successfully",
+						contribution,
+					});
 				})
 				.catch((error) => {
 					console.error("Mammoth error:", error);
@@ -83,14 +92,14 @@ const uploadArticle = async (req, res) => {
 				.filter((result) => result.status === "fulfilled")
 				.map((result) => result.value);
 
-			const newArticle = await Article.create({
-				contributionId,
-				studentId: student._id,
+			const newArticle = {
 				type,
 				content: images,
-			});
+			};
 
-			await newArticle.save();
+			//add to contribution.content
+			await contribution.files.push(newArticle);
+			contribution.save();
 
 			//TODO: Delete the files from the server
 			// TODO: Send email to admin
@@ -114,7 +123,7 @@ const uploadArticle = async (req, res) => {
 			return res.status(201).send({
 				status: "success",
 				message: "Article uploaded successfully",
-				newArticle,
+				contribution,
 			});
 		} else {
 			return res.status(400).send({
