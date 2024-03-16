@@ -94,6 +94,20 @@ const uploadArticle = async (req, res) => {
 
 			//TODO: Delete the files from the server
 			// TODO: Send email to admin
+
+			// await ejs.renderFile(
+			// 	path.join(__dirname, "..", "..", "emails", "accountConfirmation.ejs"),
+			// 	{ url },
+			// 	async (err, html) => {
+			// 		if (err) throw err;
+			// 		await sendMail({
+			// 			bcc: req.body.email,
+			// 			subject: "Đặt lại mật khẩu (App liên đoàn luật sư)",
+			// 			html,
+			// 		});
+			// 	}
+			// );
+
 			// TODO : Send email to student
 			// TODO: Create notification for admin
 			// TODO: Create history for contribution
