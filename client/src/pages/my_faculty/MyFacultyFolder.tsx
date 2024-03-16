@@ -30,7 +30,7 @@ export default function MyFacultyFolder() {
 
       <div className="flex gap-[10px]">
         {fakeFolder.map((folder) => (
-          <button className="w-60 rounded border border-borderColor p-4">
+          <button className="w-60 rounded border border-borderColor p-4 hover:bg-slate-100">
             <div className={" flex items-center gap-4"}>
               <img src={FolderIcon} />
 

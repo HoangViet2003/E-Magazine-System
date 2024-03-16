@@ -17,7 +17,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
 }) => {
   return (
     <div
-      className="flex flex-1 flex-col items-start gap-[14px] px-6 py-5"
+      className="flex flex-1 flex-col items-start gap-[14px] px-6 py-5 duration-300 hover:shadow-lg"
       style={{ background: background }}
     >
       <div

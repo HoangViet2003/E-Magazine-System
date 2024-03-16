@@ -49,7 +49,7 @@ function Row({ children }: { children: ReactNode }) {
   return (
     <div
       role="row"
-      className={commonRow + " border-b border-borderColor hover:bg-stone-100"}
+      className={commonRow + " border-b border-borderColor hover:bg-slate-100"}
       style={{ gridTemplateColumns: gridTemplateColumns, color: "#6B6C7E" }}
     >
       {children}

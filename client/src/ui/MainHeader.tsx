@@ -9,11 +9,11 @@ const MainHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
       {children}
 
       <div className="my-4">
-        <button className="p-3">
+        <button className="rounded-full p-3 hover:bg-slate-100">
           <img src={UlListIcon} />
         </button>
 
-        <button className="p-3">
+        <button className="rounded-full p-3 hover:bg-slate-100">
           <img src={InfoLineIcon} />
         </button>
       </div>

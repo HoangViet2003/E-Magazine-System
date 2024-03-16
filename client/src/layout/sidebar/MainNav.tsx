@@ -14,7 +14,10 @@ const MainNav: React.FC<MainNavProps> = ({ isActive, title, to, children }) => {
   return (
     <NavLink to={to}>
       <li
-        className={`round flex items-center gap-8 px-6 py-2 ${isActive ? activeTab : ""}`}
+        className={
+          "round flex items-center gap-8 px-6 py-2 hover:bg-activeTabBg " +
+          (isActive ? activeTab : "")
+        }
         style={{ color: isActive ? "#004AD7" : "#6B6C7E" }}
       >
         {children}
