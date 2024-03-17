@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         element: <MyFaculty />,
       },
       {
-        path: "/myFaculty/:yearContribute",
+        path: "/myFaculty/folders/:yearContributeId",
         element: <YearContribute />,
       },
       {

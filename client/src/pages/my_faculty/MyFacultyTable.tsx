@@ -4,75 +4,29 @@ import Table from "../../ui/Table";
 import FacultyRow from "./FacultyRow";
 import MyFacultyOperation from "./MyFacultyOperation";
 
-import ProfileImg from "../../assets/profile1.png";
+// import ProfileImg from "../../assets/profile1.png";
 import { URL } from "../../utils/constant";
-
-const fakeData = [
-  {
-    _id: "1",
-    name: "Behind The Curtain _ Theatre Production Backstage...",
-    profile: ProfileImg,
-    action: "Selected for contribute",
-    owner: "Tuan Anh",
-    updatedAt: "2024-03-05T00:41:05.610635+00:00",
-    createdAt: "2024-03-05T00:41:05.610635+00:00",
-  },
-  {
-    _id: "2",
-    name: "Shining Star _ Jane Doe Student Profile.docx",
-    profile: ProfileImg,
-    action: "Selected for contribute",
-    owner: "Tuan Anh",
-    updatedAt: "2024-02-05T00:41:05.610635+00:00",
-    createdAt: "2024-02-05T00:41:05.610635+00:00",
-  },
-  {
-    _id: "3",
-    name: "Tech Wave 2024 _ Trends Reshaping Student.docx",
-    profile: ProfileImg,
-    action: "Selected for contribute",
-    owner: "Nguyen Thi Thu Ha",
-    updatedAt: "2024-04-05T00:41:05.610635+00:00",
-    createdAt: "2024-04-05T00:41:05.610635+00:00",
-  },
-  {
-    _id: "4",
-    name: "Around The World Plates _ Culinary Adventures Exch...",
-    profile: ProfileImg,
-    action: "Selected for contribute",
-    owner: "Tuan Anh",
-    updatedAt: "2024-09-05T00:41:05.610635+00:00",
-    createdAt: "2024-09-05T00:41:05.610635+00:00",
-  },
-  {
-    _id: "5",
-    name: "Ink And Imagination _ Creative Writing Workshop Reference",
-    profile: ProfileImg,
-    action: "Selected for contribute",
-    owner: "Tuan Anh",
-    updatedAt: "2024-11-05T00:41:05.610635+00:00",
-    createdAt: "2024-11-05T00:41:05.610635+00:00",
-  },
-];
+import { useContribution } from "../../redux/hooks/useContribution";
 
 export default function MyFacultyTable({
   yearContribute,
 }: {
-  yearContribute?: string;
+  yearContribute?: number;
 }) {
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
 
+  const { contributions } = useContribution();
+
   // FILTER
-  let filteredContributions = fakeData;
+  let filteredContributions = contributions;
 
   if (yearContribute) {
-    filteredContributions = fakeData.filter(
+    filteredContributions = contributions.filter(
       (contribution) =>
-        new Date(contribution.createdAt).getFullYear() ===
-        parseInt(yearContribute),
+        new Date(contribution.createdAt).getFullYear() === yearContribute,
     );
   }
 
