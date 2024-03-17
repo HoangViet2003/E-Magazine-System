@@ -23,7 +23,6 @@ const Header = () => {
         <HeaderMenu />
         <UserAvatar />
       </header>
-      {/* </div> */}
     </div>
   );
 };

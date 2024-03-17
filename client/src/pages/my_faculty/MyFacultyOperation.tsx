@@ -56,13 +56,13 @@ export default function MyFacultyOperation() {
       <div
         className={ellipsis + " flex cursor-pointer select-none gap-1"}
         onClick={() =>
-          sortBy === "updateAt-asc"
-            ? handleChange("updateAt-desc")
-            : handleChange("updateAt-asc")
+          sortBy === "updatedAt-asc"
+            ? handleChange("updatedAt-desc")
+            : handleChange("updatedAt-asc")
         }
       >
         Modified Date
-        {field === "updateAt" && (
+        {field === "updatedAt" && (
           <img
             src={OrderArrowIcon}
             className={direction === "desc" ? "rotate-180" : ""}

@@ -33,11 +33,11 @@ const data = [
   },
 ];
 
-const changes = 2.45;
+let changes = 2.45;
 
 export default function DailyTrafficChart() {
   return (
-    <div className="border border-borderColor p-6 shadow">
+    <div className="border border-borderColor p-6 shadow-lg">
       <div className="flex justify-between">
         <div>
           <h4 className="text-sm font-medium">Daily Traffic</h4>

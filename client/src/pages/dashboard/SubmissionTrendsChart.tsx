@@ -61,8 +61,8 @@ const data = [
 
 export default function SubmissionTrendsChart() {
   return (
-    <div className="pb-10 px-5 pt-4 border border-borderColor shadow-md">
-      <h2 className="text-xl font-bold mb-6">Submission Trends Over Time</h2>
+    <div className="border border-borderColor px-5 pb-10 pt-4 shadow-lg">
+      <h2 className="mb-6 text-xl font-bold">Submission Trends Over Time</h2>
 
       <ResponsiveContainer width="100%" height={600}>
         <AreaChart

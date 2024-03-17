@@ -29,7 +29,7 @@ export default function CommentedArticlesChart() {
   const data = fakeData;
 
   return (
-    <div className="border border-borderColor px-8 pb-[30px] pt-9 shadow">
+    <div className="border border-borderColor px-8 pb-[30px] pt-9 shadow-lg">
       <h2 className="text-[22px] font-medium">Commented Articles</h2>
       <div className="relative">
         <ResponsiveContainer width="100%" height={300}>

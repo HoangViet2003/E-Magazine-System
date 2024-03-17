@@ -27,7 +27,7 @@ export default function SearchContribution() {
         }}
         className="bg-searchBackground placeholder:text-defaultTextColor w-full px-4 py-2"
       />
-      <button className="px-4">
+      <button className="px-4 hover:bg-slate-200">
         <img src={SearchIcon} alt="search" className="w-5" />
       </button>
     </form>

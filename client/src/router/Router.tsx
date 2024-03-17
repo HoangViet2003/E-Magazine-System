@@ -3,10 +3,15 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
+
 import LandingPage from "../pages/landing_page/LandingPage";
 import AppLayOut from "../ui/AppLayOut";
 import Dashboard from "../pages/dashboard/Dashboard";
 import MyFaculty from "../pages/my_faculty/MyFaculty";
+import TextEditor from "../pages/text_editor/TextEditor";
+import YearContribute from "../pages/my_faculty/YearContribute";
+
+import { v4 as uuidv4 } from "uuid";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +31,10 @@ const router = createBrowserRouter([
         element: <MyFaculty />,
       },
       {
+        path: "/myFaculty/:yearContribute",
+        element: <YearContribute />,
+      },
+      {
         path: "/selectedContribution",
         element: <LandingPage />,
       },
@@ -42,6 +51,14 @@ const router = createBrowserRouter([
         element: <LandingPage />,
       },
     ],
+  },
+  {
+    path: "/documents",
+    element: <Navigate replace to={`${uuidv4()}`} />,
+  },
+  {
+    path: "/documents/:id",
+    element: <TextEditor />,
   },
 ]);
 

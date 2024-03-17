@@ -1,5 +1,6 @@
 import Table from "../../ui/Table";
 import DocsIcon from "../../assets/icons/icon-document-text.svg";
+import { URL } from "../../utils/constant";
 
 interface FacultyRowProps {
   data: {
@@ -8,24 +9,22 @@ interface FacultyRowProps {
     action: string;
     profile: string;
     owner: string;
-    updateAt: string;
+    updatedAt: string;
   };
 }
 
 const FacultyRow: React.FC<FacultyRowProps> = ({ data }) => {
-  const { _id, name, action, profile, owner, updateAt } = data;
+  const { name, action, profile, owner, updatedAt } = data;
 
-  console.log(_id);
-
-  const date = new Date(updateAt);
+  const date = new Date(updatedAt);
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
   const commonCell =
-    "overflow-hidden text-ellipsis whitespace-nowrap cursor-default";
+    "overflow-hidden text-ellipsis whitespace-nowrap cursor-default select-none";
 
   return (
     <Table.Row>
-      <div className="m-[auto]">
+      <div className="m-[auto] select-none">
         <img src={DocsIcon} />
       </div>
       <div

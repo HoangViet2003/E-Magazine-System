@@ -5,6 +5,7 @@ import FacultyRow from "./FacultyRow";
 import MyFacultyOperation from "./MyFacultyOperation";
 
 import ProfileImg from "../../assets/profile1.png";
+import { URL } from "../../utils/constant";
 
 const fakeData = [
   {
@@ -13,7 +14,8 @@ const fakeData = [
     profile: ProfileImg,
     action: "Selected for contribute",
     owner: "Tuan Anh",
-    updateAt: "2024-03-05T00:41:05.610635+00:00",
+    updatedAt: "2024-03-05T00:41:05.610635+00:00",
+    createdAt: "2024-03-05T00:41:05.610635+00:00",
   },
   {
     _id: "2",
@@ -21,7 +23,8 @@ const fakeData = [
     profile: ProfileImg,
     action: "Selected for contribute",
     owner: "Tuan Anh",
-    updateAt: "2024-02-05T00:41:05.610635+00:00",
+    updatedAt: "2024-02-05T00:41:05.610635+00:00",
+    createdAt: "2024-02-05T00:41:05.610635+00:00",
   },
   {
     _id: "3",
@@ -29,7 +32,8 @@ const fakeData = [
     profile: ProfileImg,
     action: "Selected for contribute",
     owner: "Nguyen Thi Thu Ha",
-    updateAt: "2024-04-05T00:41:05.610635+00:00",
+    updatedAt: "2024-04-05T00:41:05.610635+00:00",
+    createdAt: "2024-04-05T00:41:05.610635+00:00",
   },
   {
     _id: "4",
@@ -37,7 +41,8 @@ const fakeData = [
     profile: ProfileImg,
     action: "Selected for contribute",
     owner: "Tuan Anh",
-    updateAt: "2024-09-05T00:41:05.610635+00:00",
+    updatedAt: "2024-09-05T00:41:05.610635+00:00",
+    createdAt: "2024-09-05T00:41:05.610635+00:00",
   },
   {
     _id: "5",
@@ -45,19 +50,38 @@ const fakeData = [
     profile: ProfileImg,
     action: "Selected for contribute",
     owner: "Tuan Anh",
-    updateAt: "2024-11-05T00:41:05.610635+00:00",
+    updatedAt: "2024-11-05T00:41:05.610635+00:00",
+    createdAt: "2024-11-05T00:41:05.610635+00:00",
   },
 ];
 
-export default function MyFacultyTable() {
+export default function MyFacultyTable({
+  yearContribute,
+}: {
+  yearContribute?: string;
+}) {
   const [searchParams] = useSearchParams();
-
-  const sortBy = searchParams.get("sortBy") || "updateAt-desc";
+  const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
-
   const modifier = direction === "asc" ? 1 : -1;
 
-  const sortedData = fakeData.slice().sort((a, b) => {
+  // FILTER
+  let filteredContributions = fakeData;
+
+  if (yearContribute) {
+    filteredContributions = fakeData.filter(
+      (contribution) =>
+        new Date(contribution.createdAt).getFullYear() ===
+        parseInt(yearContribute),
+    );
+  }
+
+  function openNewTab(id: string) {
+    window.open(`${URL}/documents/${id}`, "_blank");
+  }
+
+  // SORT
+  const sortedData = filteredContributions.slice().sort((a, b) => {
     if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
     if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
     return 0;
@@ -71,7 +95,11 @@ export default function MyFacultyTable() {
 
       <Table.Body
         data={sortedData}
-        render={(data) => <FacultyRow data={data} key={data._id} />}
+        render={(data) => (
+          <div onDoubleClick={() => openNewTab(data._id)}>
+            <FacultyRow data={data} key={data._id} />
+          </div>
+        )}
       />
     </Table>
   );
