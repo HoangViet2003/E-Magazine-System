@@ -5,11 +5,16 @@ const {
 	getFileStream,
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
-const { Article, Contribution } = require("../models");
+const { Article, Contribution, History, User } = require("../models");
+const { sendEmail } = require("../emails/sendEmail");
+const EmitterSingleton = require("./EmitterSingleton");
+
+const emitterInstance = EmitterSingleton.getInstance();
+const emitter = emitterInstance.getEmitter();
 
 const uploadArticle = async (req, res) => {
 	try {
-		const { contributionId, type } = req.body;
+		const { type } = req.body;
 		const student = req.user;
 
 		// Check if student exists
@@ -102,7 +107,30 @@ const uploadArticle = async (req, res) => {
 			contribution.save();
 
 			//TODO: Delete the files from the server
-			// TODO: Send email to admin
+			await req.files.forEach(async (file) => {
+				await fs.promises.unlink(file.path);
+			});
+
+			// TODO: Send email to marketing coordinator
+
+			//find marketing coordinator
+			const marketingCoordinator = await User.findOne({
+				role: "marketing coordinator",
+				facultyId: student.facultyId,
+			});
+
+			//send email to marketing coordinator
+			const subjectToMarketingCoordinator = "Article uploaded successfully";
+			const htmlForMarketingCoordinator = `
+			<p>Dear ${marketingCoordinator.name},</p>
+			<p>${student.name} has uploaded an article. Please review it.</p>
+			<p>Thank you!</p>
+		`;
+			await sendEmail(
+				marketingCoordinator.email,
+				subjectToMarketingCoordinator,
+				htmlForMarketingCoordinator
+			);
 
 			// await ejs.renderFile(
 			// 	path.join(__dirname, "..", "..", "emails", "accountConfirmation.ejs"),
@@ -118,8 +146,28 @@ const uploadArticle = async (req, res) => {
 			// );
 
 			// TODO : Send email to student
+			const studentEmail = "vietnhgch210639@fpt.edu.vn";
+			const subject = "Article uploaded successfully";
+			const emailHtml = `
+            <p>Dear ${student.name},</p>
+            <p>Your article has been successfully uploaded.
+            <p>Thank you for your contribution!</p>
+        `;
+			await sendEmail(studentEmail, subject, emailHtml);
+
 			// TODO: Create notification for admin
+			 emitter.emit("notifyMarketingCoordinator", {
+					facultyId: student.facultyId,
+					message: `${student.name} has uploaded an article. Please review it.`,
+				});
+
 			// TODO: Create history for contribution
+			const history = new History({
+				contributionId: contribution._id,
+				action: "create",
+				userId: student._id,
+			});
+
 			return res.status(201).send({
 				status: "success",
 				message: "Article uploaded successfully",

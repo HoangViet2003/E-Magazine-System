@@ -1,8 +1,10 @@
 const router = require("express").Router();
 const { ContributionController } = require("../controllers");
+const { authenticateToken,authenticateMarketingCoordinator } = require("../middlewares/authenticate");
+
 
 router.post("/contribution", ContributionController.createContribution);
 router.get("/contributions", ContributionController.getAllContributions);
-router.get("/contributions/marketing-coordinator", ContributionController.getAllContributionByFaculty);
+router.get("/contributions/marketing-coordinator",authenticateToken,authenticateMarketingCoordinator, ContributionController.getAllContributionByFaculty);
 
 module.exports = router;

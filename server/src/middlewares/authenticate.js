@@ -33,7 +33,7 @@ const authenticateToken = async (req, res, next) => {
 
 const authenticateMarketingCoordinator = async (req, res, next) => {
 	//Check if user is a marketing coordinator
-	if (!req.user.role || req.user.role !== "Marketing Coordinator") {
+	if (req.user.role !== "marketing coordinator") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
@@ -44,7 +44,7 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
-	if (!req.user.role || req.user.role !== "Marketing Manager") {
+	if (!req.user.role || req.user.role !== "marketing Manager") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
@@ -55,7 +55,7 @@ const authenticateMarketingManager = async (req, res, next) => {
 
 const authenticateAdministrator = async (req, res, next) => {
 	//Check if user is an administrator
-	if (!req.user.role || req.user.role !== "Administrator") {
+	if (!req.user.role || req.user.role !== "administrator") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
