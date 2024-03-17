@@ -50,8 +50,8 @@ export default function MyFacultyTable({
       <Table.Body
         data={sortedData}
         render={(data) => (
-          <div onDoubleClick={() => openNewTab(data._id)}>
-            <FacultyRow data={data} key={data._id} />
+          <div onDoubleClick={() => openNewTab(data._id)} key={data._id}>
+            <FacultyRow data={data} />
           </div>
         )}
       />

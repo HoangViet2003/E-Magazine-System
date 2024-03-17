@@ -1,6 +1,5 @@
 import Table from "../../ui/Table";
 import DocsIcon from "../../assets/icons/icon-document-text.svg";
-import { URL } from "../../utils/constant";
 
 interface FacultyRowProps {
   data: {
