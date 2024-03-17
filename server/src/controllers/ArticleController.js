@@ -7,7 +7,7 @@ const {
 const mammoth = require("mammoth");
 const { Article, Contribution, History, User } = require("../models");
 const { sendEmail } = require("../emails/sendEmail");
-const EmitterSingleton = require("./EmitterSingleton");
+const EmitterSingleton = require("../configs/eventEmitter");
 
 const emitterInstance = EmitterSingleton.getInstance();
 const emitter = emitterInstance.getEmitter();
