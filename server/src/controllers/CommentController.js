@@ -104,6 +104,8 @@ const addComment = async (req, res) => {
 const replyComment = async () => {
 	try {
 		const { id } = req.params;
+		let comment;
+		let article;
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
 		if (
@@ -112,14 +114,14 @@ const replyComment = async () => {
 		) {
 			return res.status(403).json({ error: "Forbidden" });
 		} else {
-			const comment = await Comment.findById(id);
+			comment = await Comment.findById(id);
 
 			if (!comment) {
 				return res.status(404).json({ error: "Comment does not exist" });
 			}
 
 			// Find the article that the comment belongs to
-			const article = await Article.findById(comment.articleId);
+			article = await Article.findById(comment.articleId);
 
 			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
 			// if the role is student, check if the student is the author of the article, if not return 403
@@ -181,4 +183,54 @@ const replyComment = async () => {
 	}
 };
 
-module.exports = { getCommentsByAr, addComment, replyComment };
+const deleteComment = async (req, res) => {
+	try {
+		const { id } = req.params;
+		let comment;
+		let article;
+
+		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
+		if (
+			req.user.role !== "marketing coordinator" ||
+			req.user.role !== "student"
+		) {
+			return res.status(403).json({ error: "Forbidden" });
+		} else {
+			comment = await Comment.findById(id);
+
+			if (!comment) {
+				return res.status(404).json({ error: "Comment does not exist" });
+			}
+
+			// Find the article that the comment belongs to
+			article = await Article.findById(comment.articleId);
+
+			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
+			// if the role is student, check if the student is the author of the article, if not return 403
+			if (req.user.role === "marketing coordinator") {
+				if (req.user.contributionId !== article.contributionId) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			} else {
+				if (req.user._id !== article.studentId) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			}
+
+			// If user is not the one who created the comment, return 403
+			if (req.user.id !== comment.userId) {
+				return res.status(403).json({ error: "Forbidden" });
+			}
+		}
+
+		// Delete the comment
+		await Comment.findByIdAndDelete(id);
+
+		return res.status(200).json({ message: "Comment deleted successfully" });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+module.exports = { getCommentsByAr, addComment, replyComment, deleteComment };
