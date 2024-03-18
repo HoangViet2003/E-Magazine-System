@@ -15,4 +15,8 @@ router.post(
 	CommentController.addComment
 );
 
+router.post("/comment/:id/reply", authenticateToken, CommentController.replyComment); 
+
+router.delete("/comment/:id", authenticateToken, CommentController.deleteComment);
+
 module.exports = router;
