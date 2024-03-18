@@ -1,19 +1,28 @@
-const { Contribution, Article, Faculty } = require("../models");
 const { catchAsync } = require("../utils");
+const fs = require("fs");
+const {
+	uploadFiles,
+	deleteFiles,
+	getFileStream,
+} = require("../services/fileS3.services");
+const mammoth = require("mammoth");
+const { Article, Contribution, History, User,Faculty } = require("../models");
+const { sendEmail } = require("../emails/sendEmail");
+const EmitterSingleton = require("../configs/eventEmitter");
+
+const emitterInstance = EmitterSingleton.getInstance();
+const emitter = emitterInstance.getEmitter();
+
 
 const createContribution = async (req, res) => {
 	try {
-		const { facultyId, studentId, title, status } = req.body;
+		const { facultyId, status } = req.body;
 
-		const uploadDate = new Date();
 		const academicYear = new Date();
 		const closureDate = new Date();
 
 		const newContribution = new Contribution({
 			facultyId,
-			studentId,
-			title,
-			uploadDate,
 			status,
 			academicYear,
 			closureDate,
@@ -45,9 +54,7 @@ const getAllContributions = async (req, res) => {
 const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	try {
 		const { facultyId } = req.body;
-		const page = parseInt(req.query.page) || 1; 
-		const limit = 10;
-		const skip = (page - 1) * limit;
+	
 
 		if (!facultyId) {
 			return res.status(400).json({
@@ -72,21 +79,19 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 		}
 
 		const contributions = await Contribution.find({ facultyId: facultyId })
-			.skip(skip)
-			.limit(limit);
-		const totalLength = contributions.length;
+			
 
 		res.status(200).json({
 			status: "success",
 			contributions,
-			currentPage: page,
-			totalPage: Math.ceil(totalLength / limit),
-			totalLength: totalLength,
+		
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 });
+
+
 
 module.exports = {
 	createContribution,

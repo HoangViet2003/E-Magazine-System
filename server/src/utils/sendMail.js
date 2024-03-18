@@ -34,4 +34,9 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-module.exports = transporter.sendMail.bind(transporter);
+const sendMail = async (mailOptions) => {
+	// Send mail with defined transport object
+	return transporter.sendMail(mailOptions);
+};
+
+module.exports = sendMail;

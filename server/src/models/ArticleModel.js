@@ -12,6 +12,10 @@ const articleSchema = new mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
+		title: {
+			type: String,
+			required: true,
+		},
 		content: {
 			type: Array, // Store as TEXT or VARCHAR
 			required: true,
@@ -25,11 +29,16 @@ const articleSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		isFavorite: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
 );
+
 
 const Article = mongoose.model("Article", articleSchema);
 
