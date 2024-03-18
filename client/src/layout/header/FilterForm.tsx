@@ -1,20 +1,39 @@
-import Select from "../../ui/Select";
+import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
 import CloseIcon from "../../assets/icons/cross-svgrepo-com.svg";
+import Select from "../../ui/Select";
 
 const labelClassName = "whitespace-nowrap  font-bold text-gray-600 my-auto";
 const inputClassName =
   "px-6 py-3 border border-gray-400 rounded text-gray-500 outline-blue-500";
 
-export default function FilterForm({ isOpenFilter, setIsOpenFilter }) {
-  function handleChangeType(e) {}
+interface FilterFormProps {
+  openFilter: boolean;
+  setOpenFilter: (isOpen: boolean) => void;
+}
 
-  if (!isOpenFilter) return null;
+const FilterForm: React.FC<FilterFormProps> = ({
+  openFilter,
+  setOpenFilter,
+}) => {
+  const ref = useOutsideClick(
+    () => setOpenFilter(false),
+    false,
+  ) as React.RefObject<HTMLDivElement>;
+
+  function handleChangeType(e: MouseEvent) {
+    console.log(e);
+  }
+
+  if (!openFilter) return null;
 
   return (
-    <div className="fixed top-14 w-[800px] border border-borderColor bg-white px-8 py-6 shadow-xl ">
+    <div
+      className="fixed top-14 w-[800px] border border-borderColor bg-white px-8 py-6 shadow-xl"
+      ref={ref}
+    >
       <button
         className="absolute right-3 top-3 rounded-full p-1 hover:bg-slate-100"
-        onClick={() => setIsOpenFilter(false)}
+        onClick={() => setOpenFilter(false)}
       >
         <img src={CloseIcon} width={36} />
       </button>
@@ -71,4 +90,6 @@ export default function FilterForm({ isOpenFilter, setIsOpenFilter }) {
       </button>
     </div>
   );
-}
+};
+
+export default FilterForm;

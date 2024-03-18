@@ -6,7 +6,7 @@ import FilterForm from "./FilterForm";
 
 export default function SearchContribution() {
   const [keyword, setKeyword] = useState("");
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -37,7 +37,7 @@ export default function SearchContribution() {
 
         <button
           className="rounded border border-borderColor bg-white px-3 shadow-md hover:bg-slate-100"
-          onClick={() => setIsOpenFilter(true)}
+          onClick={() => setOpenFilter(true)}
         >
           <svg
             className="Q6yead QJZfhe "
@@ -50,10 +50,7 @@ export default function SearchContribution() {
           </svg>
         </button>
 
-        <FilterForm
-          isOpenFilter={isOpenFilter}
-          setIsOpenFilter={setIsOpenFilter}
-        />
+        <FilterForm openFilter={openFilter} setOpenFilter={setOpenFilter} />
       </form>
     </div>
   );
