@@ -6,7 +6,7 @@ const {
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
 const { Article, Contribution, History, User } = require("../models");
-const { sendEmail } = require("../emails/sendEmail");
+const { sendEmail } = require("../utils");
 const EmitterSingleton = require("../configs/eventEmitter");
 
 const emitterInstance = EmitterSingleton.getInstance();
@@ -156,10 +156,10 @@ const uploadArticle = async (req, res) => {
 			await sendEmail(studentEmail, subject, emailHtml);
 
 			// TODO: Create notification for admin
-			 emitter.emit("notifyMarketingCoordinator", {
-					facultyId: student.facultyId,
-					message: `${student.name} has uploaded an article. Please review it.`,
-				});
+			emitter.emit("notifyMarketingCoordinator", {
+				facultyId: student.facultyId,
+				message: `${student.name} has uploaded an article. Please review it.`,
+			});
 
 			// TODO: Create history for contribution
 			const history = new History({
