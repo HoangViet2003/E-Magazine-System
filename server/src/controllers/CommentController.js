@@ -101,4 +101,84 @@ const addComment = async (req, res) => {
 	}
 };
 
-module.exports = { getCommentsByAr, addComment };
+const replyComment = async () => {
+	try {
+		const { id } = req.params;
+
+		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
+		if (
+			req.user.role !== "marketing coordinator" ||
+			req.user.role !== "student"
+		) {
+			return res.status(403).json({ error: "Forbidden" });
+		} else {
+			const comment = await Comment.findById(id);
+
+			if (!comment) {
+				return res.status(404).json({ error: "Comment does not exist" });
+			}
+
+			// Find the article that the comment belongs to
+			const article = await Article.findById(comment.articleId);
+
+			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
+			// if the role is student, check if the student is the author of the article, if not return 403
+			if (req.user.role === "marketing coordinator") {
+				if (req.user.contributionId !== article.contributionId) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			} else {
+				if (req.user._id !== article.studentId) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			}
+		}
+
+		const { content, taggedUserId } = req.body;
+
+		// Creating a new comment
+		const newComment = new Comment({
+			articleId: article._id,
+			userId: req.user._id,
+			content,
+			taggedUserId,
+		});
+
+		// Saving the new comment
+		await newComment.save();
+
+		// Add the new comment to the replies array of the parent comments
+		comment.replies.push(newComment._id);
+		await comment.save();
+
+		// Emit an event to notify the author of the parent comment
+		emitter.emit("newReply", {
+			comment,
+			newComment,
+		});
+
+		// Send an email to the author of the parent comment
+		const html = await ejs.renderFile(
+			"./src/emails/comments/replyComments.email.ejs",
+			{
+				comment: newComment,
+			}
+		);
+
+		// Send an email to the author of the parent comment
+		await sendMail({
+			to: "tuananhngo2513@gmail.com",
+			subject: `${req.user.name} has replied to your comment`,
+			html,
+		});
+
+		return res
+			.status(201)
+			.json({ newComment, message: "Comment added successfully" });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+module.exports = { getCommentsByAr, addComment, replyComment };

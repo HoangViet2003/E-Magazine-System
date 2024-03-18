@@ -23,6 +23,11 @@ const commentSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 		},
+		replies: {
+			type: [mongoose.Schema.Types.ObjectId],
+			ref: "Comment",
+			default: [],
+		},
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
