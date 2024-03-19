@@ -223,6 +223,11 @@ const deleteComment = async (req, res) => {
 			}
 		}
 
+		// If the comment has replies, delete all fo the replies
+		if (comment.replies.length > 0) {
+			await Comment.deleteMany({ _id: { $in: comment.replies } });
+		}
+
 		// Delete the comment
 		await Comment.findByIdAndDelete(id);
 
