@@ -12,15 +12,15 @@ export default function MyFaculty() {
         <Dropdowns>
           <Dropdowns.Dropdown>
             <Dropdowns.Toggle id="faculty">
-              <span className="ms-6 flex items-center gap-3 rounded-3xl px-4 py-1 hover:bg-slate-100">
+              <span className="flex items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100">
                 <h1 className="text-xl font-normal">My Faculty</h1>
                 <img src={DropdownIcon} alt="" />
               </span>
             </Dropdowns.Toggle>
 
             <Dropdowns.List id="faculty">
-              <Dropdowns.Button>Download</Dropdowns.Button>
-              <Dropdowns.Button>Delete</Dropdowns.Button>
+              <Dropdowns.Button icon={DropdownIcon}>Download</Dropdowns.Button>
+              <Dropdowns.Button icon={DropdownIcon}>Delete</Dropdowns.Button>
             </Dropdowns.List>
           </Dropdowns.Dropdown>
         </Dropdowns>
