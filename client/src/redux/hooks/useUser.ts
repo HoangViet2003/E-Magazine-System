@@ -1,10 +1,6 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Contribution,
-  setAllContributions,
-  setLoadingContribution,
-} from "./../slices/ContributionSlice";
+import { User, setAllUsers, setLoadingUser } from "./../slices/UserSlice";
 import { RootState } from "./../index";
 
 const url = "https://e-magazine.onrender.com/api/v1/";
@@ -17,32 +13,31 @@ export const useContribution = () => {
     (state: RootState) => state.contribution,
   );
 
-  const fetchAllContribution = async () => {
-    dispatch(setLoadingContribution(true));
+  const fetchAllUser = async () => {
+    dispatch(setLoadingUser(true));
     try {
       const { data, status } = await axios({
         method: "get",
-        url: `${url}/contributions`,
+        url: `${url}/users`,
         // headers: {
         //   Authorization: `Bearer ${token}`,
         // },
       });
 
-
       if (status !== 200) {
         throw new Error("Error fetching contributions");
       }
 
-      dispatch(setAllContributions(data?.data));
+      dispatch(setAllUsers(data?.data));
     } catch (error) {
       console.log(error);
     }
-    dispatch(setLoadingContribution(false));
+    dispatch(setLoadingUser(false));
   };
 
   return {
     loading,
     contributions,
-    fetchAllContribution,
+    fetchAllUser,
   };
 };

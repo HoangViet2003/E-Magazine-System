@@ -41,6 +41,8 @@ export default function MyFacultyTable({
     return 0;
   });
 
+  console.log(sortedData);
+
   return (
     <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">
       <Table.Header>

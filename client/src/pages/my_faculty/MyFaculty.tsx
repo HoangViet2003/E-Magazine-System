@@ -4,8 +4,16 @@ import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 import MyFacultyTable from "./MyFacultyTable";
 import MyFacultyFolder from "./MyFacultyFolder";
 import Dropdowns from "../../ui/Dropdowns";
+import { useContribution } from "../../redux/hooks/useContribution";
+import { useEffect } from "react";
 
 export default function MyFaculty() {
+  const { fetchAllContribution, contributions } = useContribution();
+
+  useEffect(() => {
+    fetchAllContribution();
+  }, []);
+
   return (
     <div>
       <MainHeader>

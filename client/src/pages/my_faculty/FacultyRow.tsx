@@ -1,19 +1,12 @@
 import Table from "../../ui/Table";
 import DocsIcon from "../../assets/icons/icon-document-text.svg";
+import { Contribution } from "../../redux/slices/ContributionSlice";
+import ProfileImg from "../../assets/profile1.png";
 
-interface FacultyRowProps {
-  data: {
-    _id: string;
-    name: string;
-    action: string;
-    profile: string;
-    owner: string;
-    updatedAt: string;
-  };
-}
+const FacultyRow: React.FC<Contribution> = ({ data }) => {
+  const { title, updatedAt, studentId } = data;
 
-const FacultyRow: React.FC<FacultyRowProps> = ({ data }) => {
-  const { name, action, profile, owner, updatedAt } = data;
+  const action = "test";
 
   const date = new Date(updatedAt);
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -30,16 +23,17 @@ const FacultyRow: React.FC<FacultyRowProps> = ({ data }) => {
         className={commonCell + " font-semibold"}
         style={{ color: "#272833" }}
       >
-        {name}
+        {title}
       </div>
       <div className={commonCell}>{action}</div>
       <div className={commonCell + " flex items-center gap-2"}>
         <img
-          src={profile}
+          src={ProfileImg}
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {owner}
+        {/* {owner} */}
+        test
       </div>
       <div className={commonCell}>{formattedDate}</div>
     </Table.Row>

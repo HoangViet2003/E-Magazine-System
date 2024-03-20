@@ -6,9 +6,14 @@ interface TableContextType {
   columns: string;
 }
 
+interface DataItem {
+  name: string;
+  age: number;
+}
+
 interface BodyProps {
-  data: any[];
-  render: (item: any) => ReactNode;
+  data: DataItem[];
+  render: (item: DataItem) => ReactNode;
 }
 
 const TableContext = createContext<TableContextType | null>(null);
