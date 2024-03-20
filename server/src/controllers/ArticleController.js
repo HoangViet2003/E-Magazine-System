@@ -229,6 +229,22 @@ const getAllArticleByStudentId = async (req, res) => {
 	}
 };
 
+//get article by id
+const getArticleById = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const article = await Article.findById(id);
+		if (!article) {
+			return res
+				.status(404)
+				.json({ status: "fail", error: "Article not found" });
+		}
+		res.status(200).json({ status: "success", article });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
 //get All article by contributionId
 const getAllArticleByContributionId = async (req, res) => {
 	try {
@@ -248,7 +264,7 @@ const getAllArticleByContributionId = async (req, res) => {
 		const limit = 5;
 		const skip = (page - 1) * limit;
 		const articles = await Article.find({ contributionId: contributionId })
-			.sort({ 'studentId': 1 })
+			.sort({ studentId: 1 })
 			.skip(skip)
 			.limit(limit);
 
@@ -281,8 +297,6 @@ const updateArticlesForPublication = async (req, res) => {
 		}
 
 		//check marketing coordinator is the marketing coordinator of the faculty
-		
-
 
 		// Update articles with the given IDs to set isSelectedForPublication to true
 		const updatedArticles = await Article.updateMany(
@@ -326,13 +340,145 @@ const updateArticleFavorite = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
+};
 
-}
+//search article by title,student name
+const searchArticle = async (req, res) => {
+	try {
+		const { query, contributionId } = req.query;
+		const page = parseInt(req.query.page) || 1;
+		const limit = 5;
+		const skip = (page - 1) * limit;
+
+		// Constructing the match query for aggregation
+		const matchQuery = {
+			$or: [{ title: { $regex: new RegExp(query, "i") } }, { contributionId }],
+		};
+
+		const [articles, totalLength] = await Promise.all([
+			Article.aggregate([
+				{ $match: matchQuery },
+				{ $skip: skip },
+				{ $limit: limit },
+			]),
+			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
+		]);
+
+		// Extracting the total count from the result
+		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
+
+		res.status(200).json({
+			status: "success",
+			articles,
+			currentPage: page,
+			totalPage: Math.ceil(totalCount / limit),
+			totalLength: totalCount,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+const filterArticle = async (req, res) => {
+	try {
+		const {
+			contributionId,
+			type,
+			isFavorite,
+			isSelectedForPublication,
+			title,
+		} = req.query;
+		const page = parseInt(req.query.page) || 1;
+
+		const limit = 5;
+		const skip = (page - 1) * limit;
+
+		const searchRegex = new RegExp(title, "i");
+
+		// Constructing the match query for aggregation
+		const matchQuery = {
+			title,
+			contributionId,
+			type,
+			isFavorite,
+			isSelectedForPublication,
+		};
+
+		// Using a single aggregation pipeline for fetching articles and getting total count
+		const [articles, totalLength] = await Promise.all([
+			Article.aggregate([
+				{ $match: matchQuery },
+				{ $skip: skip },
+				{ $limit: limit },
+			]),
+			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
+		]);
+
+		if (articles.length === 0) {
+			return res
+				.status(404)
+				.json({ status: "fail", message: "No articles found" });
+		}
+
+		// Extracting the total count from the result
+		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
+
+		res.status(200).json({
+			status: "success",
+			articles,
+			currentPage: page,
+			totalPage: Math.ceil(totalCount / limit),
+			totalLength: totalCount,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+//donwload all article selected as zip file
+const downloadAllArticleSelected = async (req, res) => {
+	try {
+		const { articleIds } = req.body;
+		const articles = await Article.find({ _id: { $in: articleIds } });
+
+		const files = articles.map((article) => {
+			if (article.type === "word") {
+				return {
+					filename: article.title,
+					content: article.content,
+				};
+			} else {
+				return {
+					filename: article.title,
+					content: article.content,
+				};
+			}
+		});
+
+		const zip = new require("node-zip")();
+		files.forEach((file) => {
+			zip.file(file.filename, file.content);
+		});
+
+		const data = zip.generate({ base64: false, compression: "DEFLATE" });
+
+		res.status(200).json({
+			status: "success",
+			data,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
 
 module.exports = {
 	uploadArticle,
 	getAllArticleByStudentId,
+	getArticleById,
 	getAllArticleByContributionId,
 	updateArticlesForPublication,
-	updateArticleFavorite
+	updateArticleFavorite,
+	searchArticle,
+	filterArticle,
+	downloadAllArticleSelected,
 };
