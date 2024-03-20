@@ -7,7 +7,6 @@ const {
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
 const { Article, Contribution, History, User,Faculty } = require("../models");
-const { sendEmail } = require("../emails/sendEmail");
 const EmitterSingleton = require("../configs/eventEmitter");
 
 const emitterInstance = EmitterSingleton.getInstance();
