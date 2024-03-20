@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Article = require("./ArticleModel");
 
 const contributionSchema = new mongoose.Schema(
 	{
@@ -7,21 +8,9 @@ const contributionSchema = new mongoose.Schema(
 			ref: "Faculty",
 			required: true,
 		},
-		studentId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: true,
-		},
-		title: {
+		status:{
 			type: String,
-			required: true,
-		},
-		uploadDate: {
-			type: Date,
-			required: true,
-		},
-		status: {
-			type: String,
+			enum: ["open", "closed"],
 			required: true,
 		},
 		academicYear: {

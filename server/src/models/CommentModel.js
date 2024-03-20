@@ -7,14 +7,25 @@ const commentSchema = new mongoose.Schema(
 			ref: "Article",
 			required: true,
 		},
-		staffId: {
+		userId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Staff",
+			ref: "User",
 			required: true,
 		},
 		content: {
 			type: String,
 			required: true,
+		},
+		highlighted: {
+			type: String,
+		},
+		taggedUserId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
+		parentCommentId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Comment",
 		},
 	},
 	{
