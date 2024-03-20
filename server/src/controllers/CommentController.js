@@ -1,6 +1,7 @@
 const { Article, Comment } = require("../models");
 const EmitterSingleton = require("../configs/eventEmitter");
 const { sendMail } = require("../utils");
+const path = require("path");
 
 const emitterInstance = EmitterSingleton.getInstance();
 const emitter = emitterInstance.getEmitter();
@@ -29,15 +30,36 @@ const getCommentsByAr = async (req, res) => {
 			return res.status(404).json({ error: "Article does not exist" });
 		}
 
-		const comments = await Comment.find({ articleId: id })
-			.populate("userId", "username")
-			.populate("taggedUserId", "username")
+		let comments = await Comment.find({
+			articleId: id,
+			parentCommentId: { $exists: false },
+		})
+			.populate("userId", "name")
 			.sort({ createdAt: -1 })
-			.limit(10)
-			.skip((page - 1) * 10);
+			.skip((page - 1) * 10)
+			.limit(10);
 
-		// calculate total pages
-		const totalComments = await Comment.countDocuments({ articleId: id });
+		const replies = await Comment.find({
+			articleId: id,
+			parentCommentId: { $exists: true },
+		});
+
+		// add replies to the comments
+		comments = comments.map((comment) => {
+			const commentReplies = replies.filter(
+				(reply) => reply.parentCommentId.toString() === comment._id.toString()
+			);
+			return {
+				...comment._doc,
+				replies: commentReplies,
+			};
+		});
+
+		// calculate the total pages
+		const totalComments = await Comment.countDocuments({
+			articleId: id,
+			parentCommentId: { $exists: false },
+		});
 		const totalPages = Math.ceil(totalComments / 10);
 
 		return res.status(200).json({
@@ -55,17 +77,36 @@ const addComment = async (req, res) => {
 		const { id } = req.params;
 		const { content, taggedUserId } = req.body;
 
-		// Check if the user's role is guest or marketing manager
-		if (req.user.role === "guest" || req.user.role === "marketing manager") {
+		let article;
+
+		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
+		if (
+			req.user.role !== "marketing coordinator" &&
+			req.user.role !== "student"
+		) {
 			return res.status(403).json({ error: "Forbidden" });
-		}
+		} else {
+			// Find the article that the comment belongs to
+			article = await Article.findById(id);
 
-		// Check if the article exists
-		// If the article does not exist, return an error message
-		const article = await Article.findById(id);
+			if (!article) {
+				return res.status(404).json({ error: "Article does not exist" });
+			}
 
-		if (!article) {
-			return res.status(404).json({ error: "Article does not exist" });
+			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
+			// if the role is student, check if the student is the author of the article, if not return 403
+			if (req.user.role === "marketing coordinator") {
+				if (
+					req.user.contributionId.toString() !==
+					article.contributionId.toString()
+				) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			} else {
+				if (req.user._id.toString() !== article.studentId.toString()) {
+					return res.status(403).json({ error: "Forbidden" });
+				}
+			}
 		}
 
 		// Example of creating a new comment
@@ -76,7 +117,6 @@ const addComment = async (req, res) => {
 			taggedUserId,
 		});
 
-		// Example of saving the new comment
 		await newComment.save();
 
 		const html = await ejs.renderFile(
@@ -101,7 +141,7 @@ const addComment = async (req, res) => {
 	}
 };
 
-const replyComment = async () => {
+const replyComment = async (req, res) => {
 	try {
 		const { id } = req.params;
 		let comment;
@@ -109,9 +149,10 @@ const replyComment = async () => {
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
 		if (
-			req.user.role !== "marketing coordinator" ||
+			req.user.role !== "marketing coordinator" &&
 			req.user.role !== "student"
 		) {
+			console.log("req.user.role", req.user.role);
 			return res.status(403).json({ error: "Forbidden" });
 		} else {
 			comment = await Comment.findById(id);
@@ -126,11 +167,14 @@ const replyComment = async () => {
 			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
 			// if the role is student, check if the student is the author of the article, if not return 403
 			if (req.user.role === "marketing coordinator") {
-				if (req.user.contributionId !== article.contributionId) {
+				if (
+					req.user.contributionId.toString() !==
+					article.contributionId.toString()
+				) {
 					return res.status(403).json({ error: "Forbidden" });
 				}
 			} else {
-				if (req.user._id !== article.studentId) {
+				if (req.user._id.toString() !== article.studentId.toString()) {
 					return res.status(403).json({ error: "Forbidden" });
 				}
 			}
@@ -144,14 +188,11 @@ const replyComment = async () => {
 			userId: req.user._id,
 			content,
 			taggedUserId,
+			parentCommentId: comment._id,
 		});
 
 		// Saving the new comment
 		await newComment.save();
-
-		// Add the new comment to the replies array of the parent comments
-		comment.replies.push(newComment._id);
-		await comment.save();
 
 		// Emit an event to notify the author of the parent comment
 		emitter.emit("newReply", {
@@ -161,7 +202,7 @@ const replyComment = async () => {
 
 		// Send an email to the author of the parent comment
 		const html = await ejs.renderFile(
-			"./src/emails/comments/replyComments.email.ejs",
+			path.join(__dirname, "../emails/comments/crudComments.email.ejs"),
 			{
 				comment: newComment,
 			}
@@ -191,7 +232,7 @@ const deleteComment = async (req, res) => {
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
 		if (
-			req.user.role !== "marketing coordinator" ||
+			req.user.role !== "marketing coordinator" &&
 			req.user.role !== "student"
 		) {
 			return res.status(403).json({ error: "Forbidden" });
@@ -208,25 +249,26 @@ const deleteComment = async (req, res) => {
 			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
 			// if the role is student, check if the student is the author of the article, if not return 403
 			if (req.user.role === "marketing coordinator") {
-				if (req.user.contributionId !== article.contributionId) {
+				if (
+					req.user.contributionId.toString() !==
+					article.contributionId.toString()
+				) {
 					return res.status(403).json({ error: "Forbidden" });
 				}
 			} else {
-				if (req.user._id !== article.studentId) {
+				if (req.user._id.toString() !== article.studentId.toString()) {
 					return res.status(403).json({ error: "Forbidden" });
 				}
 			}
 
 			// If user is not the one who created the comment, return 403
-			if (req.user.id !== comment.userId) {
+			if (req.user.id.toString() !== comment.userId.toString()) {
 				return res.status(403).json({ error: "Forbidden" });
 			}
 		}
 
-		// If the comment has replies, delete all fo the replies
-		if (comment.replies.length > 0) {
-			await Comment.deleteMany({ _id: { $in: comment.replies } });
-		}
+		// If there are any comments that have parentCommentId equal to the id of the comment to be deleted, delete those comments as well
+		await Comment.deleteMany({ parentCommentId: id });
 
 		// Delete the comment
 		await Comment.findByIdAndDelete(id);
