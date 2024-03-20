@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require('joi'); 
 
 const facultySchema = new mongoose.Schema(
 	{
@@ -6,6 +7,7 @@ const facultySchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+	
 		marketingCoordinatorId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",

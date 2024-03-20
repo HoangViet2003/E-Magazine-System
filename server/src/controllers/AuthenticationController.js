@@ -2,11 +2,18 @@ const jwt = require("jsonwebtoken");
 const { catchAsync } = require("../utils");
 const argon2 = require("argon2");
 const { User} = require("../models");
+const {validateUser} = require('../validations/validation');
 
 //sign up for student and staff
 const register = catchAsync(async (req, res) => {
-	try {
+
+		try {
 		const { name, email, password: plainTextPassword, role } = req.body;
+		// const {error, value} =  validateUser(req.body); 
+	    // if(error) {
+	    //     console.log(error); 
+	    //     return res.send(error.details); 
+	    //  }
 
 		//check if email and password,Role are provided
 		if (!email || !plainTextPassword || !role || !name) {
@@ -114,7 +121,7 @@ const login = catchAsync(async (req, res) => {
 			token: {
 				access_token,
 				refresh_token,
-				expires_in: "1d",
+				expires_in: "30d",
 			},
 		});
 	} catch (err) {
