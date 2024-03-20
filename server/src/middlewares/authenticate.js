@@ -42,6 +42,18 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 	next();
 };
 
+const authenticateStudent = async (req, res, next) => {
+	//Check if user is a student
+	if (req.user.role !== "student") {
+		return res.status(403).send({
+			status: "error",
+			message: "You are not allowed to perform this action",
+		});
+	}
+	next();
+
+}
+
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
 	if (!req.user.role || req.user.role !== "marketing Manager") {
@@ -69,4 +81,5 @@ module.exports = {
 	authenticateMarketingCoordinator,
 	authenticateMarketingManager,
 	authenticateAdministrator,
+	authenticateStudent
 };

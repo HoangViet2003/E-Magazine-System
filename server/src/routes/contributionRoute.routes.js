@@ -5,6 +5,6 @@ const { authenticateToken,authenticateMarketingCoordinator } = require("../middl
 
 router.post("/contribution", ContributionController.createContribution);
 router.get("/contributions", ContributionController.getAllContributions);
-router.get("/contributions/marketing-coordinator",authenticateToken,authenticateMarketingCoordinator, ContributionController.getAllContributionByFaculty);
+router.get("/contributions/coordinator",authenticateToken,authenticateMarketingCoordinator, ContributionController.getAllContributionByFaculty);
 
 module.exports = router;

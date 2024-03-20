@@ -8,30 +8,9 @@ const contributionSchema = new mongoose.Schema(
 			ref: "Faculty",
 			required: true,
 		},
-		studentId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: true,
-		},
-		title: {
+		status:{
 			type: String,
-			required: true,
-		},
-		files: {
-			type: Array, // Store as TEXT or VARCHAR
-			required: true,
-			default: [],
-		},
-		isSelectedForPublication: {
-			type: Boolean,
-			default: false,
-		},
-		uploadDate: {
-			type: Date,
-			required: true,
-		},
-		status: {
-			type: String,
+			enum: ["open", "closed"],
 			required: true,
 		},
 		academicYear: {
