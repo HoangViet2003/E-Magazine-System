@@ -1,7 +1,14 @@
 const router = require("express").Router();
-const { StudentController } = require("../controllers");
+const { UserController } = require("../controllers");
+const middlewareAuthentication = require("../middlewares/authenticate");
+// const middlewareController = require("../controllers/middlewareController")
 
-router.get("/students", StudentController.getAllStudents);
-router.post("/student", StudentController.addStudent);
+router.get(
+	"/users",
+	middlewareAuthentication.authenticateToken,
+	UserController.getAllUsers
+);
+router.patch("/user/:id", UserController.editUser);
+router.delete("/user/:id", UserController.deleteUser);
 
 module.exports = router;
