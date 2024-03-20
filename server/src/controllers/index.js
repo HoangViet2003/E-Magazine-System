@@ -3,6 +3,7 @@ const AuthenticationController = require("../controllers/AuthenticationControlle
 const ContributionController = require("../controllers/ContributionController");
 const ArticleController = require("../controllers/ArticleController");
 const FacultyController = require("../controllers/FacultyController");
+const CommentController = require("../controllers/CommentController");
 
 module.exports = {
 	StudentController,
@@ -10,4 +11,5 @@ module.exports = {
 	ContributionController,
 	ArticleController,
 	FacultyController,
+	CommentController,
 };

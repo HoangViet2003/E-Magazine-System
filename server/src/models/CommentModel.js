@@ -16,6 +16,17 @@ const commentSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		highlighted: {
+			type: String,
+		},
+		taggedUserId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
+		parentCommentId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Comment",
+		},
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt

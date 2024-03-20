@@ -8,6 +8,7 @@ const {
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
 const { Article, Contribution, History, User, Faculty } = require("../models");
+
 const EmitterSingleton = require("../configs/eventEmitter");
 const { gmail } = require("googleapis/build/src/apis/gmail");
 const sendMail = require("../utils/sendMail");
@@ -135,6 +136,7 @@ const uploadArticle = async (req, res) => {
 				"emails",
 				"notification.email.ejs"
 			);
+
 
 			const templateData = { studentName: student.name };
 

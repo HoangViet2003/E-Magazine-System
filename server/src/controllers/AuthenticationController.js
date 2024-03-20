@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { catchAsync } = require("../utils");
 const argon2 = require("argon2");
-const { User} = require("../models");
+const { User } = require("../models");
 
 //sign up for student and staff
 const register = catchAsync(async (req, res) => {
@@ -18,7 +18,7 @@ const register = catchAsync(async (req, res) => {
 
 		const password = await argon2.hash(plainTextPassword);
 
-		const userExists = await User.findOne({ email } );
+		const userExists = await User.findOne({ email });
 
 		if (userExists) {
 			return res.status(400).send({
@@ -35,7 +35,6 @@ const register = catchAsync(async (req, res) => {
 			password,
 			role,
 		});
-		
 
 		const access_token = jwt.sign(
 			{ _id: newUser._id, email: newUser.email },
@@ -79,7 +78,7 @@ const login = catchAsync(async (req, res) => {
 			});
 		}
 
-		const user = await User.findOne({email});
+		const user = await User.findOne({ email });
 
 		if (!user) {
 			return res.status(400).send({
