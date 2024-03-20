@@ -1,58 +1,46 @@
-const { User } = require('../models');
-const { Faculty } = require("../models");
-const { catchAsync } = require("../utils");
+const { User } = require("../models");
+const { validateUser } = require("../validations/validation");
 
-const addStudent = async (req, res) => {
-    const { facultyId, name, email, password,role } = req.body;
-    try {
-        const user = await User.create({
-            facultyId,
-            name,
-            email,
-            password,
-            role
-
-        });
-        return res.status(201).json(user);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
-
-
-const getAllStudents = async (req, res) => {
-    try {
-        const users = await User.find();
-        return res.status(200).json(users);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
-
-const createFaculty = catchAsync(async (req, res) => {
-	const { name, marketingCoordinatorId } = req.body;
+const getAllUsers = async (req, res) => {
 	try {
-		const faculty = await Faculty.create({
-			name,
-			marketingCoordinatorId,
+		const users = await User.find();
+		return res.status(200).json(users);
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+};
+
+const editUser = async (req, res) => {
+	const { error, value } = validateUser(req.body);
+	if (error) {
+		console.log(error);
+		return res.send(error.details);
+	}
+
+	try {
+		const editUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
 		});
-		return res.status(201).json(faculty);
+		return res.status(200).json({
+			status: "edit user successed",
+			data: editUser,
+		});
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-});
+};
 
-//get all faculties
-const getAllFaculties = catchAsync(async (req, res) => {
+const deleteUser = async (req, res) => {
 	try {
-		const faculties = await Faculty.find();
-		return res.status(200).json(faculties);
+		await User.findByIdAndDelete(req.params.id, req.body);
+		return res.status(200).send("delete user succeesful");
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-});
+};
 
 module.exports = {
-    addStudent,
-    getAllStudents,
-}
+	getAllUsers,
+	editUser,
+	deleteUser,
+};
