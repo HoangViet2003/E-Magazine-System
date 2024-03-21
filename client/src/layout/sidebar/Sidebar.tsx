@@ -8,10 +8,29 @@ import Logo from "../../assets/Logo.png";
 
 import MainNav from "./MainNav";
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useSidebarContext } from "./SidebarContext";
+
+const useWindowWidth = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowWidth;
+};
 
 export default function Sidebar() {
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const currentPath = useLocation().pathname;
+  const windowWidth = useWindowWidth();
+  const { openSidebar, setOpenSidebar } = useSidebarContext();
 
   const navLinks = [
     {
@@ -68,31 +87,56 @@ export default function Sidebar() {
     },
   ];
 
-  {
-    true && (
-      <div className="fixed top-0 z-10 my-4 w-11/12 items-center justify-between gap-2 bg-red-500 md:static md:gap-8">
-        <Link to="/" className="md:hidden">
-          <div className="flex items-center gap-3">
-            <img src={Logo} alt="Logo" className="inline" />
-            <h5 className="text-nowrap text-lg font-semibold text-logoText">
-              E-Magazine System
-            </h5>
-          </div>
-        </Link>
+  return windowWidth < 1024 ? (
+    createPortal(
+      <>
+        <div
+          className={`fixed top-0 z-20 h-full w-80  items-center justify-between gap-2 bg-white py-6 shadow-lg duration-300 ease-in-out lg:static lg:gap-8 ${!openSidebar ? " -translate-x-full transform" : ""}`}
+        >
+          <Link to="/" className="">
+            <div className="flex items-center gap-3  border-b border-b-borderColor px-6 pb-6">
+              <img src={Logo} alt="Logo" className="inline" />
+              <h5 className="text-nowrap text-lg font-semibold text-logoText">
+                E-Magazine System
+              </h5>
+            </div>
+          </Link>
 
-        <ul className="flex flex-col py-6 pe-6">
-          {navLinks.map((navLink, index) => (
-            <MainNav
-              key={index}
-              isActive={currentPath === navLink.link}
-              title={navLink.title}
-              to={navLink.link}
-            >
-              {navLink.icon}
-            </MainNav>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+          <ul className="flex flex-col py-6 lg:pe-6">
+            {navLinks.map((navLink, index) => (
+              <MainNav
+                key={index}
+                isActive={currentPath === navLink.link}
+                title={navLink.title}
+                to={navLink.link}
+              >
+                {navLink.icon}
+              </MainNav>
+            ))}
+          </ul>
+        </div>
+
+        {openSidebar && (
+          <div
+            className="fixed top-0 z-10 h-full w-full bg-black opacity-70"
+            onClick={() => setOpenSidebar(false)}
+          ></div>
+        )}
+      </>,
+      document.body,
+    )
+  ) : (
+    <ul className="flex flex-col py-6 pe-6">
+      {navLinks.map((navLink, index) => (
+        <MainNav
+          key={index}
+          isActive={currentPath === navLink.link}
+          title={navLink.title}
+          to={navLink.link}
+        >
+          {navLink.icon}
+        </MainNav>
+      ))}
+    </ul>
+  );
 }

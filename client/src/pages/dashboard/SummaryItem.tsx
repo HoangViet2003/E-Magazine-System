@@ -17,7 +17,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
 }) => {
   return (
     <div
-      className="flex flex-1 flex-col items-start gap-[14px] px-6 py-5 duration-300 hover:shadow-lg"
+      className="flex flex-1 flex-col items-start gap-[14px] px-3 py-4 duration-300 hover:shadow-lg md:w-1/3 md:flex-auto md:flex-grow lg:flex-1"
       style={{ background: background }}
     >
       <div
@@ -27,7 +27,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
         <img src={icon} />
       </div>
       <h3 className="text-[32px] font-semibold leading-none">{data}</h3>
-      <p className="text-nowrap text-base font-medium">{type}</p>
+      <p className="text-nowrap text-sm font-medium lg:text-base">{type}</p>
 
       {changePercentage !== 0 && (
         <span

@@ -10,7 +10,7 @@ export default function Contributions() {
     <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
       <h2 className="text-xl font-semibold">Contributions summary</h2>
 
-      <div className="flex gap-5">
+      <div className="flex gap-5 flex-wrap">
         <SummaryItem
           icon={SaleIcon}
           iconBg="#0B5FFF"

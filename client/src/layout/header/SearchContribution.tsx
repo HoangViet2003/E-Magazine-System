@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "../../assets/icons/search.svg";
 import HamburgerIcon from "../../assets/icons/hamburger-menu-svgrepo-com.svg";
 import FilterForm from "./FilterForm";
+import { useSidebarContext } from "../sidebar/SidebarContext";
 
 export default function SearchContribution() {
   const [keyword, setKeyword] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
+  const { setOpenSidebar, openSidebar } = useSidebarContext();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,12 +21,15 @@ export default function SearchContribution() {
   }
 
   return (
-    <div className="relative flex-grow md:ms-6">
+    <div className="relative flex-grow lg:ms-6">
       <form
         onSubmit={handleSubmit}
         className="flex overflow-hidden rounded bg-searchBackground"
       >
-        <button className="px-2 hover:bg-slate-200 md:hidden">
+        <button
+          className="px-2 hover:bg-slate-200 lg:hidden"
+          onClick={() => setOpenSidebar(!openSidebar)}
+        >
           <img src={HamburgerIcon} className="w-10" />
         </button>
         <input
@@ -36,11 +41,11 @@ export default function SearchContribution() {
           className="w-full bg-searchBackground px-4 py-2 placeholder:text-defaultTextColor"
         />
         <button className="px-4 hover:bg-slate-200">
-          <img src={SearchIcon} alt="search" className="w-6 md:w-5" />
+          <img src={SearchIcon} alt="search" className="w-6 lg:w-5" />
         </button>
 
         <button
-          className="hidden rounded border border-borderColor bg-white px-3 shadow-md hover:bg-slate-100 md:block"
+          className="hidden rounded border border-borderColor bg-white px-3 shadow-md hover:bg-slate-100 lg:block"
           onClick={() => setOpenFilter(true)}
         >
           <svg

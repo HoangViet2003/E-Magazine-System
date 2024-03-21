@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
+import { useSidebarContext } from "./SidebarContext";
 
 interface MainNavProps {
   isActive: boolean;
@@ -10,9 +11,10 @@ interface MainNavProps {
 
 const MainNav: React.FC<MainNavProps> = ({ isActive, title, to, children }) => {
   const activeTab = "bg-activeTabBg text-activeTabContent font-bold";
+  const { setOpenSidebar } = useSidebarContext();
 
   return (
-    <NavLink to={to}>
+    <NavLink to={to} onClick={() => setOpenSidebar(false)}>
       <li
         className={
           "round flex items-center gap-8 px-6 py-2 hover:bg-activeTabBg " +

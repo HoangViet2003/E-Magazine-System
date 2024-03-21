@@ -1,6 +1,7 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 import ChangesArrow from "../../assets/icons/changesArrow";
+import useWindowWidth from "../../redux/hooks/useWindowWidth";
 
 const data = [
   {
@@ -36,8 +37,10 @@ const data = [
 let changes = 2.45;
 
 export default function DailyTrafficChart() {
+  const windowWidth = useWindowWidth();
+
   return (
-    <div className="border border-borderColor p-6 shadow-lg">
+    <div className="grid border border-borderColor p-6 shadow-lg md:col-span-2 2xl:col-span-1">
       <div className="flex justify-between">
         <div>
           <h4 className="text-sm font-medium">Daily Traffic</h4>
@@ -62,10 +65,14 @@ export default function DailyTrafficChart() {
 
       <div>
         <ResponsiveContainer width="100%" height={275}>
-          <BarChart width={600} height={300} data={data} cx="50%" cy="50%">
+          <BarChart width={600} data={data} cx="50%" cy="50%">
             <XAxis dataKey="name" stroke="#0B5FFF" tickMargin={10} />
             <Tooltip />
-            <Bar dataKey="value" fill="#0B5FFF" barSize={15} />
+            <Bar
+              dataKey="value"
+              fill="#0B5FFF"
+              barSize={windowWidth > 768 && windowWidth < 1536 ? 70 : 15}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

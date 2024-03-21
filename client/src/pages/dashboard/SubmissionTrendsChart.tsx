@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -7,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import useWindowWidth from "../../redux/hooks/useWindowWidth";
 
 const data = [
   {
@@ -60,11 +62,13 @@ const data = [
 ];
 
 export default function SubmissionTrendsChart() {
+  const windowWidth = useWindowWidth();
+
   return (
     <div className="border border-borderColor px-5 pb-10 pt-4 shadow-lg">
       <h2 className="mb-6 text-xl font-bold">Submission Trends Over Time</h2>
 
-      <ResponsiveContainer width="100%" height={600}>
+      <ResponsiveContainer width="100%" height={windowWidth > 768 ? 600 : 300}>
         <AreaChart
           data={data}
           margin={{
