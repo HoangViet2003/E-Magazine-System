@@ -7,6 +7,7 @@ import MyFacultyOperation from "./MyFacultyOperation";
 // import ProfileImg from "../../assets/profile1.png";
 import { URL } from "../../utils/constant";
 import { useContribution } from "../../redux/hooks/useContribution";
+import Spinner from "../../ui/Spinner";
 
 export default function MyFacultyTable({
   yearContribute,
@@ -18,7 +19,7 @@ export default function MyFacultyTable({
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
 
-  const { contributions } = useContribution();
+  const { contributions, loading: loadingContribution } = useContribution();
 
   // FILTER
   let filteredContributions = contributions;
@@ -41,7 +42,7 @@ export default function MyFacultyTable({
     return 0;
   });
 
-  console.log(sortedData);
+  if (loadingContribution) return <Spinner />;
 
   return (
     <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">

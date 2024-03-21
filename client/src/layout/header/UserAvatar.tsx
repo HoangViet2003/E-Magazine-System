@@ -6,7 +6,7 @@ import User from "../../assets/default-user.jpg";
 export default function UserAvatar() {
   return (
     <div className="flex items-center gap-4">
-      <button className="rounded-full p-3 duration-300 hover:bg-slate-200">
+      <button className="hidden rounded-full p-3 duration-300 hover:bg-slate-200 md:block">
         <img src={GridIcon} alt="grid" />
       </button>
       <Link to={"/"}>

@@ -4,9 +4,10 @@ import CheckCircleIcon from "../../assets/icons/sidebar-icons/checkCircle";
 import TimeIcon from "../../assets/icons/sidebar-icons/time";
 import StarIcon from "../../assets/icons/sidebar-icons/star";
 import TrashIcon from "../../assets/icons/sidebar-icons/trash";
+import Logo from "../../assets/Logo.png";
 
 import MainNav from "./MainNav";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -67,20 +68,31 @@ export default function Sidebar() {
     },
   ];
 
-  return (
-    <>
-      <ul className="flex flex-col py-6 pe-6">
-        {navLinks.map((navLink, index) => (
-          <MainNav
-            key={index} 
-            isActive={currentPath === navLink.link}
-            title={navLink.title}
-            to={navLink.link}
-          >
-            {navLink.icon}
-          </MainNav>
-        ))}
-      </ul>
-    </>
-  );
+  {
+    true && (
+      <div className="fixed top-0 z-10 my-4 w-11/12 items-center justify-between gap-2 bg-red-500 md:static md:gap-8">
+        <Link to="/" className="md:hidden">
+          <div className="flex items-center gap-3">
+            <img src={Logo} alt="Logo" className="inline" />
+            <h5 className="text-nowrap text-lg font-semibold text-logoText">
+              E-Magazine System
+            </h5>
+          </div>
+        </Link>
+
+        <ul className="flex flex-col py-6 pe-6">
+          {navLinks.map((navLink, index) => (
+            <MainNav
+              key={index}
+              isActive={currentPath === navLink.link}
+              title={navLink.title}
+              to={navLink.link}
+            >
+              {navLink.icon}
+            </MainNav>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 }
