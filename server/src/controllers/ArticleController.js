@@ -10,7 +10,6 @@ const mammoth = require("mammoth");
 const { Article, Contribution, History, User, Faculty } = require("../models");
 
 const EmitterSingleton = require("../configs/eventEmitter");
-const { gmail } = require("googleapis/build/src/apis/gmail");
 const sendMail = require("../utils/sendMail");
 const emitterInstance = EmitterSingleton.getInstance();
 const emitter = emitterInstance.getEmitter();
@@ -20,7 +19,6 @@ const uploadArticle = async (req, res) => {
 		const { contributionId, type } = req.body;
 		const student = req.user;
 
-		// Check if student exists
 		if (!student) {
 			return res.status(404).json({ error: "Student does not exist" });
 		}
@@ -32,9 +30,8 @@ const uploadArticle = async (req, res) => {
 			});
 		}
 
-		// Check if contribution exists
-		if (type === "word") {
-			const articlePromises = req.files.map(async (file) => {
+		const uploadPromises = req.files.map(async (file) => {
+			if (type === "word") {
 				if (
 					file.mimetype !==
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -51,32 +48,14 @@ const uploadArticle = async (req, res) => {
 					studentId: student._id,
 					title: file.originalname,
 					content: html,
-					type: type,
+					type: "word",
 				};
-			});
-
-			const newArticles = await Promise.all(articlePromises);
-			await fs.promises.unlink(req.files[0].path); // Assuming one file for "word"
-
-			// Save the updated contribution
-			const createdArticles = await Article.create(newArticles);
-
-			return res.status(201).send({
-				status: "success",
-				message: "Article(s) uploaded successfully",
-				articles: createdArticles,
-			});
-
-			// Save the updated contribution
-		} else if (type === "image") {
-			// If Type is "image" and images are uploaded
-			const uploadPromises = req.files.map(async (file) => {
+			} else if (type === "image") {
 				try {
 					await uploadFiles(file, "article/");
 					await fs.promises.unlink(file.path);
 
 					if (!file.mimetype.startsWith("image")) {
-						// Invalid file type for "image"
 						throw new Error("Please upload only image files");
 					}
 
@@ -84,110 +63,45 @@ const uploadArticle = async (req, res) => {
 				} catch (error) {
 					return null;
 				}
-			});
+			} else {
+				throw new Error("Invalid Type");
+			}
+		});
 
-			const uploadResults = await Promise.allSettled(uploadPromises);
+		const uploadResults = await Promise.allSettled(uploadPromises);
 
-			const images = uploadResults
-				.filter((result) => result.status === "fulfilled")
-				.map((result) => result.value);
+		const articles = [];
+		const images = [];
 
-			const newArticle = await Article.create({
-				contributionId: contributionId,
-				studentId: student._id,
-				type,
-				content: images,
-				title: req.files[0].originalname,
-			});
-
-			//add to contribution.content
-
-			//TODO: Delete the files from the server
-			// await req.files.forEach(async (file) => {
-			// 	await fs.promises.unlink(file.path);
-			// });
-
-			// TODO: Send email to marketing coordinator
-
-			//find marketing coordinator
-			const marketingCoordinator = await User.findOne({
-				role: "marketing coordinator",
-				facultyId: student.facultyId,
-			});
-
-			//send email to marketing coordinator
-
-			// await ejs.renderFile(
-			// 	path.join(__dirname, "..", "..", "emails", "accountConfirmation.ejs"),
-			// 	{ url },
-			// 	async (err, html) => {
-			// 		if (err) throw err;
-			// 		await sendMail({
-			// 			bcc: req.body.email,
-			// 			subject: "Đặt lại mật khẩu (App liên đoàn luật sư)",
-			// 			html,
-			// 		});
-			// 	}
-			// );
-
-			const emailTemplatePath = path.join(
-				__dirname,
-				"..",
-				"emails",
-				"notification.email.ejs"
-			);
-
-
-			const templateData = { studentName: student.name };
-
-			ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
-				if (err) {
-					console.error("Error rendering email template:", err);
-					return res
-						.status(500)
-						.json({ error: "Error rendering email template" });
+		uploadResults.forEach((result) => {
+			if (result.status === "fulfilled") {
+				const value = result.value;
+				if (typeof value === "string") {
+					images.push(value);
+				} else if (typeof value === "object") {
+					articles.push(value);
 				}
+			}
+		});
 
-				// Send email to marketing coordinator
-				try {
-					await sendMail({
-						to: "zeusson3@gmail.com",
-						subject: "New Article Uploaded",
-						html,
-					});
-
-					console.log("Email sent to marketing coordinator");
-				} catch (error) {
-					console.error("Error sending email to marketing coordinator:", error);
-				}
-			});
-
-			// TODO : Send email to student
-
-			// TODO: Create history for contribution
-			// const history = await History.create({
-			// 	contributionId: contributionId,
-			// 	action: "create",
-			// 	userId: student._id,
-			// });
-
-			// TODO: Create notification for admin
-			// emitter.emit("notifyMarketingCoordinator", {
-			// 	facultyId: student.facultyId,
-			// 	message: `${student.name} has uploaded an article. Please review it.`,
-			// });
-
-			return res.status(201).send({
-				status: "success",
-				message: "Article uploaded successfully",
-				newArticle,
-			});
-		} else {
-			return res.status(400).send({
-				status: "error",
-				message: "Invalid Type or Missing File",
-			});
+		if (type === "word") {
+			await fs.promises.unlink(req.files[0].path); // Assuming one file for "word"
 		}
+
+		let newArticles;
+		if (articles.length > 0) {
+			newArticles = await Article.create(articles);
+		}
+
+		// Send email to marketing coordinator
+		await sendEmail(student.name);
+
+		return res.status(201).send({
+			status: "success",
+			message: "Article(s) uploaded successfully",
+			articles: newArticles,
+			images: images,
+		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -196,9 +110,9 @@ const uploadArticle = async (req, res) => {
 //getAll article by studentId
 const getAllArticleByStudentId = async (req, res) => {
 	try {
-		const { contributionId } = req.body;
-		const studentId = req.user._id;
-		if (!studentId) {
+		// return result
+		const student = req.user;
+		if (!student._id) {
 			return res
 				.status(404)
 				.json({ status: "fail", error: "Student does not exist" });
@@ -207,24 +121,29 @@ const getAllArticleByStudentId = async (req, res) => {
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
 		const skip = (page - 1) * limit;
+
 		const articles = await Article.find({
-			studentId: studentId,
-			contributionId: contributionId,
+			studentId: student._id,
 		})
 			.skip(skip)
-			.limit(limit);
+			.limit(limit)
+			.populate("studentId", "name"); // Populate the studentId field with name
 
-		const totalLength = await Article.find({
-			studentId: studentId,
-			contributionId: contributionId,
-		}).countDocuments();
+		await articles.filter((article) => {
+			if (article.studentId.toString() != student._id.toString()) {
+				return res
+					.status(403)
+					.json({ error: "You are not allowed to perform this action" });
+			}
+		});
+
+		const totalLength = Article.find({ studentId: studentId }).countDocuments();
 
 		res.status(200).json({
 			status: "success",
 			articles,
 			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
-			totalLength: totalLength,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -234,8 +153,29 @@ const getAllArticleByStudentId = async (req, res) => {
 //get article by id
 const getArticleById = async (req, res) => {
 	try {
+		//check user have permission to get their article
+		//if not return 403 error
 		const { id } = req.params;
+
+		const user = req.user;
 		const article = await Article.findById(id);
+
+		if (user.role === "student") {
+			if (article.studentId.toString() != user._id.toString()) {
+				return res
+					.status(403)
+					.json({ error: "You are not allowed to perform this action" });
+			}
+		} else if (user.role === "marketing coordinator") {
+			const contribution = await Contribution.findOne(article.contributionId);
+			const faculty = await Faculty.findOne(contribution.facultyId);
+			if (faculty.marketingCoordinatorId.toString() != user._id.toString()) {
+				return res
+					.status(403)
+					.json({ error: "You are not allowed to perform this action" });
+			}
+		}
+
 		if (!article) {
 			return res
 				.status(404)
@@ -250,7 +190,7 @@ const getArticleById = async (req, res) => {
 //get All article by contributionId
 const getAllArticleByContributionId = async (req, res) => {
 	try {
-		const { contributionId } = req.body;
+		const { contributionId } = req.params;
 		const marketingCoordinatorId = req.user._id;
 
 		//check marketing coordinator is the marketing coordinator of the faculty
@@ -270,7 +210,7 @@ const getAllArticleByContributionId = async (req, res) => {
 			.skip(skip)
 			.limit(limit);
 
-		const totalLength = await Article.find({
+		const totalLength = Article.find({
 			contributionId: contributionId,
 		}).countDocuments();
 
@@ -279,8 +219,36 @@ const getAllArticleByContributionId = async (req, res) => {
 			articles,
 			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
-			totalLength: totalLength,
 		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+//delete article by id
+const deleteArticle = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const user = req.user;
+
+		const article = await Article.findById(id);
+
+		if (user.role === "student") {
+			if (article.studentId.toString() != user._id.toString()) {
+				return res
+					.status(403)
+					.json({ error: "You are not allowed to perform this action" });
+			}
+		}
+		if (!article) {
+			return res
+				.status(404)
+				.json({ status: "fail", error: "Article not found" });
+		}
+
+		await Article.findByIdAndDelete(id);
+
+		res.status(200).json({ status: "success", message: "Article deleted" });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -289,6 +257,7 @@ const getAllArticleByContributionId = async (req, res) => {
 const updateArticlesForPublication = async (req, res) => {
 	try {
 		const { articleIds } = req.body;
+		const user = req.user;
 
 		//check if articleIds is empty
 		if (!articleIds) {
@@ -299,6 +268,24 @@ const updateArticlesForPublication = async (req, res) => {
 		}
 
 		//check marketing coordinator is the marketing coordinator of the faculty
+		const marketingCoordinatorId = user._id;
+		const faculty = await Faculty.findOne({ marketingCoordinatorId });
+		if (!faculty) {
+			return res.status(403).json({
+				error: "You are not the marketing coordinator of any faculty",
+			});
+		}
+
+		const contribution = await Contribution.findOne({ facultyId: faculty._id });
+
+		const articles = await Article.find({ _id: { $in: articleIds } });
+		articles.forEach((article) => {
+			if (article.contributionId.toString() != contribution._id.toString()) {
+				return res.status(403).json({
+					error: "You are not the marketing coordinator of this faculty",
+				});
+			}
+		});
 
 		// Update articles with the given IDs to set isSelectedForPublication to true
 		const updatedArticles = await Article.updateMany(
@@ -319,6 +306,7 @@ const updateArticlesForPublication = async (req, res) => {
 const updateArticleFavorite = async (req, res) => {
 	try {
 		const { articleId } = req.body;
+		const user = req.user;
 
 		//check if articleId is empty
 		if (!articleId) {
@@ -327,6 +315,25 @@ const updateArticleFavorite = async (req, res) => {
 				message: "Article ID is required",
 			});
 		}
+
+		const marketingCoordinatorId = user._id;
+		const faculty = await Faculty.findOne({ marketingCoordinatorId });
+		if (!faculty) {
+			return res.status(403).json({
+				error: "You are not the marketing coordinator of any faculty",
+			});
+		}
+
+		const contribution = await Contribution.findOne({ facultyId: faculty._id });
+
+		const articles = await Article.find({ _id: { $in: articleIds } });
+		articles.forEach((article) => {
+			if (article.contributionId.toString() != contribution._id.toString()) {
+				return res.status(403).json({
+					error: "You are not the marketing coordinator of this faculty",
+				});
+			}
+		});
 
 		// Update article with the given ID to set isFavorite to true
 		const updatedArticle = await Article.findByIdAndUpdate(
@@ -423,14 +430,12 @@ const filterArticle = async (req, res) => {
 		}
 
 		// Extracting the total count from the result
-		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
 
 		res.status(200).json({
 			status: "success",
 			articles,
 			currentPage: page,
 			totalPage: Math.ceil(totalCount / limit),
-			totalLength: totalCount,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -473,6 +478,35 @@ const downloadAllArticleSelected = async (req, res) => {
 	}
 };
 
+const sendEmail = async (studentName) => {
+	const emailTemplatePath = path.join(
+		__dirname,
+		"..",
+		"emails",
+		"notification.email.ejs"
+	);
+	const templateData = { studentName };
+
+	ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
+		if (err) {
+			console.error("Error rendering email template:", err);
+			return;
+		}
+
+		try {
+			await sendMail({
+				to: "zeusson3@gmail.com",
+				subject: "New Article Uploaded",
+				html,
+			});
+
+			console.log("Email sent to marketing coordinator");
+		} catch (error) {
+			console.error("Error sending email to marketing coordinator:", error);
+		}
+	});
+};
+
 module.exports = {
 	uploadArticle,
 	getAllArticleByStudentId,
@@ -483,4 +517,5 @@ module.exports = {
 	searchArticle,
 	filterArticle,
 	downloadAllArticleSelected,
+	deleteArticle,
 };

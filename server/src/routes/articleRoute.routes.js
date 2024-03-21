@@ -32,12 +32,14 @@ router.get(
 );
 router.patch(
 	"/article/publication",
+	authenticateToken,
+	authenticateMarketingCoordinator,
 	ArticleController.updateArticlesForPublication
 );
-router.patch("/article/favorite", ArticleController.updateArticleFavorite);
+router.patch("/article/favorite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
 router.get("/article/search", ArticleController.searchArticle);
 router.get("/article/filter", ArticleController.filterArticle);
-router.get("/article/download", ArticleController.downloadAllArticleSelected);
-router.get("/article/:id", ArticleController.getArticleById);
+router.post("/article/download", ArticleController.downloadAllArticleSelected);
+router.get("/article/:id",authenticateToken, ArticleController.getArticleById);
 
 module.exports = router;
