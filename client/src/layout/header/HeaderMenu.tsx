@@ -3,7 +3,7 @@ import CogIcon from "../../assets/icons/cog.svg";
 
 export default function HeaderMenu() {
   return (
-    <div className="hidden items-center gap-2 lg:flex">
+    <div className="hidden items-center gap-2 xl:flex">
       <button className="w-full rounded-full p-3 duration-300 hover:bg-slate-200">
         <img src={QuestionCircleIcon} alt="question" className="w-full" />
       </button>

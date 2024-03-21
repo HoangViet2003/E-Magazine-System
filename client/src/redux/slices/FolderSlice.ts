@@ -9,7 +9,7 @@ const fakeFolder = [
   },
   {
     _id: "2",
-    title: "2023 Contributionssdfsdfsdsfdfdf",
+    title: "2023 Contributions",
     isOpen: false,
     year: 2023,
   },

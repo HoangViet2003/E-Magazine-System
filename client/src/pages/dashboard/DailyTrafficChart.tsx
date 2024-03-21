@@ -40,7 +40,7 @@ export default function DailyTrafficChart() {
   const windowWidth = useWindowWidth();
 
   return (
-    <div className="grid border border-borderColor p-6 shadow-lg md:col-span-2 2xl:col-span-1">
+    <div className="grid border border-borderColor p-6 shadow-lg lg:col-span-2 3xl:col-span-1">
       <div className="flex justify-between">
         <div>
           <h4 className="text-sm font-medium">Daily Traffic</h4>

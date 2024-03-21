@@ -4,13 +4,22 @@ export default {
   theme: {
     fontFamily: { BeVietnamPro: "Be Vietnam Pro, Roboto Mono" },
 
+    screens: {
+      sm: "375px",
+      md: "576px",
+      lg: "768px",
+      xl: "1024px",
+      "2xl": "1280px",
+      "3xl": "1536px",
+    },
     container: {
       screens: {
         sm: "375px",
         md: "576px",
         lg: "768px",
         xl: "1024px",
-        "2xl": "1440px",
+        "2xl": "1280px",
+        "3xl": "1536px",
       },
     },
     extend: {

@@ -20,7 +20,7 @@ export default function MyFaculty() {
         <Dropdowns>
           <Dropdowns.Dropdown>
             <Dropdowns.Toggle id="faculty">
-              <span className="flex items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100">
+              <span className="flex items-center gap-3 rounded-3xl py-1 hover:bg-slate-100 xl:px-6">
                 <h1 className="text-xl font-normal">My Faculty</h1>
                 <img src={DropdownIcon} alt="" />
               </span>
@@ -34,7 +34,7 @@ export default function MyFaculty() {
         </Dropdowns>
       </MainHeader>
 
-      <div className="my-5 flex flex-col gap-5 ps-6">
+      <div className="my-5 flex flex-col gap-5 xl:ps-6">
         <MyFacultyFolder />
 
         <MyFacultyTable />

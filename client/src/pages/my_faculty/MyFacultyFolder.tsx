@@ -14,11 +14,11 @@ export default function MyFacultyFolder() {
         Folders
       </h3>
 
-      <div className="flex gap-[10px]">
+      <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
         {folders.map((folder, index) => (
           <button
             key={index}
-            className="w-60 rounded border border-borderColor p-4 hover:bg-slate-100"
+            className="rounded border border-borderColor p-4 hover:bg-slate-100"
             onClick={() => navigate(`folders/${folder._id}`)}
           >
             <div className={"flex items-center gap-4"}>
