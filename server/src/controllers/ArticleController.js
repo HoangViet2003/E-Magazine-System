@@ -129,15 +129,9 @@ const getAllArticleByStudentId = async (req, res) => {
 			.limit(limit)
 			.populate("studentId", "name"); // Populate the studentId field with name
 
-		await articles.filter((article) => {
-			if (article.studentId.toString() != student._id.toString()) {
-				return res
-					.status(403)
-					.json({ error: "You are not allowed to perform this action" });
-			}
-		});
-
-		const totalLength = Article.find({ studentId: studentId }).countDocuments();
+		const totalLength = Article.find({
+			studentId: student._id,
+		}).countDocuments();
 
 		res.status(200).json({
 			status: "success",
