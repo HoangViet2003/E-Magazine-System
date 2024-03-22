@@ -115,7 +115,7 @@ const getAllArticleByStudentId = async (req, res) => {
 		if (!student._id) {
 			return res
 				.status(404)
-				.json({ status: "fail", error: "Student does not exist" });
+				.json({ status: "error", error: "Student does not exist" });
 		}
 
 		const page = parseInt(req.query.page) || 1;
@@ -179,7 +179,7 @@ const getArticleById = async (req, res) => {
 		if (!article) {
 			return res
 				.status(404)
-				.json({ status: "fail", error: "Article not found" });
+				.json({ status: "error", error: "Article not found" });
 		}
 		res.status(200).json({ status: "success", article });
 	} catch (error) {
@@ -243,7 +243,7 @@ const deleteArticle = async (req, res) => {
 		if (!article) {
 			return res
 				.status(404)
-				.json({ status: "fail", error: "Article not found" });
+				.json({ status: "error", error: "Article not found" });
 		}
 
 		await Article.findByIdAndDelete(id);
@@ -262,7 +262,7 @@ const updateArticlesForPublication = async (req, res) => {
 		//check if articleIds is empty
 		if (!articleIds) {
 			return res.status(400).json({
-				status: "fail",
+				status: "error",
 				message: "Article IDs are required",
 			});
 		}
@@ -311,29 +311,26 @@ const updateArticleFavorite = async (req, res) => {
 		//check if articleId is empty
 		if (!articleId) {
 			return res.status(400).json({
-				status: "fail",
+				status: "error",
 				message: "Article ID is required",
 			});
 		}
 
+		// check if the marketing coordinator is the marketing coordinator of the current falculty
 		const marketingCoordinatorId = user._id;
-		const faculty = await Faculty.findOne({ marketingCoordinatorId });
-		if (!faculty) {
+
+		const contribution = await Contribution.findOne({
+			facultyId: marketingCoordinatorId,
+		});
+
+		// check if contribution falculty id is the same as the marketing coordinator id's faculty id
+		if (
+			contribution.facultyId.toString() != marketingCoordinatorId.toString()
+		) {
 			return res.status(403).json({
-				error: "You are not the marketing coordinator of any faculty",
+				error: "You are not the marketing coordinator of this faculty",
 			});
 		}
-
-		const contribution = await Contribution.findOne({ facultyId: faculty._id });
-
-		const articles = await Article.find({ _id: { $in: articleIds } });
-		articles.forEach((article) => {
-			if (article.contributionId.toString() != contribution._id.toString()) {
-				return res.status(403).json({
-					error: "You are not the marketing coordinator of this faculty",
-				});
-			}
-		});
 
 		// Update article with the given ID to set isFavorite to true
 		const updatedArticle = await Article.findByIdAndUpdate(
@@ -426,7 +423,7 @@ const filterArticle = async (req, res) => {
 		if (articles.length === 0) {
 			return res
 				.status(404)
-				.json({ status: "fail", message: "No articles found" });
+				.json({ status: "error", message: "No articles found" });
 		}
 
 		// Extracting the total count from the result
