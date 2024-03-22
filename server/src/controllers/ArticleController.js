@@ -375,6 +375,22 @@ const getAllArticleByFacultyId = async (req, res) => {
 			{ $skip: skip },
 			{ $limit: limit },
 			{
+				$lookup: {
+					from: "users", // Assuming the collection name for User model is 'users'
+					localField: "studentId",
+					foreignField: "_id",
+					as: "student",
+				},
+			},
+			{
+				$addFields: {
+					studentName: { $arrayElemAt: ["$student.name", 0] }, // Get the name from student array
+				},
+			},
+			{
+				$unset: "student", // Remove the 'student' field
+			},
+			{
 				$group: {
 					_id: null,
 					count: { $sum: 1 },
