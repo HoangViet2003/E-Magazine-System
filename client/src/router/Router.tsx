@@ -12,6 +12,7 @@ import TextEditor from "../pages/text_editor/TextEditor";
 import YearContribute from "../pages/my_faculty/YearContribute";
 
 import { v4 as uuidv4 } from "uuid";
+import ImageCollection from "../pages/image_collection/ImageCollection";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/myFaculty/folders/:yearContributeId",
         element: <YearContribute />,
+      },
+      {
+        path: "/myFaculty/images/:imagesId",
+        element: <ImageCollection />,
       },
       {
         path: "/selectedContribution",
