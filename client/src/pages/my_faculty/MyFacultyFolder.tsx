@@ -14,7 +14,7 @@ export default function MyFacultyFolder() {
         Folders
       </h3>
 
-      <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 2 xl:grid-cols-4">
         {folders.map((folder, index) => (
           <button
             key={index}

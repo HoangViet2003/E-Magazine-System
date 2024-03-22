@@ -52,7 +52,7 @@ function Toggle({ id, children }: { id: string; children: ReactNode }) {
       const rect = buttonElement.getBoundingClientRect();
 
       setPosition({
-        x: rect.x,
+        x: window.innerWidth - rect.width - rect.x,
         y: rect.y + rect.height + 8,
       });
 
@@ -77,7 +77,7 @@ function List({ id, children }: { id: string; children: ReactNode }) {
   return createPortal(
     <ul
       className={`fixed w-60 rounded-sm border border-borderColor bg-white shadow-md`}
-      style={{ top: y, left: x }}
+      style={{ top: y, right: x }}
       ref={ref as React.RefObject<HTMLUListElement>}
     >
       {children}
