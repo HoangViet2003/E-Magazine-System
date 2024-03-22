@@ -18,6 +18,8 @@ router.post(
 	ArticleController.uploadArticle
 );
 
+router.get("/article/dashboard",authenticateToken,ArticleController.getDashboard);
+
 router.get(
 	"/article/student",
 	authenticateToken,
@@ -39,7 +41,7 @@ router.patch(
 	authenticateMarketingCoordinator,
 	ArticleController.updateArticlesForPublication
 );
-router.patch("/article/favorite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
+router.patch("/article/favourite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
 router.get("/article/search", ArticleController.searchArticle);
 router.get("/article/filter", ArticleController.filterArticle);
 router.post("/article/download", ArticleController.downloadAllArticleSelected);
