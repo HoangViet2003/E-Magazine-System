@@ -498,6 +498,96 @@ const sendEmail = async (studentName) => {
 	});
 };
 
+const getDashboard = async (req, res) => {
+	try {
+		// If the user role is student or guest, return 403
+		if (req.user.role == "guest" || req.user.role == "student") {
+			return res
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" });
+		}
+
+		const { chosenRange } = req.query;
+
+		// the chosenRange could be: "This week", "This month", "This year"
+		let startDate = new Date();
+		let endDate = new Date();
+
+		if ((chosenRange = "This month")) {
+			startDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+			endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+		} else if ((chosenRange = "This year")) {
+			startDate = new Date(startDate.getFullYear(), 0, 1);
+			endDate = new Date(endDate.getFullYear(), 11, 31);
+		} else {
+			startDate = new Date(
+				startDate.setDate(startDate.getDate() - startDate.getDay())
+			);
+			endDate = new Date(
+				endDate.setDate(endDate.getDate() + (6 - endDate.getDay()))
+			);
+		}
+
+		let query = {};
+
+		// if the user role is marketing coordinator, only get the articles from the contribution of the faculty
+		if (req.user.role == "marketing coordinator") {
+			const contribution = await Contribution.findOne({
+				facultyId: req.user.id,
+			});
+
+			// add contributionId to the query
+			query["contributionId"] = contribution._id;
+		}
+
+		const articles = await Article.find(query);
+
+		const totalArticles = articles.length;
+
+		// get the articles that are selected for publication
+		const selectedArticles = articles.filter(
+			(article) => article.isSelectedForPublication
+		);
+		const totalSelectedArticles = selectedArticles.length;
+
+		// get the total number of contributoros
+		const contributors = new Set();
+		articles.forEach((article) => {
+			contributors.add(article.studentId);
+		});
+		const totalContributors = contributors.size;
+
+		// Get the total number of comments
+		const comments = await Comment.find({
+			articleId: { $in: articles.map((article) => article._id) },
+		});
+
+		const totalComments = comments.length;
+
+		// Get the total of articles that have comments and do not have commnets
+		const articlesWithComments = new Set();
+		comments.forEach((comment) => {
+			articlesWithComments.add(comment.articleId);
+		});
+		const totalArticlesWithComments = articlesWithComments.size;
+
+		const totalArticlesWithoutComments =
+			totalArticles - totalArticlesWithComments;
+
+		return res.status(200).json({
+			totalArticles,
+			totalSelectedArticles,
+			totalContributors,
+			totalComments,
+			totalArticlesWithComments,
+			totalArticlesWithoutComments,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: error.message });
+	}
+};
+
 module.exports = {
 	uploadArticle,
 	getAllArticleByStudentId,
@@ -509,4 +599,5 @@ module.exports = {
 	filterArticle,
 	downloadAllArticleSelected,
 	deleteArticle,
+	getDashboard,
 };
