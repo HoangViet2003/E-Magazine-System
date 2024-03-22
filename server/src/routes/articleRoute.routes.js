@@ -46,10 +46,10 @@ router.get("/article/search", ArticleController.searchArticle);
 router.get("/article/filter", ArticleController.filterArticle);
 router.post("/article/download", ArticleController.downloadAllArticleSelected);
 router.get(
-	"/article/coordinator/:id",
+	"/article/faculty/:id",
 	authenticateToken,
 	authenticateMarketingCoordinator,
-	ArticleController.getAllArticleByContributionId
+	ArticleController.getAllArticleByFacultyId
 );
 router.get("/article/:id",authenticateToken, ArticleController.getArticleById);
 
