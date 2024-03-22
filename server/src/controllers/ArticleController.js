@@ -7,7 +7,14 @@ const {
 	getFileStream,
 } = require("../services/fileS3.services");
 const mammoth = require("mammoth");
-const { Article, Contribution, History, User, Faculty } = require("../models");
+const {
+	Article,
+	Contribution,
+	History,
+	User,
+	Faculty,
+	Comment,
+} = require("../models");
 
 const EmitterSingleton = require("../configs/eventEmitter");
 const sendMail = require("../utils/sendMail");
@@ -343,7 +350,7 @@ const getAllArticleByContributionId = async (req, res) => {
 
 		//check marketing coordinator is the marketing coordinator of the faculty
 		const contribution = await Contribution.findById(id);
-		const faculty = await Faculty.findById( contribution.facultyId );
+		const faculty = await Faculty.findById(contribution.facultyId);
 		if (marketingCoordinator._id != faculty.marketingCoordinatorId.toString()) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of this faculty",
@@ -366,7 +373,6 @@ const getAllArticleByContributionId = async (req, res) => {
 			articles,
 			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
-            
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -417,7 +423,9 @@ const updateArticlesForPublication = async (req, res) => {
 
 		//check marketing coordinator is the marketing coordinator of the faculty
 		const marketingCoordinatorId = user._id;
-		const faculty = await Faculty.findOne({ marketingCoordinatorId: marketingCoordinatorId });
+		const faculty = await Faculty.findOne({
+			marketingCoordinatorId: marketingCoordinatorId,
+		});
 		if (!faculty) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of any faculty",
@@ -427,7 +435,7 @@ const updateArticlesForPublication = async (req, res) => {
 		const contribution = await Contribution.findOne({ facultyId: faculty._id });
 
 		const articles = await Article.find({ _id: { $in: articleIds } });
-        
+
 		articles.forEach((article) => {
 			if (article.contributionId.toString() != contribution._id.toString()) {
 				return res.status(403).json({
@@ -445,7 +453,7 @@ const updateArticlesForPublication = async (req, res) => {
 
 		res.status(200).json({
 			status: "success",
-			updatedArticles,
+			articles
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -454,11 +462,11 @@ const updateArticlesForPublication = async (req, res) => {
 
 const updateArticleFavorite = async (req, res) => {
 	try {
-		const { articleId } = req.body;
+		const { articleIds } = req.body;
 		const user = req.user;
 
 		//check if articleId is empty
-		if (!articleId) {
+		if (!articleIds) {
 			return res.status(400).json({
 				status: "error",
 				message: "Article ID is required",
@@ -487,14 +495,14 @@ const updateArticleFavorite = async (req, res) => {
 
 		// Update article with the given ID to set isFavorite to true
 		const updatedArticle = await Article.findByIdAndUpdate(
-			articleId,
+			articleIds,
 			{ $set: { isFavorite: true } },
 			{ new: true } // To get the updated document back
 		);
 
 		res.status(200).json({
 			status: "success",
-			updatedArticle,
+			articles
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -666,7 +674,7 @@ const getDashboard = async (req, res) => {
 				.json({ error: "You are not allowed to perform this action" });
 		}
 
-		const { chosenRange } = req.query;
+		let { chosenRange } = req.query;
 
 		// the chosenRange could be: "This week", "This month", "This year"
 		let startDate = new Date();
@@ -691,8 +699,13 @@ const getDashboard = async (req, res) => {
 
 		// if the user role is marketing coordinator, only get the articles from the contribution of the faculty
 		if (req.user.role == "marketing coordinator") {
+			const faculty = await Faculty.findOne({
+				marketingCoordinatorId: req.user._id,
+			});
+         
+
 			const contribution = await Contribution.findOne({
-				facultyId: req.user.id,
+				facultyId: faculty._id
 			});
 
 			// add contributionId to the query
@@ -749,7 +762,7 @@ const getDashboard = async (req, res) => {
 
 module.exports = {
 	uploadArticle,
-    updateArticle,
+	updateArticle,
 	getAllArticleByStudentId,
 	getArticleById,
 	getAllArticleByContributionId,
