@@ -24,12 +24,15 @@ router.get(
 	authenticateStudent,
 	ArticleController.getAllArticleByStudentId
 );
-router.get(
-	"/article/coordinator",
+
+router.put(
+	"/article/:id",
 	authenticateToken,
-	authenticateMarketingCoordinator,
-	ArticleController.getAllArticleByContributionId
+	authenticateStudent,
+	upload.array("files"),
+	ArticleController.updateArticle
 );
+
 router.patch(
 	"/article/publication",
 	authenticateToken,
@@ -40,6 +43,12 @@ router.patch("/article/favorite",authenticateToken,authenticateMarketingCoordina
 router.get("/article/search", ArticleController.searchArticle);
 router.get("/article/filter", ArticleController.filterArticle);
 router.post("/article/download", ArticleController.downloadAllArticleSelected);
+router.get(
+	"/article/coordinator/:id",
+	authenticateToken,
+	authenticateMarketingCoordinator,
+	ArticleController.getAllArticleByContributionId
+);
 router.get("/article/:id",authenticateToken, ArticleController.getArticleById);
 
 module.exports = router;

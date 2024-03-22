@@ -19,6 +19,7 @@ const uploadArticle = async (req, res) => {
 		const { contributionId, type } = req.body;
 		const student = req.user;
 
+		// Check if student exists
 		if (!student) {
 			return res.status(404).json({ error: "Student does not exist" });
 		}
@@ -30,8 +31,9 @@ const uploadArticle = async (req, res) => {
 			});
 		}
 
-		const uploadPromises = req.files.map(async (file) => {
-			if (type === "word") {
+		// Check if contribution exists
+		if (type === "word") {
+			const articlePromises = req.files.map(async (file) => {
 				if (
 					file.mimetype !==
 					"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -48,14 +50,32 @@ const uploadArticle = async (req, res) => {
 					studentId: student._id,
 					title: file.originalname,
 					content: html,
-					type: "word",
+					type: type,
 				};
-			} else if (type === "image") {
+			});
+
+			const newArticles = await Promise.all(articlePromises);
+			await fs.promises.unlink(req.files[0].path); // Assuming one file for "word"
+
+			// Save the updated contribution
+			const createdArticles = await Article.create(newArticles);
+
+			return res.status(201).send({
+				status: "success",
+				message: "Article(s) uploaded successfully",
+				articles: createdArticles,
+			});
+
+			// Save the updated contribution
+		} else if (type === "image") {
+			// If Type is "image" and images are uploaded
+			const uploadPromises = req.files.map(async (file) => {
 				try {
 					await uploadFiles(file, "article/");
 					await fs.promises.unlink(file.path);
 
 					if (!file.mimetype.startsWith("image")) {
+						// Invalid file type for "image"
 						throw new Error("Please upload only image files");
 					}
 
@@ -63,47 +83,181 @@ const uploadArticle = async (req, res) => {
 				} catch (error) {
 					return null;
 				}
-			} else {
-				throw new Error("Invalid Type");
-			}
-		});
+			});
 
-		const uploadResults = await Promise.allSettled(uploadPromises);
+			const uploadResults = await Promise.allSettled(uploadPromises);
 
-		const articles = [];
-		const images = [];
+			const images = uploadResults
+				.filter((result) => result.status === "fulfilled")
+				.map((result) => result.value);
 
-		uploadResults.forEach((result) => {
-			if (result.status === "fulfilled") {
-				const value = result.value;
-				if (typeof value === "string") {
-					images.push(value);
-				} else if (typeof value === "object") {
-					articles.push(value);
+			const newArticle = await Article.create({
+				contributionId: contributionId,
+				studentId: student._id,
+				type,
+				content: images,
+				title: req.files[0].originalname,
+			});
+
+			//add to contribution.content
+
+			//TODO: Delete the files from the server
+			// await req.files.forEach(async (file) => {
+			// 	await fs.promises.unlink(file.path);
+			// });
+
+			// TODO: Send email to marketing coordinator
+
+			//find marketing coordinator
+			const marketingCoordinator = await User.findOne({
+				role: "marketing coordinator",
+				facultyId: student.facultyId,
+			});
+
+			//send email to marketing coordinator
+
+			// await ejs.renderFile(
+			// 	path.join(__dirname, "..", "..", "emails", "accountConfirmation.ejs"),
+			// 	{ url },
+			// 	async (err, html) => {
+			// 		if (err) throw err;
+			// 		await sendMail({
+			// 			bcc: req.body.email,
+			// 			subject: "Đặt lại mật khẩu (App liên đoàn luật sư)",
+			// 			html,
+			// 		});
+			// 	}
+			// );
+
+			const emailTemplatePath = path.join(
+				__dirname,
+				"..",
+				"emails",
+				"notification.email.ejs"
+			);
+
+			const templateData = { studentName: student.name };
+
+			ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
+				if (err) {
+					console.error("Error rendering email template:", err);
+					return res
+						.status(500)
+						.json({ error: "Error rendering email template" });
 				}
-			}
-		});
 
-		if (type === "word") {
-			await fs.promises.unlink(req.files[0].path); // Assuming one file for "word"
+				// Send email to marketing coordinator
+				try {
+					await sendMail({
+						to: "zeusson3@gmail.com",
+						subject: "New Article Uploaded",
+						html,
+					});
+
+					console.log("Email sent to marketing coordinator");
+				} catch (error) {
+					console.error("Error sending email to marketing coordinator:", error);
+				}
+			});
+
+			// TODO : Send email to student
+
+			// TODO: Create history for contribution
+			// const history = await History.create({
+			// 	contributionId: contributionId,
+			// 	action: "create",
+			// 	userId: student._id,
+			// });
+
+			// TODO: Create notification for admin
+			// emitter.emit("notifyMarketingCoordinator", {
+			// 	facultyId: student.facultyId,
+			// 	message: `${student.name} has uploaded an article. Please review it.`,
+			// });
+
+			return res.status(201).send({
+				status: "success",
+				message: "Article uploaded successfully",
+				newArticle,
+			});
+		} else {
+			return res.status(400).send({
+				status: "error",
+				message: "Invalid Type or Missing File",
+			});
 		}
-
-		let newArticles;
-		if (articles.length > 0) {
-			newArticles = await Article.create(articles);
-		}
-
-		// Send email to marketing coordinator
-		await sendEmail(student.name);
-
-		return res.status(201).send({
-			status: "success",
-			message: "Article(s) uploaded successfully",
-			articles: newArticles,
-			images: images,
-		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
+	}
+};
+
+const updateArticle = async (req, res) => {
+	const { id } = req.params;
+	const { content, type } = req.body;
+	const { files } = req;
+
+	try {
+		const article = await Article.findById(id);
+
+		if (!article && !type) {
+			throw new Error("Article does not exist or invalid type");
+		}
+
+		if (type === "word" && files.length > 0) {
+			//update content in article to new content
+			article.content = content;
+		}
+
+		if (files && files.length > 0 && type === "image") {
+			const uploadPromises = files.map(async (file) => {
+				// Assuming uploadFiles and deleteFiles functions are defined
+				// Upload new images
+				await uploadFiles(file, "articles/");
+				await fs.promises.unlink(file.path);
+				return `https://magazine-images-upload.s3.ap-southeast-1.amazonaws.com/article/${file.originalname}`;
+			});
+
+			const uploadedImages = await Promise.all(uploadPromises);
+
+			const imagesToDelete = content
+				? article.content.filter((image) => !content.includes(image))
+				: article.content;
+
+			// Delete images not kept
+			await deleteFiles(imagesToDelete, "articles/");
+
+			// Update article images
+			article.content = content
+				? [...content, ...uploadedImages]
+				: uploadedImages;
+		} else if (content) {
+			// Delete images not kept
+			const imagesToDelete = article.content.filter(
+				(image) => !content.includes(image)
+			);
+			await deleteFiles(imagesToDelete, "articles/");
+
+			// Update article images
+			article.content = content;
+		}
+
+		// Update other fields
+		Object.keys(req.body).forEach((field) => {
+			if (field !== "content" && field !== "images") {
+				article[field] = req.body[field];
+			}
+		});
+
+		// Save updated article
+		await article.save();
+
+		return res.send({
+			status: "success",
+			message: "Article updated successfully",
+			article,
+		});
+	} catch (error) {
+		return res.status(500).send({ status: "error", message: error.message });
 	}
 };
 
@@ -184,13 +338,13 @@ const getArticleById = async (req, res) => {
 //get All article by contributionId
 const getAllArticleByContributionId = async (req, res) => {
 	try {
-		const { contributionId } = req.params;
-		const marketingCoordinatorId = req.user._id;
+		const { id } = req.params;
+		const marketingCoordinator = req.user;
 
 		//check marketing coordinator is the marketing coordinator of the faculty
-		const contribution = await Contribution.findById(contributionId);
-		const faculty = await Faculty.findById(contribution.facultyId);
-		if (marketingCoordinatorId != faculty.marketingCoordinatorId.toString()) {
+		const contribution = await Contribution.findById(id);
+		const faculty = await Faculty.findById( contribution.facultyId );
+		if (marketingCoordinator._id != faculty.marketingCoordinatorId.toString()) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of this faculty",
 			});
@@ -199,13 +353,12 @@ const getAllArticleByContributionId = async (req, res) => {
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
 		const skip = (page - 1) * limit;
-		const articles = await Article.find({ contributionId: contributionId })
-			.sort({ studentId: 1 })
+		const articles = await Article.find({ contributionId: id })
 			.skip(skip)
 			.limit(limit);
 
 		const totalLength = Article.find({
-			contributionId: contributionId,
+			contributionId: id,
 		}).countDocuments();
 
 		res.status(200).json({
@@ -213,6 +366,7 @@ const getAllArticleByContributionId = async (req, res) => {
 			articles,
 			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
+            
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -263,7 +417,7 @@ const updateArticlesForPublication = async (req, res) => {
 
 		//check marketing coordinator is the marketing coordinator of the faculty
 		const marketingCoordinatorId = user._id;
-		const faculty = await Faculty.findOne({ marketingCoordinatorId });
+		const faculty = await Faculty.findOne({ marketingCoordinatorId: marketingCoordinatorId });
 		if (!faculty) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of any faculty",
@@ -273,6 +427,7 @@ const updateArticlesForPublication = async (req, res) => {
 		const contribution = await Contribution.findOne({ facultyId: faculty._id });
 
 		const articles = await Article.find({ _id: { $in: articleIds } });
+        
 		articles.forEach((article) => {
 			if (article.contributionId.toString() != contribution._id.toString()) {
 				return res.status(403).json({
@@ -312,19 +467,23 @@ const updateArticleFavorite = async (req, res) => {
 
 		// check if the marketing coordinator is the marketing coordinator of the current falculty
 		const marketingCoordinatorId = user._id;
-
-		const contribution = await Contribution.findOne({
-			facultyId: marketingCoordinatorId,
-		});
-
-		// check if contribution falculty id is the same as the marketing coordinator id's faculty id
-		if (
-			contribution.facultyId.toString() != marketingCoordinatorId.toString()
-		) {
+		const faculty = await Faculty.findOne({ marketingCoordinatorId });
+		if (!faculty) {
 			return res.status(403).json({
-				error: "You are not the marketing coordinator of this faculty",
+				error: "You are not the marketing coordinator of any faculty",
 			});
 		}
+
+		const contribution = await Contribution.findOne({ facultyId: faculty._id });
+
+		const articles = await Article.find({ _id: { $in: articleIds } });
+		articles.forEach((article) => {
+			if (article.contributionId.toString() != contribution._id.toString()) {
+				return res.status(403).json({
+					error: "You are not the marketing coordinator of this faculty",
+				});
+			}
+		});
 
 		// Update article with the given ID to set isFavorite to true
 		const updatedArticle = await Article.findByIdAndUpdate(
@@ -590,6 +749,7 @@ const getDashboard = async (req, res) => {
 
 module.exports = {
 	uploadArticle,
+    updateArticle,
 	getAllArticleByStudentId,
 	getArticleById,
 	getAllArticleByContributionId,
