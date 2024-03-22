@@ -343,30 +343,61 @@ const getArticleById = async (req, res) => {
 };
 
 //get All article by contributionId
-const getAllArticleByContributionId = async (req, res) => {
+const getAllArticleByFacultyId = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const marketingCoordinator = req.user;
 
-		//check marketing coordinator is the marketing coordinator of the faculty
-		const contribution = await Contribution.findById(id);
-		const faculty = await Faculty.findById(contribution.facultyId);
-		if (marketingCoordinator._id != faculty.marketingCoordinatorId.toString()) {
+		// Check if the user is the marketing coordinator of the faculty
+		const faculty = await Faculty.findById(id);
+		if (
+			!faculty ||
+			marketingCoordinator._id.toString() !==
+				faculty.marketingCoordinatorId.toString()
+		) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of this faculty",
 			});
 		}
 
+		// Find all contributions for the faculty
+		const contributions = await Contribution.find({ facultyId: id });
+
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
 		const skip = (page - 1) * limit;
-		const articles = await Article.find({ contributionId: id })
-			.skip(skip)
-			.limit(limit);
 
-		const totalLength = Article.find({
-			contributionId: id,
-		}).countDocuments();
+		// Aggregate to get articles and total length
+		const articlesAggregate = await Article.aggregate([
+			{
+				$match: { contributionId: { $in: contributions.map((c) => c._id) } },
+			},
+			{ $skip: skip },
+			{ $limit: limit },
+			{
+				$group: {
+					_id: null,
+					count: { $sum: 1 },
+					articles: { $push: "$$ROOT" }, // Push the articles into an array
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalLength: "$count",
+					articles: { $slice: ["$articles", limit] }, // Limit articles array to 'limit' elements
+				},
+			},
+		]);
+
+		let totalLength = 0;
+		let articles = [];
+
+		// Extract totalLength and articles from the aggregation result
+		if (articlesAggregate.length > 0) {
+			totalLength = articlesAggregate[0].totalLength;
+			articles = articlesAggregate[0].articles;
+		}
 
 		res.status(200).json({
 			status: "success",
@@ -378,6 +409,7 @@ const getAllArticleByContributionId = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
+
 
 //delete article by id
 const deleteArticle = async (req, res) => {
@@ -453,7 +485,7 @@ const updateArticlesForPublication = async (req, res) => {
 
 		res.status(200).json({
 			status: "success",
-			articles
+			updateArticles,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -494,15 +526,17 @@ const updateArticleFavorite = async (req, res) => {
 		});
 
 		// Update article with the given ID to set isFavorite to true
-		const updatedArticle = await Article.findByIdAndUpdate(
-			articleIds,
+		const updatedArticles = await Article.updateMany(
+			{ _id: { $in: articleIds } },
 			{ $set: { isFavorite: true } },
-			{ new: true } // To get the updated document back
+			{ new: true } // To get the updated documents back
 		);
+
+        
 
 		res.status(200).json({
 			status: "success",
-			articles
+			updatedArticles,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -702,10 +736,9 @@ const getDashboard = async (req, res) => {
 			const faculty = await Faculty.findOne({
 				marketingCoordinatorId: req.user._id,
 			});
-         
 
 			const contribution = await Contribution.findOne({
-				facultyId: faculty._id
+				facultyId: faculty._id,
 			});
 
 			// add contributionId to the query
@@ -765,7 +798,7 @@ module.exports = {
 	updateArticle,
 	getAllArticleByStudentId,
 	getArticleById,
-	getAllArticleByContributionId,
+	getAllArticleByFacultyId,
 	updateArticlesForPublication,
 	updateArticleFavorite,
 	searchArticle,
