@@ -4,7 +4,8 @@ const { google } = require("googleapis");
 const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-
+const ejs = require("ejs");
+const path = require("path");
 const OAuth2 = google.auth.OAuth2;
 
 const myOAuth2Client = new OAuth2(
@@ -39,4 +40,33 @@ const sendMail = async (mailOptions) => {
 	return transporter.sendMail(mailOptions);
 };
 
-module.exports = sendMail;
+const handleSendEmail = async (studentName,to,subject) => {
+	const emailTemplatePath = path.join(
+		__dirname,
+		"..",
+		"emails",
+		"notification.email.ejs"
+	);
+	const templateData = { studentName };
+
+	ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
+		if (err) {
+			console.error("Error rendering email template:", err);
+			return;
+		}
+
+		try {
+			await sendMail({
+				to: to,
+				subject: subject,
+				html,
+			});
+
+			console.log("Email sent to marketing coordinator");
+		} catch (error) {
+			console.error("Error sending email to marketing coordinator:", error);
+		}
+	});
+};
+
+module.exports = {sendMail, handleSendEmail};

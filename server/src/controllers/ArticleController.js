@@ -15,6 +15,7 @@ const {
 	Faculty,
 	Comment,
 } = require("../models");
+const { handleSendEmail } = require("../utils/sendMail");
 
 const EmitterSingleton = require("../configs/eventEmitter");
 const sendMail = require("../utils/sendMail");
@@ -103,17 +104,16 @@ const uploadArticle = async (req, res) => {
 				studentId: student._id,
 				type,
 				content: images,
-				title: req.files[0].originalname,
+				title: student.name + "'s images",
 			});
-
-			//add to contribution.content
 
 			//TODO: Delete the files from the server
 			// await req.files.forEach(async (file) => {
 			// 	await fs.promises.unlink(file.path);
 			// });
 
-			// TODO: Send email to marketing coordinator
+			// TODO: Send email to student to confirm the upload
+			handleSendEmail(student.name, student.email, "Article Uploaded");
 
 			//find marketing coordinator
 			const marketingCoordinator = await User.findOne({
@@ -123,49 +123,11 @@ const uploadArticle = async (req, res) => {
 
 			//send email to marketing coordinator
 
-			// await ejs.renderFile(
-			// 	path.join(__dirname, "..", "..", "emails", "accountConfirmation.ejs"),
-			// 	{ url },
-			// 	async (err, html) => {
-			// 		if (err) throw err;
-			// 		await sendMail({
-			// 			bcc: req.body.email,
-			// 			subject: "Đặt lại mật khẩu (App liên đoàn luật sư)",
-			// 			html,
-			// 		});
-			// 	}
-			// );
-
-			const emailTemplatePath = path.join(
-				__dirname,
-				"..",
-				"emails",
-				"notification.email.ejs"
+			handleSendEmail(
+				marketingCoordinator.name,
+				marketingCoordinator.email,
+				"New Article Uploaded"
 			);
-
-			const templateData = { studentName: student.name };
-
-			ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
-				if (err) {
-					console.error("Error rendering email template:", err);
-					return res
-						.status(500)
-						.json({ error: "Error rendering email template" });
-				}
-
-				// Send email to marketing coordinator
-				try {
-					await sendMail({
-						to: "zeusson3@gmail.com",
-						subject: "New Article Uploaded",
-						html,
-					});
-
-					console.log("Email sent to marketing coordinator");
-				} catch (error) {
-					console.error("Error sending email to marketing coordinator:", error);
-				}
-			});
 
 			// TODO : Send email to student
 
@@ -183,7 +145,6 @@ const uploadArticle = async (req, res) => {
 			// });
 
 			return res.status(201).send({
-				status: "success",
 				message: "Article uploaded successfully",
 				newArticle,
 			});
@@ -200,7 +161,7 @@ const uploadArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
 	const { id } = req.params;
-	const { content, type } = req.body;
+	const { content, type, title } = req.body;
 	const { files } = req;
 
 	try {
@@ -269,15 +230,10 @@ const updateArticle = async (req, res) => {
 };
 
 //getAll article by studentId
-const getAllArticleByStudentId = async (req, res) => {
+const getAllArticlesByStudentId = async (req, res) => {
 	try {
 		// return result
 		const student = req.user;
-		if (!student._id) {
-			return res
-				.status(404)
-				.json({ status: "error", error: "Student does not exist" });
-		}
 
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
@@ -295,9 +251,7 @@ const getAllArticleByStudentId = async (req, res) => {
 		}).countDocuments();
 
 		res.status(200).json({
-			status: "success",
 			articles,
-			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
 		});
 	} catch (error) {
@@ -336,14 +290,15 @@ const getArticleById = async (req, res) => {
 				.status(404)
 				.json({ status: "error", error: "Article not found" });
 		}
-		res.status(200).json({ status: "success", article });
+
+		res.status(200).json({ article });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
 
 //get All article by contributionId
-const getAllArticleByFacultyId = async (req, res) => {
+const getAllArticlesByFacultyId = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const marketingCoordinator = req.user;
@@ -426,7 +381,6 @@ const getAllArticleByFacultyId = async (req, res) => {
 	}
 };
 
-
 //delete article by id
 const deleteArticle = async (req, res) => {
 	try {
@@ -435,22 +389,27 @@ const deleteArticle = async (req, res) => {
 
 		const article = await Article.findById(id);
 
-		if (user.role === "student") {
-			if (article.studentId.toString() != user._id.toString()) {
-				return res
-					.status(403)
-					.json({ error: "You are not allowed to perform this action" });
-			}
-		}
 		if (!article) {
 			return res
 				.status(404)
 				.json({ status: "error", error: "Article not found" });
 		}
 
+		if (user.role === "student") {
+			if (article.studentId.toString() != user._id.toString()) {
+				return res
+					.status(403)
+					.json({ error: "You are not allowed to perform this action" });
+			}
+		} else {
+			return res.status
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" });
+		}
+
 		await Article.findByIdAndDelete(id);
 
-		res.status(200).json({ status: "success", message: "Article deleted" });
+		res.status(200).json({ message: "Article deleted" });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -469,11 +428,12 @@ const updateArticlesForPublication = async (req, res) => {
 			});
 		}
 
-		//check marketing coordinator is the marketing coordinator of the faculty
+		// check marketing coordinator is the marketing coordinator of the faculty
 		const marketingCoordinatorId = user._id;
 		const faculty = await Faculty.findOne({
 			marketingCoordinatorId: marketingCoordinatorId,
 		});
+
 		if (!faculty) {
 			return res.status(403).json({
 				error: "You are not the marketing coordinator of any faculty",
@@ -499,12 +459,11 @@ const updateArticlesForPublication = async (req, res) => {
 			{ new: true } // To get the updated documents back
 		);
 
-		res.status(200).json({
-			status: "success",
-			updateArticles,
+		return res.status(200).json({
+			updatedArticles,
 		});
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		return res.status(500).json({ error: error.message });
 	}
 };
 
@@ -516,19 +475,13 @@ const updateArticleFavorite = async (req, res) => {
 		//check if articleId is empty
 		if (!articleIds) {
 			return res.status(400).json({
-				status: "error",
-				message: "Article ID is required",
+				message: "Article IDs array is required",
 			});
 		}
 
-		// check if the marketing coordinator is the marketing coordinator of the current falculty
+		// check if the marketing coordinator is the marketing coordinator of the current faculty
 		const marketingCoordinatorId = user._id;
 		const faculty = await Faculty.findOne({ marketingCoordinatorId });
-		if (!faculty) {
-			return res.status(403).json({
-				error: "You are not the marketing coordinator of any faculty",
-			});
-		}
 
 		const contribution = await Contribution.findOne({ facultyId: faculty._id });
 
@@ -548,10 +501,7 @@ const updateArticleFavorite = async (req, res) => {
 			{ new: true } // To get the updated documents back
 		);
 
-        
-
 		res.status(200).json({
-			status: "success",
 			updatedArticles,
 		});
 	} catch (error) {
@@ -560,7 +510,7 @@ const updateArticleFavorite = async (req, res) => {
 };
 
 //search article by title,student name
-const searchArticle = async (req, res) => {
+const searchArticles = async (req, res) => {
 	try {
 		const { query, contributionId } = req.query;
 		const page = parseInt(req.query.page) || 1;
@@ -610,24 +560,34 @@ const filterArticle = async (req, res) => {
 		const limit = 5;
 		const skip = (page - 1) * limit;
 
-		const searchRegex = new RegExp(title, "i");
+		// Get all keys from req.query
+		const articlesKeys = Object.keys(req.query);
 
 		// Constructing the match query for aggregation
-		const matchQuery = {
-			title,
-			contributionId,
-			type,
-			isFavorite,
-			isSelectedForPublication,
-		};
+		let matchQuery = {};
+
+		// Check if keys are present in req.query and add them to matchQuery
+		articlesKeys.forEach((key) => {
+			if (key === "title") {
+				matchQuery.title = { $regex: new RegExp(req.query[key], "i") };
+			} else {
+				matchQuery[key] = req.query[key];
+			}
+		});
+
+		// Constructing the match query for aggregation
+		// const matchQuery = {
+		// 	title: { $regex: new RegExp(title, "i") },
+		// 	contributionId: contributionId,
+		// 	type: type,
+		// 	isFavorite: isFavorite,
+		// 	isSelectedForPublication: isSelectedForPublication,
+		// };
+
 
 		// Using a single aggregation pipeline for fetching articles and getting total count
 		const [articles, totalLength] = await Promise.all([
-			Article.aggregate([
-				{ $match: matchQuery },
-				{ $skip: skip },
-				{ $limit: limit },
-			]),
+			Article.find(matchQuery),
 			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
 		]);
 
@@ -638,11 +598,10 @@ const filterArticle = async (req, res) => {
 		}
 
 		// Extracting the total count from the result
+		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
 
 		res.status(200).json({
-			status: "success",
 			articles,
-			currentPage: page,
 			totalPage: Math.ceil(totalCount / limit),
 		});
 	} catch (error) {
@@ -684,35 +643,6 @@ const downloadAllArticleSelected = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
-};
-
-const sendEmail = async (studentName) => {
-	const emailTemplatePath = path.join(
-		__dirname,
-		"..",
-		"emails",
-		"notification.email.ejs"
-	);
-	const templateData = { studentName };
-
-	ejs.renderFile(emailTemplatePath, templateData, async (err, html) => {
-		if (err) {
-			console.error("Error rendering email template:", err);
-			return;
-		}
-
-		try {
-			await sendMail({
-				to: "zeusson3@gmail.com",
-				subject: "New Article Uploaded",
-				html,
-			});
-
-			console.log("Email sent to marketing coordinator");
-		} catch (error) {
-			console.error("Error sending email to marketing coordinator:", error);
-		}
-	});
 };
 
 const getDashboard = async (req, res) => {
@@ -771,7 +701,7 @@ const getDashboard = async (req, res) => {
 		);
 		const totalSelectedArticles = selectedArticles.length;
 
-		// get the total number of contributoros
+		// get the total number of contributors
 		const contributors = new Set();
 		articles.forEach((article) => {
 			contributors.add(article.studentId);
@@ -785,7 +715,7 @@ const getDashboard = async (req, res) => {
 
 		const totalComments = comments.length;
 
-		// Get the total of articles that have comments and do not have commnets
+		// Get the total of articles that have comments and do not have comments
 		const articlesWithComments = new Set();
 		comments.forEach((comment) => {
 			articlesWithComments.add(comment.articleId);
@@ -812,12 +742,12 @@ const getDashboard = async (req, res) => {
 module.exports = {
 	uploadArticle,
 	updateArticle,
-	getAllArticleByStudentId,
+	getAllArticlesByStudentId,
 	getArticleById,
-	getAllArticleByFacultyId,
+	getAllArticlesByFacultyId,
 	updateArticlesForPublication,
 	updateArticleFavorite,
-	searchArticle,
+	searchArticles,
 	filterArticle,
 	downloadAllArticleSelected,
 	deleteArticle,
