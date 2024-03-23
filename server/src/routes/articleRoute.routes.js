@@ -24,7 +24,7 @@ router.get(
 	"/article/student",
 	authenticateToken,
 	authenticateStudent,
-	ArticleController.getAllArticleByStudentId
+	ArticleController.getAllArticlesByStudentId
 );
 
 router.put(
@@ -42,14 +42,14 @@ router.patch(
 	ArticleController.updateArticlesForPublication
 );
 router.patch("/article/favourite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
-router.get("/article/search", ArticleController.searchArticle);
+router.get("/article/search", ArticleController.searchArticles);
 router.get("/article/filter", ArticleController.filterArticle);
 router.post("/article/download", ArticleController.downloadAllArticleSelected);
 router.get(
 	"/article/faculty/:id",
 	authenticateToken,
 	authenticateMarketingCoordinator,
-	ArticleController.getAllArticleByFacultyId
+	ArticleController.getAllArticlesByFacultyId
 );
 router.get("/article/:id",authenticateToken, ArticleController.getArticleById);
 
