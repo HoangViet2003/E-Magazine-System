@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-function useAddNoScrollClass(condition: unknown) {
+function useAddNoScrollClass(trigger: unknown) {
   useEffect(() => {
     const addNoScrollClass = () => {
       document.body.classList.add("no-scroll");
@@ -10,7 +10,7 @@ function useAddNoScrollClass(condition: unknown) {
       document.body.classList.remove("no-scroll");
     };
 
-    if (condition) {
+    if (trigger) {
       addNoScrollClass();
     } else {
       removeNoScrollClass();
@@ -19,7 +19,7 @@ function useAddNoScrollClass(condition: unknown) {
     return () => {
       removeNoScrollClass();
     };
-  }, [condition]);
+  }, [trigger]);
 }
 
 export default useAddNoScrollClass;

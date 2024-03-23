@@ -21,7 +21,7 @@ export default function ImageGridGallery() {
     <div>
       <Gallery
         images={images}
-        enableImageSelection={false}
+        enableImageSelection={true}
         rowHeight={300}
         onClick={handleClick}
       />

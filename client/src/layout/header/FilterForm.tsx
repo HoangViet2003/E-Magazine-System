@@ -2,7 +2,7 @@ import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
 import CloseIcon from "../../assets/icons/cross-svgrepo-com.svg";
 import Select from "../../ui/Select";
 
-const labelClassName = "whitespace-nowrap  font-bold text-gray-600 my-auto";
+const labelClassName = "whitespace-nowrap font-bold text-gray-600 my-auto";
 const inputClassName =
   "px-6 py-3 border border-gray-400 rounded text-gray-500 outline-blue-500";
 
@@ -28,7 +28,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
 
   return (
     <div
-      className="fixed top-20  w-[800px] border border-borderColor bg-white px-8 py-6 shadow-xl"
+      className="fixed top-20 w-[700px] border border-borderColor bg-white px-8 py-6 shadow-xl"
       ref={ref}
     >
       <button

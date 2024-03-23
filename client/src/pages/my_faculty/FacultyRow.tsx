@@ -1,12 +1,13 @@
 import Table from "../../ui/Table";
 import DocsIcon from "../../assets/icons/icon-document-text.svg";
+import ImgIcon from "../../assets/icons/Img_box_fill.svg";
 import { Contribution } from "../../redux/slices/ContributionSlice";
 import ProfileImg from "../../assets/profile1.png";
 
 const FacultyRow: React.FC<Contribution> = ({ data }) => {
-  const { title, updatedAt, studentId } = data;
+  const { title, updatedAt, studentName, type } = data;
 
-  const action = "test";
+  const action = "test action";
 
   const date = new Date(updatedAt);
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -17,7 +18,7 @@ const FacultyRow: React.FC<Contribution> = ({ data }) => {
   return (
     <Table.Row>
       <div className="m-[auto] select-none">
-        <img src={DocsIcon} />
+        <img src={type === "word" ? DocsIcon : ImgIcon} />
       </div>
       <div
         className={commonCell + " font-semibold"}
@@ -32,7 +33,7 @@ const FacultyRow: React.FC<Contribution> = ({ data }) => {
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {/* {owner} */}
+        {studentName}
         test
       </div>
       <div className={commonCell}>{formattedDate}</div>

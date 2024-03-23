@@ -53,13 +53,16 @@ export interface Contribution {
   title?: string;
   facultyId?: string;
   studentId?: string;
+  studentName?: string;
   uploadDate?: string;
   status?: string;
   academicYear?: string;
   closureDate?: string;
-  updatedAt?: string;
+  updatedAt: string;
   createdAt: string;
-  contributionOfUser: [];
+  contributionId?: string;
+  content: string[];
+  type: string;
 }
 
 interface ContributionState {

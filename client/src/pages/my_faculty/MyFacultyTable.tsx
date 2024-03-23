@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Table from "../../ui/Table";
 
 import FacultyRow from "./FacultyRow";
@@ -21,6 +21,8 @@ export default function MyFacultyTable({
 
   const { contributions, loading: loadingContribution } = useContribution();
 
+  const navigate = useNavigate();
+
   // FILTER
   let filteredContributions = contributions;
 
@@ -31,8 +33,12 @@ export default function MyFacultyTable({
     );
   }
 
-  function openNewTab(id: string) {
+  function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
+  }
+
+  function openImageCollection(id: string) {
+    navigate(`/myFaculty/images/${id}`);
   }
 
   // SORT
@@ -53,7 +59,16 @@ export default function MyFacultyTable({
       <Table.Body
         data={sortedData}
         render={(data) => (
-          <div onDoubleClick={() => openNewTab(data._id)} key={data._id}>
+          <div
+            onDoubleClick={() => {
+              if (data.type === "word") {
+                openNewDocument(data._id);
+              } else {
+                openImageCollection(data._id);
+              }
+            }}
+            key={data._id}
+          >
             <FacultyRow data={data} />
           </div>
         )}
