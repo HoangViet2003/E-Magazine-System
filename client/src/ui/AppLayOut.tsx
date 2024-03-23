@@ -8,7 +8,7 @@ export default function AppLayOut() {
     <SidebarProvider>
       <div className="grid grid-rows-[auto_1fr] border-borderColor font-BeVietnamPro">
         <Header />
-        <div className="container grid grid-cols-[1fr] xl:grid-cols-[320px_1fr]">
+        <div className="container grid grid-cols-[1fr] xl:grid-cols-[300px_1fr]">
           <Sidebar />
 
           <Outlet />

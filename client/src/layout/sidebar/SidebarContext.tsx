@@ -1,10 +1,5 @@
-import {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
+import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 
 const SidebarContext = createContext({
   openSidebar: false,
@@ -17,25 +12,7 @@ export const useSidebarContext = () => useContext(SidebarContext);
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
 
-  useEffect(() => {
-    const addNoScrollClass = () => {
-      document.body.classList.add("no-scroll");
-    };
-
-    const removeNoScrollClass = () => {
-      document.body.classList.remove("no-scroll");
-    };
-
-    if (openSidebar) {
-      addNoScrollClass();
-    } else {
-      removeNoScrollClass();
-    }
-
-    return () => {
-      removeNoScrollClass();
-    };
-  }, [openSidebar]);
+  useAddNoScrollClass(openSidebar);
 
   return (
     <SidebarContext.Provider value={{ openSidebar, setOpenSidebar }}>

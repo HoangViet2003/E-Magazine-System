@@ -2,6 +2,7 @@ import { useState } from "react";
 import PrevIcon from "../../assets/icons/angle-left-svgrepo-com.svg";
 import NextIcon from "../../assets/icons/angle-right-svgrepo-com.svg";
 import { CustomImage } from "../../utils/images";
+import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 
 export default function ImageLightbox({
   currentImage,
@@ -26,6 +27,8 @@ export default function ImageLightbox({
   const [middleImage, setMiddleImage] = useState(currentImage);
   const [leftImage, setLeftImage] = useState(prevImage);
   const [rightImage, setRightImage] = useState(nextImage);
+
+  useAddNoScrollClass(currentImage);
 
   function handleClickRight() {
     handleMoveNext();
