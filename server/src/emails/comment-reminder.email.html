@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8"> <!-- utf-8 works for most cases -->
+    <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
+    <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+    <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700" rel="stylesheet">
+
+    <!-- CSS Reset : BEGIN -->
+    <style>
+
+        /* Email CSS Reset */
+        /* What it does: Remove spaces around the email design added by some email clients. */
+        html,
+        body {
+            margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            background: #f1f1f1;
+        }
+
+        /* What it does: Stops email clients resizing small text. */
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* What it does: Centers email on Android 4.4 */
+        div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+        }
+
+        /* What it does: Stops Outlook from adding extra spacing to tables. */
+        table,
+        td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
+        }
+
+        /* What it does: Fixes webkit padding issue. */
+        table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+        }
+
+        /* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS. Styles for underlined links should be inline. */
+        a {
+            text-decoration: none;
+        }
+
+    </style>
+
+    <!-- CSS Styles : BEGIN -->
+    <style>
+
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(0,0,0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .header h1 {
+            color: #004AD7;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* Content Styles */
+        .content {
+            padding: 20px 0;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            color: #000000;
+            margin-top: 0;
+        }
+
+        .content p {
+            margin: 10px 0;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #004AD7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eeeeee;
+        }
+
+        .footer p {
+            margin: 0;
+            color: rgba(0,0,0,.5);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Email Container -->
+    <div class="container">
+        <!-- Email Header -->
+        <div class="header">
+            <h1>E-Magazine System</h1>
+        </div>
+        <!-- Email Content -->
+        <div class="content">
+            <h2>Dear Coordinator,</h2>
+            <p>This is a reminder to review and comment on the article submitted by <strong>Ngo Tuan Anh</strong> titled <strong>Article about the warning stuffs of the animal world</strong>.</p>
+            <p>You have <strong>10</strong> days left to provide your feedback.</p>
+            <!-- Button to take action -->
+            <a href="[Action URL]" class="btn">Review Article</a>
+        </div>
+    </div>
+</body>
+</html>
