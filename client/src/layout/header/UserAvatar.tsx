@@ -5,8 +5,11 @@ import NotificationIcon from "../../assets/icons/Bell_pin_fill.svg";
 import User from "../../assets/default-user.jpg";
 import UserIcon from "../../assets/icons/User_fill.svg";
 import SignoutIcon from "../../assets/icons/Sign_out_circle_duotone_line.svg";
+import { useAuth } from "../../redux/hooks/useAuth";
 
 export default function UserAvatar() {
+  const { logout } = useAuth();
+
   return (
     <div className="flex items-center gap-4">
       <button className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block">
@@ -31,7 +34,7 @@ export default function UserAvatar() {
                 Profile
               </span>
             </Dropdowns.Button>
-            <Dropdowns.Button icon={SignoutIcon}>
+            <Dropdowns.Button icon={SignoutIcon} onClick={logout}>
               <span className="font-bold" style={{ color: "#CA3636" }}>
                 Sign out
               </span>

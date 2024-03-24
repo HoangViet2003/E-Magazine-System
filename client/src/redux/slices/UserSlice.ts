@@ -10,13 +10,22 @@ export interface User {
 }
 
 interface UserState {
-  loading: boolean;
-  users: User[];
+  user: User;
+  isAuth: boolean;
+  isLoading: boolean;
 }
 
 const initialState: UserState = {
-  users: [],
-  loading: false,
+  user: {
+    _id: "",
+    name: "",
+    email: "",
+    role: "",
+    createdAt: "",
+    updatedAt: "",
+  },
+  isAuth: false,
+  isLoading: false,
 };
 
 const UserSlice = createSlice({
@@ -24,16 +33,17 @@ const UserSlice = createSlice({
   initialState,
   reducers: {
     setLoadingUser(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload;
+      state.isLoading = action.payload;
     },
-    setAllUsers(state, action: PayloadAction<User[]>) {
-      state.users = action.payload;
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+      state.isAuth = true;
     },
   },
 });
 
 const { reducer, actions } = UserSlice;
 
-export const { setLoadingUser, setAllUsers } = actions;
+export const { setLoadingUser, setUser } = actions;
 
 export default reducer;

@@ -31,7 +31,7 @@ export default function Dashboard() {
         </div>
         <Contributions />
 
-        <div className="3xl:grid-cols-3 grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-2 3xl:grid-cols-3">
           <SelectedRateChart />
           <CommentedArticlesChart />
           <DailyTrafficChart />
