@@ -1,18 +1,34 @@
 const jwt = require("jsonwebtoken");
 const { catchAsync } = require("../utils");
 const argon2 = require("argon2");
-const { User } = require("../models");
+const { User, Faculty } = require("../models");
 
 //sign up for student and staff
 const register = catchAsync(async (req, res) => {
 	try {
-		const { name, email, password: plainTextPassword, role } = req.body;
+		const {
+			name,
+			email,
+			password: plainTextPassword,
+			role,
+			facultyId,
+		} = req.body;
 
 		//check if email and password,Role are provided
 		if (!email || !plainTextPassword || !role || !name) {
 			return res.status(400).send({
 				status: "error",
 				message: "Email, Password and Role are required",
+			});
+		}
+
+		if (
+			["marketing coordinator", "student", "guest"].includes(role) &&
+			!facultyId
+		) {
+			return res.status(400).send({
+				status: "error",
+				message: "Faculty ID is required for this role",
 			});
 		}
 
@@ -29,12 +45,27 @@ const register = catchAsync(async (req, res) => {
 
 		// Create a new user if the email does not exist
 		let newUser;
-		newUser = await User.create({
-			name,
-			email,
-			password,
-			role,
-		});
+		if (["marketing coordinator", "student", "guest"].includes(role)) {
+			newUser = await User.create({
+				name,
+				email,
+				password,
+				role,
+				facultyId,
+			});
+			if (role === "marketing coordinator") {
+				const faculty = await Faculty.findOne({ _id: facultyId });
+				faculty.marketingCoordinatorId = newUser._id;
+				await faculty.save();
+			}
+		} else {
+			newUser = await User.create({
+				name,
+				email,
+				password,
+				role,
+			});
+		}
 
 		const access_token = jwt.sign(
 			{ _id: newUser._id, email: newUser.email },

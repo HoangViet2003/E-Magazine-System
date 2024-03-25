@@ -27,9 +27,13 @@ io.on("connection", (socket) => {
 		console.log("User has joined: ", id);
 
 		socket.emit("joined", `You has joined ${id}`);
+
+		socket.to("65fff16b2efcd832390a8534").emit("newArticle", {
+			message: "New article uploaded",
+		});
 	});
 
-	socket.on("disconnect", () => {
+	socket.on("disconnect", (id) => {
 		console.log("User has left: ", id);
 	});
 });

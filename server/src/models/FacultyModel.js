@@ -9,7 +9,6 @@ const facultySchema = new mongoose.Schema(
 		marketingCoordinatorId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true,
 		},
 	},
 	{

@@ -28,7 +28,7 @@ router.get(
 );
 
 router.put(
-	"/article/:id",
+	"/article/:articleId",
 	authenticateToken,
 	authenticateStudent,
 	upload.array("files"),
@@ -42,15 +42,19 @@ router.patch(
 	ArticleController.updateArticlesForPublication
 );
 router.patch("/article/favourite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
-router.get("/article/search", ArticleController.searchArticles);
-router.get("/article/filter", ArticleController.filterArticle);
+router.get("/article/suggestions",authenticateToken, ArticleController.getSuggestionArticles);
+router.get("/article/filter", authenticateToken, ArticleController.filterArticle);
 router.post("/article/download", ArticleController.downloadAllArticleSelected);
 router.get(
-	"/article/faculty/:id",
+	"/article/faculty/:facultyId",
 	authenticateToken,
 	authenticateMarketingCoordinator,
 	ArticleController.getAllArticlesByFacultyId
 );
-router.get("/article/:id",authenticateToken, ArticleController.getArticleById);
+
+router.get(
+	"/article/submission/:submissionId",authenticateToken,ArticleController.getAllArticlesBySubmissionId
+);
+router.get("/article/:articleId",authenticateToken, ArticleController.getArticleById);
 
 module.exports = router;

@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const historySchema = new mongoose.Schema(
 	{
-		contributionId: {
+		submissionId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Contribution",
+			ref: "Submission",
 			required: true,
 		},
 		userId: {

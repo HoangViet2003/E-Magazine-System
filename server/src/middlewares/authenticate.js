@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, Faculty, Contribution } = require("../models");
 
 const authenticateToken = async (req, res, next) => {
 	const authHeader = req.headers["authorization"];
@@ -35,10 +35,21 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 	//Check if user is a marketing coordinator
 	if (req.user.role !== "marketing coordinator") {
 		return res.status(403).send({
-			status: "error",
 			message: "You are not allowed to perform this action",
 		});
 	}
+
+	// const facultyIdRequest =
+	// 	req.params.facultyId || req.body.facultyId || req.query.facultyId;
+
+	// //Check if user has access to the specified faculty
+	// if (req.user.facultyId.toString() === facultyIdRequest.toString()) {
+	// 	next();
+	// } else {
+	// 	return res.status(403).send({
+	// 		message: "You are not allowed to perform this action",
+	// 	});
+	// }
 	next();
 };
 
@@ -46,13 +57,41 @@ const authenticateStudent = async (req, res, next) => {
 	//Check if user is a student
 	if (req.user.role !== "student") {
 		return res.status(403).send({
-			status: "error",
 			message: "You are not allowed to perform this action",
 		});
 	}
-	next();
 
-}
+	// const contributionIdRequest =
+	// 	req.params.contributionId ||
+	// 	req.body.contributionId ||
+	// 	req.query.contributionId;
+	// //Check if user has access to the specified contribution
+	// if (contributionIdRequest) {
+	// 	const contribution = await Contribution.findById(contributionIdRequest);
+	// 	if (
+	// 		!contribution ||
+	// 		contribution.facultyId.toString() !== req.user.facultyId.toString()
+	// 	) {
+	// 		return res.status(403).json({
+	// 			message: "You do not have access to this resource",
+	// 		});
+	// 	}
+	// }
+
+	// //check if the user has access to the specified article
+	// const articleIdRequest =
+	// 	req.params.articleId || req.body.articleId || req.query.articleId;
+	// if (articleIdRequest) {
+	// 	const article = await Article.findById(articleIdRequest);
+	// 	if (!article || article.studentId.toString() !== req.user._id.toString()) {
+	// 		return res.status(403).json({
+	// 			message: "You do not have access to this resource",
+	// 		});
+	// 	}
+	// }
+
+	next();
+};
 
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
@@ -62,6 +101,7 @@ const authenticateMarketingManager = async (req, res, next) => {
 			message: "You are not allowed to perform this action",
 		});
 	}
+
 	next();
 };
 
@@ -81,5 +121,5 @@ module.exports = {
 	authenticateMarketingCoordinator,
 	authenticateMarketingManager,
 	authenticateAdministrator,
-	authenticateStudent
+	authenticateStudent,
 };

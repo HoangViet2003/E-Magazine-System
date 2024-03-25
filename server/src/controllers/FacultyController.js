@@ -4,17 +4,10 @@ const { StatusCodes } = require("http-status-codes");
 const { validateData } = require("../validations/validation");
 
 const createFaculty = async (req, res) => {
-	const { error, value } = validateData(req.body);
-	if (error) {
-		console.log(error);
-		return res.send(error.details);
-	}
-
-	const { name, marketingCoordinatorId } = req.body;
+	const { name } = req.body;
 	try {
 		const newFaculty = await Faculty.create({
 			name,
-			marketingCoordinatorId,
 		});
 
 		return res.status(StatusCodes.CREATED).json({
@@ -27,6 +20,30 @@ const createFaculty = async (req, res) => {
 			.json({ error: error.message });
 	}
 };
+
+const addMarketingCoordinator = async (req, res) => {
+	const { user_id } = req.body;
+	try {
+		const faculty = await Faculty.findById(req.params.id);
+		const user = await User.findById(user_id);
+		if (!user) {
+			return res.status(StatusCodes.NOT_FOUND).json({
+				message: "User not found",
+			});
+		}
+		faculty.marketingCoordinatorId = _id;
+		await faculty.save();
+		return res.status(StatusCodes.OK).json({
+			message: "Add marketing coordinator successed",
+			data: faculty,
+		});
+	} catch (error) {
+		return res
+			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+			.json({ error: error.message });
+	}
+
+}
 
 // get all faculties
 const getAllFaculties = async (req, res) => {
@@ -97,4 +114,5 @@ module.exports = {
 	createFaculty,
 	deleteFaculty,
 	getAFaculties,
+	addMarketingCoordinator,
 };

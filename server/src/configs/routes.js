@@ -6,6 +6,7 @@ const {
 	contributionRoute,
 	facultyRoute,
 	commentRoute,
+	submissionRoute
 } = require("../routes");
 
 /**
@@ -25,6 +26,7 @@ const routes = (app) => {
 	app.use("/api/v1", userRoute);
 	app.use("/api/v1", facultyRoute);
 	app.use("/api/v1", commentRoute);
+	app.use("/api/v1", submissionRoute);
 };
 
 module.exports = routes;
