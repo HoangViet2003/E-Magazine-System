@@ -3,9 +3,15 @@ import ContributionOperation from "./ContributionOperation";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
 import ContributionRow from "./ContributionRow";
 import Spinner from "../../../ui/Spinner";
+import { useNavigate } from "react-router-dom";
 
 export default function ContributionTable() {
   const { submissions, isLoading: loadingSubmission } = useSubmission();
+  const navigate = useNavigate();
+
+  function openFolder(id) {
+    navigate(`/myFaculty/contributions/submission/${id}`);
+  }
 
   if (loadingSubmission) return <Spinner />;
 
@@ -18,7 +24,12 @@ export default function ContributionTable() {
       <Table.Body
         data={submissions}
         render={(data) => (
-          <div onDoubleClick={() => {}} key={data._id}>
+          <div
+            onDoubleClick={() => {
+              openFolder(data._id);
+            }}
+            key={data._id}
+          >
             <ContributionRow data={data} />
           </div>
         )}

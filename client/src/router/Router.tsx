@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import ImageCollection from "../pages/image_collection/ImageCollection";
 import Login from "../pages/login/LoginForm";
 import ProtectedRoute from "../ui/ProtectedRoute";
+import Submission from "../pages/my_faculty/submission/Submission";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "/myFaculty/images/:imagesId",
         element: <ImageCollection />,
+      },
+      {
+        path: "/myFaculty/contributions/submission/:submissionId",
+        element: <Submission />,
       },
       {
         path: "/selectedContribution",

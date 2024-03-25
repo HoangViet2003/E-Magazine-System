@@ -1,20 +1,29 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../redux/hooks/useAuth";
+import Spinner from "./Spinner";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  //   const { isAuth, isLoading } = useAuth();
-  const isAuth = localStorage.getItem("isAuth");
+  const { isAuth, isLoading, setUserFromToken } = useAuth();
+  const userToken = localStorage.getItem("user");
 
   useEffect(() => {
-    if (isAuth === "true") {
-      navigate("/dashboard");
+    if (userToken) {
+      setUserFromToken(userToken);
     } else {
       navigate("/login");
     }
-  }, [isAuth, navigate]);
+  }, []);
 
-  if (isAuth === "true") return children;
+  if (isLoading)
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+
+  if (isAuth) return children;
 
   return null;
 }

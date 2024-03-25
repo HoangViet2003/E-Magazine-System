@@ -13,6 +13,18 @@ export function useAuth() {
 
   const url = "https://e-magazine.onrender.com/api/v1/";
 
+  const setUserFromToken = async (userToken?: string) => {
+    dispatch(setLoadingUser(true));
+
+    if (userToken) {
+      const { _id, name, email, role, createdAt, updatedAt } =
+        JSON.parse(userToken);
+
+      dispatch(setUser({ _id, name, email, role, createdAt, updatedAt }));
+    }
+    dispatch(setLoadingUser(false));
+  };
+
   const login = async ({
     email,
     password,
@@ -39,7 +51,6 @@ export function useAuth() {
 
         localStorage.setItem("token", data.token.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("isAuth", JSON.stringify(true));
 
         alert("Login successfully");
 
@@ -60,10 +71,11 @@ export function useAuth() {
   };
 
   return {
+    user,
     isLoading,
     isAuth,
     login,
     logout,
-    user,
+    setUserFromToken,
   };
 }

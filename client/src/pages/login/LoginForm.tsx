@@ -7,8 +7,8 @@ import LoginBackground from "../../assets/natural-4821583_1920.png";
 export default function LoginForm() {
   const [email, setEmail] = useState("staff1@gmail.com");
   const [password, setPassword] = useState("staff123");
-  const { login, isLoading } = useAuth();
-  const isAuth = localStorage.getItem("isAuth");
+  const { login, isLoading, setUserFromToken } = useAuth();
+  const userToken = localStorage.getItem("user");
   const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -21,8 +21,11 @@ export default function LoginForm() {
   }
 
   useEffect(() => {
-    if (isAuth === "true") navigate("/dashboard");
-  }, [isAuth, navigate]);
+    if (userToken) {
+      setUserFromToken(userToken);
+      navigate("/dashboard");
+    }
+  }, [navigate, setUserFromToken, userToken]);
 
   return (
     <div
