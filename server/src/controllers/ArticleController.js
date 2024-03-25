@@ -14,6 +14,7 @@ const {
 	User,
 	Faculty,
 	Comment,
+	Submission
 } = require("../models");
 const { handleSendEmail } = require("../utils/sendMail");
 
@@ -24,7 +25,7 @@ const emitter = emitterInstance.getEmitter();
 
 const uploadArticle = async (req, res) => {
 	try {
-		const { submissionId, type } = req.body;
+		const { type } = req.body;
 		const student = req.user;
 
 		if (!req.files || req.files.length === 0) {
@@ -33,7 +34,7 @@ const uploadArticle = async (req, res) => {
 				message: "No file uploaded",
 			});
 		}
-
+		const submission = await Submission.findOne({ user: student._id });
 		let article;
 
 		// Check if contribution exists
@@ -51,7 +52,7 @@ const uploadArticle = async (req, res) => {
 				const html = result.value; // The generated HTML
 
 				return {
-					submissionId: submissionId,
+					submissionId: submission._id,
 					student: student._id,
 					title: file.originalname,
 					content: html,
@@ -99,7 +100,7 @@ const uploadArticle = async (req, res) => {
 				.map((result) => result.value);
 
 			article = await Article.create({
-				submissionId: submissionId,
+				submissionId: submission._id,
 				student: student._id,
 				type,
 				content: images,
@@ -114,7 +115,7 @@ const uploadArticle = async (req, res) => {
 		}
 
 		const history = await History.create({
-			submissionId: submissionId,
+			submissionId: submission._id,
 			action: "create",
 			userId: student._id,
 		});
@@ -327,73 +328,28 @@ const getArticleById = async (req, res) => {
 //get All article by facultyId
 const getAllArticlesByFacultyId = async (req, res) => {
 	try {
-		// Find all contributions for the faculty
-		const contributions = await Contribution.find({
-			facultyId: req.params.facultyId,
-		});
-
+		const facultyId = req.params.facultyId;
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
 		const skip = (page - 1) * limit;
 
-		// Aggregate to get articles and total length
-		const articlesAggregate = await Article.aggregate([
-			{
-				$match: { contributionId: { $in: contributions.map((c) => c._id) } },
-			},
-			{ $skip: skip },
-			{ $limit: limit },
-			{
-				$lookup: {
-					from: "users", // Assuming the collection name for User model is 'users'
-					localField: "studentId",
-					foreignField: "_id",
-					as: "student",
-				},
-			},
-			{
-				$addFields: {
-					studentName: { $arrayElemAt: ["$student.name", 0] }, // Get the name from student array
-				},
-			},
-			{
-				$unset: "student", // Remove the 'student' field
-			},
-			{
-				$group: {
-					_id: null,
-					count: { $sum: 1 },
-					articles: { $push: "$$ROOT" }, // Push the articles into an array
-				},
-			},
-			{
-				$project: {
-					_id: 0,
-					totalLength: "$count",
-					articles: { $slice: ["$articles", limit] }, // Limit articles array to 'limit' elements
-				},
-			},
-		]);
+		// Find articles for the faculty with pagination
+		const articles = await Article.find({ facultyId: facultyId })
+			.skip(skip)
+			.limit(limit);
 
-		let totalLength = 0;
-		let articles = [];
-
-		// Extract totalLength and articles from the aggregation result
-		if (articlesAggregate.length > 0) {
-			totalLength = articlesAggregate[0].totalLength;
-			articles = articlesAggregate[0].articles;
-		}
+		// Count total number of articles for pagination
+		const totalLength = await Article.countDocuments({ facultyId: facultyId });
 
 		res.status(200).json({
-			status: "success",
 			articles,
-			currentPage: page,
 			totalPage: Math.ceil(totalLength / limit),
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
+
 
 //delete article by id
 const deleteArticle = async (req, res) => {
