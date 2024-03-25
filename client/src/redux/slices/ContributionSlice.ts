@@ -1,94 +1,47 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// const fakeData = [
-//   {
-//     _id: "1",
-//     name: "Behind The Curtain _ Theatre Production Backstage...",
-//     profile: ProfileImg,
-//     action: "Selected for contribute",
-//     owner: "Tuan Anh",
-//     updatedAt: "2024-03-05T00:41:05.610635+00:00",
-//     createdAt: "2024-03-05T00:41:05.610635+00:00",
-//   },
-//   {
-//     _id: "2",
-//     name: "Shining Star _ Jane Doe Student Profile.docx",
-//     profile: ProfileImg,
-//     action: "Selected for contribute",
-//     owner: "Tuan Anh",
-//     updatedAt: "2024-02-05T00:41:05.610635+00:00",
-//     createdAt: "2024-02-05T00:41:05.610635+00:00",
-//   },
-//   {
-//     _id: "3",
-//     name: "Tech Wave 2024 _ Trends Reshaping Student.docx",
-//     profile: ProfileImg,
-//     action: "Selected for contribute",
-//     owner: "Nguyen Thi Thu Ha",
-//     updatedAt: "2024-04-05T00:41:05.610635+00:00",
-//     createdAt: "2024-04-05T00:41:05.610635+00:00",
-//   },
-//   {
-//     _id: "4",
-//     name: "Around The World Plates _ Culinary Adventures Exch...",
-//     profile: ProfileImg,
-//     action: "Selected for contribute",
-//     owner: "Tuan Anh",
-//     updatedAt: "2024-09-05T00:41:05.610635+00:00",
-//     createdAt: "2024-09-05T00:41:05.610635+00:00",
-//   },
-//   {
-//     _id: "5",
-//     name: "Ink And Imagination _ Creative Writing Workshop Reference",
-//     profile: ProfileImg,
-//     action: "Selected for contribute",
-//     owner: "Tuan Anh",
-//     updatedAt: "2024-11-05T00:41:05.610635+00:00",
-//     createdAt: "2024-11-05T00:41:05.610635+00:00",
-//   },
-// ];
+const fakeContribution = [
+  {
+    _id: "1",
+    title: "2024 Contributions",
+    isOpen: true,
+    year: 2024,
+  },
+  {
+    _id: "2",
+    title: "2023 Contributions",
+    isOpen: false,
+    year: 2023,
+  },
+  {
+    _id: "3",
+    title: "2022 Contributions",
+    isOpen: false,
+    year: 2022,
+  },
+  {
+    _id: "4",
+    title: "2021 Contributions",
+    isOpen: false,
+    year: 2021,
+  },
+];
 
 export interface Contribution {
-  _id?: string;
-  title?: string;
-  facultyId?: string;
-  studentId?: string;
-  studentName?: string;
-  uploadDate?: string;
-  status?: string;
-  academicYear?: string;
-  closureDate?: string;
-  updatedAt: string;
-  createdAt: string;
-  contributionId?: string;
-  content: string[];
-  type: string;
+  _id: string;
+  title: string;
+  isOpen: boolean;
+  year: number;
 }
 
 interface ContributionState {
-  loading: boolean;
-  currentPage: number;
-  totalPages: number;
-  totalLength: number;
+  isLoading: boolean;
   contributions: Contribution[];
-  // contribution: Contribution;
 }
 
 const initialState: ContributionState = {
-  contributions: [],
-  loading: false,
-  currentPage: 1,
-  totalPages: 0,
-  totalLength: 0,
-
-  // contribution: {
-  //   _id: "",
-  //   name: "",
-  //   owner: "",
-  //   profile: "",
-  //   action: "",
-  //   updatedAt: "", // Fix typo here
-  // },
+  isLoading: false,
+  contributions: fakeContribution,
 };
 
 const ContributionSlice = createSlice({
@@ -96,16 +49,13 @@ const ContributionSlice = createSlice({
   initialState,
   reducers: {
     setLoadingContribution(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload;
-    },
-    setAllContributions(state, action: PayloadAction<Contribution[]>) {
-      state.contributions = action.payload;
+      state.isLoading = action.payload;
     },
   },
 });
 
 const { reducer, actions } = ContributionSlice;
 
-export const { setLoadingContribution, setAllContributions } = actions;
+export const { setLoadingContribution } = actions;
 
 export default reducer;

@@ -2,16 +2,16 @@ import MainHeader from "../../ui/MainHeader";
 
 import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 import MyFacultyTable from "./MyFacultyTable";
-import MyFacultyFolder from "./MyFacultyFolder";
 import Dropdowns from "../../ui/Dropdowns";
-import { useContribution } from "../../redux/hooks/useContribution";
+import { useArticle } from "../../redux/hooks/useArticle";
 import { useEffect } from "react";
+import MyFacultyContribution from "./MyFacultyContribution";
 
 export default function MyFaculty() {
-  const { fetchAllContribution, contributions } = useContribution();
+  const { fetchAllArticle } = useArticle();
 
   useEffect(() => {
-    fetchAllContribution();
+    fetchAllArticle();
   }, []);
 
   return (
@@ -35,7 +35,7 @@ export default function MyFaculty() {
       </MainHeader>
 
       <div className="my-5 flex flex-col gap-5 xl:ps-6">
-        <MyFacultyFolder />
+        <MyFacultyContribution />
 
         <MyFacultyTable />
       </div>

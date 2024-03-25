@@ -1,20 +1,20 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useFolder } from "../../redux/hooks/useFolder";
+import { useContribution } from "../../../redux/hooks/useContribution";
 
-import MainHeader from "../../ui/MainHeader";
-import MyFacultyTable from "./MyFacultyTable";
-import Dropdowns from "../../ui/Dropdowns";
+import MainHeader from "../../../ui/MainHeader";
+import Dropdowns from "../../../ui/Dropdowns";
 
-import DropdownIcon from "../../assets/icons/caret-bottom.svg";
-import BreadcrumbPointer from "../../assets/icons/breadcrumb-pointer.svg";
+import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
+import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
+import ContributionTable from "./ContributionTable";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
   const { yearContributeId } = useParams();
-  const { folders } = useFolder();
+  const { contributions } = useContribution();
 
-  const selectedFolder = folders.filter(
-    (folders) => folders._id === yearContributeId,
+  const selectedContribution = contributions.filter(
+    (contributions) => contributions._id === yearContributeId,
   )[0];
 
   return (
@@ -31,16 +31,16 @@ export default function MyFaculty() {
 
           <Dropdowns>
             <Dropdowns.Dropdown>
-              <Dropdowns.Toggle id={selectedFolder._id}>
+              <Dropdowns.Toggle id={selectedContribution._id}>
                 <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
                   <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                    {selectedFolder.title}
+                    {selectedContribution.title}
                   </h1>
                   <img src={DropdownIcon} alt="" />
                 </span>
               </Dropdowns.Toggle>
 
-              <Dropdowns.List id={selectedFolder._id}>
+              <Dropdowns.List id={selectedContribution._id}>
                 <Dropdowns.Button icon={DropdownIcon}>
                   Download
                 </Dropdowns.Button>
@@ -52,7 +52,7 @@ export default function MyFaculty() {
       </MainHeader>
 
       <div className="my-5 flex flex-col gap-5 xl:ps-6">
-        <MyFacultyTable yearContribute={selectedFolder.year} />
+        <ContributionTable />
       </div>
     </div>
   );

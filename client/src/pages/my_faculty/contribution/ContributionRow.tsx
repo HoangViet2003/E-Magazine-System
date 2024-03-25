@@ -1,14 +1,10 @@
-import { Article } from "../../redux/slices/ArticleSlice";
+import { Submission } from "../../../redux/slices/SubmissionSlice";
+import Table from "../../../ui/Table";
+import FolderIcon from "../../../assets/icons/folder.svg";
+import ProfileImg from "../../../assets/profile1.png";
 
-import Table from "../../ui/Table";
-import DocsIcon from "../../assets/icons/icon-document-text.svg";
-import ImgIcon from "../../assets/icons/Img_box_fill.svg";
-import ProfileImg from "../../assets/profile1.png";
-
-const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
-  const { title, updatedAt, studentName, type } = data;
-
-  const action = "test action";
+const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
+  const { title, owner, updatedAt } = data;
 
   const date = new Date(updatedAt);
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -19,7 +15,7 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
   return (
     <Table.Row>
       <div className="m-[auto] select-none">
-        <img src={type === "word" ? DocsIcon : ImgIcon} />
+        <img src={FolderIcon} />
       </div>
       <div
         className={commonCell + " font-semibold"}
@@ -27,19 +23,17 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
       >
         {title}
       </div>
-      <div className={commonCell}>{action}</div>
       <div className={commonCell + " flex items-center gap-2"}>
         <img
           src={ProfileImg}
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {studentName}
-        test
+        {owner}
       </div>
       <div className={commonCell}>{formattedDate}</div>
     </Table.Row>
   );
 };
 
-export default FacultyRow;
+export default ContributionRow;

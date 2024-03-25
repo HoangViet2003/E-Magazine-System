@@ -5,21 +5,21 @@ import SearchIcon from "../../assets/icons/search.svg";
 import HamburgerIcon from "../../assets/icons/hamburger-menu-svgrepo-com.svg";
 import FilterForm from "./FilterForm";
 import { useSidebarContext } from "../sidebar/SidebarContext";
-import { useContribution } from "../../redux/hooks/useContribution";
+import { useArticle } from "../../redux/hooks/useArticle";
 
-export default function SearchContribution() {
+export default function SearchArticle() {
   const [keyword, setKeyword] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
   const { setOpenSidebar, openSidebar } = useSidebarContext();
-  const { searchContributionQuery } = useContribution();
+  const { searchArticleQuery } = useArticle();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!keyword) return;
 
-    searchContributionQuery(keyword);
+    searchArticleQuery(keyword);
     navigate(`myFaculty`);
     setKeyword("");
   }
@@ -38,7 +38,7 @@ export default function SearchContribution() {
         </button>
         <input
           type="text"
-          placeholder="Search contributions"
+          placeholder="Search articles"
           onChange={(e) => {
             setKeyword(e.target.value);
           }}

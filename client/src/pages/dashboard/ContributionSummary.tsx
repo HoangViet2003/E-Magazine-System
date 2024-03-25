@@ -5,7 +5,7 @@ import CommentIcon from "../../assets/icons/summaryItem-icons/comment.svg";
 
 import SummaryItem from "./SummaryItem";
 
-export default function Contributions() {
+export default function ContributionSummary() {
   return (
     <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
       <h2 className="text-xl font-semibold">Contributions summary</h2>

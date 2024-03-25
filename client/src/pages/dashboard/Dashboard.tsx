@@ -1,6 +1,6 @@
 import DropdownIcon from "../../assets/icons/arrow_drop_down_24px.svg";
 import ExportIcon from "../../assets/icons/Export Icon.svg";
-import Contributions from "./Contributions";
+import ContributionSummary from "./ContributionSummary";
 import SelectedRateChart from "./SelectedRateChart";
 import CommentedArticlesChart from "./CommentedArticlesChart";
 import DailyTrafficChart from "./DailyTrafficChart";
@@ -29,7 +29,7 @@ export default function Dashboard() {
             <span>Export</span>
           </button>
         </div>
-        <Contributions />
+        <ContributionSummary />
 
         <div className="grid gap-5 lg:grid-cols-2 3xl:grid-cols-3">
           <SelectedRateChart />

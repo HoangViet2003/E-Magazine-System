@@ -92,7 +92,7 @@ function Button({
   onClick,
 }: {
   children: ReactNode;
-  icon: ReactNode;
+  icon: ReactNode | string;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { close } = useContext(DropdownsContext) as DropdownsContextValue;
@@ -108,7 +108,7 @@ function Button({
         className="flex w-full items-center gap-3 bg-none px-6 py-2 hover:bg-slate-100"
         onClick={handleClick}
       >
-        <img src={icon} alt="" />
+        {typeof icon === "string" ? <img src={icon} alt="" /> : icon}
         <span className="">{children}</span>
       </button>
     </li>

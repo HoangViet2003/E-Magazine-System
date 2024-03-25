@@ -41,11 +41,11 @@ export default function Sidebar() {
       ),
     },
     {
-      title: "Selected Contribution",
-      link: "/selectedContribution",
+      title: "Selected Article",
+      link: "/selectedArticle",
       icon: (
         <CheckCircleIcon
-          fill={currentPath === "/selectedContribution" ? "#004AD7" : "#6B6C7E"}
+          fill={currentPath === "/selectedArticle" ? "#004AD7" : "#6B6C7E"}
         />
       ),
     },

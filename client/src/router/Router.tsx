@@ -9,7 +9,7 @@ import AppLayOut from "../ui/AppLayOut";
 import Dashboard from "../pages/dashboard/Dashboard";
 import MyFaculty from "../pages/my_faculty/MyFaculty";
 import TextEditor from "../pages/text_editor/TextEditor";
-import YearContribute from "../pages/my_faculty/YearContribute";
+import Contribution from "../pages/my_faculty/contribution/Contribution";
 
 import { v4 as uuidv4 } from "uuid";
 import ImageCollection from "../pages/image_collection/ImageCollection";
@@ -38,8 +38,8 @@ const router = createBrowserRouter([
         element: <MyFaculty />,
       },
       {
-        path: "/myFaculty/folders/:yearContributeId",
-        element: <YearContribute />,
+        path: "/myFaculty/contributions/:yearContributeId",
+        element: <Contribution />,
       },
       {
         path: "/myFaculty/images/:imagesId",

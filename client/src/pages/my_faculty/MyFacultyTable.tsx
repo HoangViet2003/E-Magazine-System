@@ -6,7 +6,7 @@ import MyFacultyOperation from "./MyFacultyOperation";
 
 // import ProfileImg from "../../assets/profile1.png";
 import { URL } from "../../utils/constant";
-import { useContribution } from "../../redux/hooks/useContribution";
+import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
 
 export default function MyFacultyTable({
@@ -19,17 +19,17 @@ export default function MyFacultyTable({
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
 
-  const { contributions, loading: loadingContribution } = useContribution();
+  const { articles, isLoading: loadingArticle } = useArticle();
 
   const navigate = useNavigate();
 
   // FILTER
-  let filteredContributions = contributions;
+  let filteredArticles = articles;
 
   if (yearContribute) {
-    filteredContributions = contributions.filter(
-      (contribution) =>
-        new Date(contribution.createdAt).getFullYear() === yearContribute,
+    filteredArticles = articles.filter(
+      (article) =>
+        new Date(article.createdAt).getFullYear() === yearContribute,
     );
   }
 
@@ -42,13 +42,13 @@ export default function MyFacultyTable({
   }
 
   // SORT
-  const sortedData = filteredContributions.slice().sort((a, b) => {
+  const sortedData = filteredArticles.slice().sort((a, b) => {
     if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
     if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
     return 0;
   });
 
-  if (loadingContribution) return <Spinner />;
+  if (loadingArticle) return <Spinner />;
 
   return (
     <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">

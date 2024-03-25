@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import SearchContribution from "./SearchContribution";
+import SearchArticle from "./SearchArticle";
 
 import Logo from "../../assets/Logo.png";
 import HeaderMenu from "./HeaderMenu";
@@ -19,7 +19,7 @@ const Header = () => {
           </div>
         </Link>
 
-        <SearchContribution />
+        <SearchArticle />
         <HeaderMenu />
         <UserAvatar />
       </header>
