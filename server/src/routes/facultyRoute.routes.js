@@ -7,6 +7,10 @@ router.post("/faculty", FacultyController.createFaculty);
 router.get("/faculties", FacultyController.getAllFaculties);
 router.get("/faculty/:id", FacultyController.getAFaculties);
 router.patch("/faculty/:id", FacultyController.editFaculty);
+router.patch(
+	"/faculty/:id/add-marketing-coordinator",
+	FacultyController.addMarketingCoordinator
+);
 router.delete(
 	"/faculty/:id",
 	middleware.authenticateAdministrator,

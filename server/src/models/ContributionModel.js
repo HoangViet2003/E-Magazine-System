@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Article = require("./ArticleModel");
 
 const contributionSchema = new mongoose.Schema(
 	{
@@ -8,7 +7,14 @@ const contributionSchema = new mongoose.Schema(
 			ref: "Faculty",
 			required: true,
 		},
-		status:{
+		submissions: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Submission",
+				required: true,
+			},
+		],
+		status: {
 			type: String,
 			enum: ["open", "closed"],
 			required: true,
@@ -26,6 +32,16 @@ const contributionSchema = new mongoose.Schema(
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
 );
+
+//populate submissions
+contributionSchema.pre(/^find/, function (next) {
+	this.populate({
+		path: "submissions",
+		select: "user isCommented",
+	});
+
+	next();
+});
 
 const Contribution = mongoose.model("Contribution", contributionSchema);
 

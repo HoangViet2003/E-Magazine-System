@@ -24,13 +24,8 @@ const emitter = emitterInstance.getEmitter();
 
 const uploadArticle = async (req, res) => {
 	try {
-		const { contributionId, type } = req.body;
+		const { submissionId, type } = req.body;
 		const student = req.user;
-
-		// Check if student exists
-		if (!student) {
-			return res.status(404).json({ error: "Student does not exist" });
-		}
 
 		if (!req.files || req.files.length === 0) {
 			return res.status(400).json({
@@ -38,6 +33,8 @@ const uploadArticle = async (req, res) => {
 				message: "No file uploaded",
 			});
 		}
+
+		let article;
 
 		// Check if contribution exists
 		if (type === "word") {
@@ -54,11 +51,12 @@ const uploadArticle = async (req, res) => {
 				const html = result.value; // The generated HTML
 
 				return {
-					contributionId: contributionId,
-					studentId: student._id,
+					submissionId: submissionId,
+					student: student._id,
 					title: file.originalname,
 					content: html,
 					type: type,
+					facultyId: student.facultyId,
 				};
 			});
 
@@ -66,21 +64,22 @@ const uploadArticle = async (req, res) => {
 			await fs.promises.unlink(req.files[0].path); // Assuming one file for "word"
 
 			// Save the updated contribution
-			const createdArticles = await Article.create(newArticles);
+			article = await Article.create(newArticles);
 
-			return res.status(201).send({
-				status: "success",
-				message: "Article(s) uploaded successfully",
-				articles: createdArticles,
-			});
+			// return res.status(201).send({
+			// 	status: "success",
+			// 	message: "Article(s) uploaded successfully",
+			// 	articles: createdArticles,
+			// });
 
 			// Save the updated contribution
 		} else if (type === "image") {
 			// If Type is "image" and images are uploaded
 			const uploadPromises = req.files.map(async (file) => {
 				try {
-					await uploadFiles(file, "article/");
+					await uploadFiles(file, "articles/");
 					await fs.promises.unlink(file.path);
+					console.log(file.path);
 
 					if (!file.mimetype.startsWith("image")) {
 						// Invalid file type for "image"
@@ -99,54 +98,13 @@ const uploadArticle = async (req, res) => {
 				.filter((result) => result.status === "fulfilled")
 				.map((result) => result.value);
 
-			const newArticle = await Article.create({
-				contributionId: contributionId,
-				studentId: student._id,
+			article = await Article.create({
+				submissionId: submissionId,
+				student: student._id,
 				type,
 				content: images,
 				title: student.name + "'s images",
-			});
-
-			//TODO: Delete the files from the server
-			// await req.files.forEach(async (file) => {
-			// 	await fs.promises.unlink(file.path);
-			// });
-
-			// TODO: Send email to student to confirm the upload
-			handleSendEmail(student.name, student.email, "Article Uploaded");
-
-			//find marketing coordinator
-			const marketingCoordinator = await User.findOne({
-				role: "marketing coordinator",
 				facultyId: student.facultyId,
-			});
-
-			//send email to marketing coordinator
-
-			handleSendEmail(
-				marketingCoordinator.name,
-				marketingCoordinator.email,
-				"New Article Uploaded"
-			);
-
-			// TODO : Send email to student
-
-			// TODO: Create history for contribution
-			// const history = await History.create({
-			// 	contributionId: contributionId,
-			// 	action: "create",
-			// 	userId: student._id,
-			// });
-
-			// TODO: Create notification for admin
-			// emitter.emit("notifyMarketingCoordinator", {
-			// 	facultyId: student.facultyId,
-			// 	message: `${student.name} has uploaded an article. Please review it.`,
-			// });
-
-			return res.status(201).send({
-				message: "Article uploaded successfully",
-				newArticle,
 			});
 		} else {
 			return res.status(400).send({
@@ -154,22 +112,68 @@ const uploadArticle = async (req, res) => {
 				message: "Invalid Type or Missing File",
 			});
 		}
+
+		const history = await History.create({
+			submissionId: submissionId,
+			action: "create",
+			userId: student._id,
+		});
+
+		//TODO: Delete the files from the server
+		// await req.files.forEach(async (file) => {
+		// 	await fs.promises.unlink(file.path);
+		// });
+
+		// TODO: Send email to student to confirm the upload
+		// handleSendEmail(student.name, student.email, "Article Uploaded");
+
+		//find marketing coordinator
+		const marketingCoordinator = await User.findOne({
+			role: "marketing coordinator",
+			facultyId: student.facultyId,
+		});
+
+		//send email to marketing coordinator
+
+		// handleSendEmail(
+		// 	marketingCoordinator.name,
+		// 	marketingCoordinator.email,
+		// 	"New Article Uploaded"
+		// );
+
+		// TODO : Send email to student
+
+		// TODO: Create history for contribution
+
+		// TODO: Create notification for admin
+		// emitter.to(marketingCoordinator._id).emit("newArticle", {
+		// 	message: "New article uploaded",
+		// 	article
+		// });
+
+		return res.status(201).send({
+			message: "Article uploaded successfully",
+			article,
+			history,
+		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
 
 const updateArticle = async (req, res) => {
-	const { id } = req.params;
+	const { articleId } = req.params;
 	const { content, type, title } = req.body;
 	const { files } = req;
 
 	try {
-		const article = await Article.findById(id);
+		const article = await Article.findById(articleId);
 
 		if (!article && !type) {
 			throw new Error("Article does not exist or invalid type");
 		}
+
+		article.title = title;
 
 		if (type === "word" && files.length > 0) {
 			//update content in article to new content
@@ -259,15 +263,38 @@ const getAllArticlesByStudentId = async (req, res) => {
 	}
 };
 
+//get all article by submissionId
+const getAllArticlesBySubmissionId = async (req, res) => {
+	try {
+		const { submissionId } = req.params;
+		const page = parseInt(req.query.page) || 1;
+		const limit = 5;
+		const skip = (page - 1) * limit;
+
+		const articles = await Article.find({ submissionId })
+			.skip(skip)
+			.limit(limit);
+
+		const totalLength = await Article.find({ submissionId }).countDocuments();
+
+		res.status(200).json({
+			articles,
+			totalPage: Math.ceil(totalLength / limit),
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
 //get article by id
 const getArticleById = async (req, res) => {
 	try {
 		//check user have permission to get their article
 		//if not return 403 error
-		const { id } = req.params;
+		const { articleId } = req.params;
 
 		const user = req.user;
-		const article = await Article.findById(id);
+		const article = await Article.findById(articleId);
 
 		if (user.role === "student") {
 			if (article.studentId.toString() != user._id.toString()) {
@@ -297,26 +324,13 @@ const getArticleById = async (req, res) => {
 	}
 };
 
-//get All article by contributionId
+//get All article by facultyId
 const getAllArticlesByFacultyId = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const marketingCoordinator = req.user;
-
-		// Check if the user is the marketing coordinator of the faculty
-		const faculty = await Faculty.findById(id);
-		if (
-			!faculty ||
-			marketingCoordinator._id.toString() !==
-				faculty.marketingCoordinatorId.toString()
-		) {
-			return res.status(403).json({
-				error: "You are not the marketing coordinator of this faculty",
-			});
-		}
-
 		// Find all contributions for the faculty
-		const contributions = await Contribution.find({ facultyId: id });
+		const contributions = await Contribution.find({
+			facultyId: req.params.facultyId,
+		});
 
 		const page = parseInt(req.query.page) || 1;
 		const limit = 5;
@@ -384,27 +398,15 @@ const getAllArticlesByFacultyId = async (req, res) => {
 //delete article by id
 const deleteArticle = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const { articleId } = req.params;
 		const user = req.user;
 
-		const article = await Article.findById(id);
+		const article = await Article.findById(articleId);
 
 		if (!article) {
 			return res
 				.status(404)
 				.json({ status: "error", error: "Article not found" });
-		}
-
-		if (user.role === "student") {
-			if (article.studentId.toString() != user._id.toString()) {
-				return res
-					.status(403)
-					.json({ error: "You are not allowed to perform this action" });
-			}
-		} else {
-			return res.status
-				.status(403)
-				.json({ error: "You are not allowed to perform this action" });
 		}
 
 		await Article.findByIdAndDelete(id);
@@ -429,28 +431,6 @@ const updateArticlesForPublication = async (req, res) => {
 		}
 
 		// check marketing coordinator is the marketing coordinator of the faculty
-		const marketingCoordinatorId = user._id;
-		const faculty = await Faculty.findOne({
-			marketingCoordinatorId: marketingCoordinatorId,
-		});
-
-		if (!faculty) {
-			return res.status(403).json({
-				error: "You are not the marketing coordinator of any faculty",
-			});
-		}
-
-		const contribution = await Contribution.findOne({ facultyId: faculty._id });
-
-		const articles = await Article.find({ _id: { $in: articleIds } });
-
-		articles.forEach((article) => {
-			if (article.contributionId.toString() != contribution._id.toString()) {
-				return res.status(403).json({
-					error: "You are not the marketing coordinator of this faculty",
-				});
-			}
-		});
 
 		// Update articles with the given IDs to set isSelectedForPublication to true
 		const updatedArticles = await Article.updateMany(
@@ -479,21 +459,6 @@ const updateArticleFavorite = async (req, res) => {
 			});
 		}
 
-		// check if the marketing coordinator is the marketing coordinator of the current faculty
-		const marketingCoordinatorId = user._id;
-		const faculty = await Faculty.findOne({ marketingCoordinatorId });
-
-		const contribution = await Contribution.findOne({ facultyId: faculty._id });
-
-		const articles = await Article.find({ _id: { $in: articleIds } });
-		articles.forEach((article) => {
-			if (article.contributionId.toString() != contribution._id.toString()) {
-				return res.status(403).json({
-					error: "You are not the marketing coordinator of this faculty",
-				});
-			}
-		});
-
 		// Update article with the given ID to set isFavorite to true
 		const updatedArticles = await Article.updateMany(
 			{ _id: { $in: articleIds } },
@@ -510,36 +475,20 @@ const updateArticleFavorite = async (req, res) => {
 };
 
 //search article by title,student name
-const searchArticles = async (req, res) => {
+const getSuggestionArticles = async (req, res) => {
 	try {
-		const { query, contributionId } = req.query;
-		const page = parseInt(req.query.page) || 1;
+		const { query } = req.query;
 		const limit = 5;
-		const skip = (page - 1) * limit;
+		const user = req.user;
 
-		// Constructing the match query for aggregation
-		const matchQuery = {
-			$or: [{ title: { $regex: new RegExp(query, "i") } }, { contributionId }],
-		};
-
-		const [articles, totalLength] = await Promise.all([
-			Article.aggregate([
-				{ $match: matchQuery },
-				{ $skip: skip },
-				{ $limit: limit },
-			]),
-			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
-		]);
-
-		// Extracting the total count from the result
-		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
+		const articles = await Article.find({
+			title: { $regex: new RegExp(query, "i") },
+			facultyId: user.facultyId, // Match facultyId of the user
+		}).limit(limit);
 
 		res.status(200).json({
 			status: "success",
 			articles,
-			currentPage: page,
-			totalPage: Math.ceil(totalCount / limit),
-			totalLength: totalCount,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -556,9 +505,21 @@ const filterArticle = async (req, res) => {
 			title,
 		} = req.query;
 		const page = parseInt(req.query.page) || 1;
-
+		const user = req.user;
 		const limit = 5;
 		const skip = (page - 1) * limit;
+
+		// if (req.user.role === "student") {
+		// 	const contribution = await Contribution.findById(contributionId);
+		// 	if (
+		// 		!contribution ||
+		// 		contribution.facultyId.toString() !== req.user.facultyId.toString()
+		// 	) {
+		// 		return res.status(403).json({
+		// 			message: "You do not have access to this resource",
+		// 		});
+		// 	}
+		// }
 
 		// Get all keys from req.query
 		const articlesKeys = Object.keys(req.query);
@@ -575,19 +536,9 @@ const filterArticle = async (req, res) => {
 			}
 		});
 
-		// Constructing the match query for aggregation
-		// const matchQuery = {
-		// 	title: { $regex: new RegExp(title, "i") },
-		// 	contributionId: contributionId,
-		// 	type: type,
-		// 	isFavorite: isFavorite,
-		// 	isSelectedForPublication: isSelectedForPublication,
-		// };
-
-
 		// Using a single aggregation pipeline for fetching articles and getting total count
 		const [articles, totalLength] = await Promise.all([
-			Article.find(matchQuery),
+			Article.find(matchQuery,{facultyId:user.facultyId}).skip(skip).limit(limit),
 			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
 		]);
 
@@ -747,9 +698,10 @@ module.exports = {
 	getAllArticlesByFacultyId,
 	updateArticlesForPublication,
 	updateArticleFavorite,
-	searchArticles,
+	getSuggestionArticles,
 	filterArticle,
 	downloadAllArticleSelected,
 	deleteArticle,
 	getDashboard,
+	getAllArticlesBySubmissionId,
 };
