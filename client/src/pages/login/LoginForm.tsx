@@ -7,6 +7,7 @@ import LoginBackground from "../../assets/natural-4821583_1920.png";
 export default function LoginForm() {
   const [email, setEmail] = useState("staff1@gmail.com");
   const [password, setPassword] = useState("staff123");
+  const [emailError, setEmailError] = useState("");
   const { login, isLoading, setUserFromToken } = useAuth();
   const userToken = localStorage.getItem("user");
   const navigate = useNavigate();
@@ -18,6 +19,12 @@ export default function LoginForm() {
 
     setEmail("");
     setPassword("");
+  }
+
+  function handleForgotPassword() {
+    if (email === "") {
+      setEmailError("This field is required");
+    }
   }
 
   useEffect(() => {
@@ -43,15 +50,21 @@ export default function LoginForm() {
         <div className="container mx-4 flex max-w-96 flex-col items-center gap-6 rounded-3xl border border-white p-6 backdrop-blur-md ">
           <h2 className="my-4 text-2xl font-semibold text-white">Login</h2>
 
-          <input
-            id="email"
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mb-4 w-full border-b border-b-white bg-transparent pb-1 text-white outline-none placeholder:text-slate-300"
-            disabled={isLoading}
-          />
+          <div className="w-full">
+            <input
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border-b border-b-white bg-transparent pb-1 text-white outline-none placeholder:text-slate-300"
+              disabled={isLoading}
+            />
+
+            {emailError && (
+              <span className="text-sm text-red-500">{emailError}</span>
+            )}
+          </div>
 
           <input
             type="password"
@@ -61,7 +74,10 @@ export default function LoginForm() {
             className="w-full border-b border-b-white bg-transparent pb-1 text-white outline-none placeholder:text-slate-300"
           />
 
-          <a href="" className="ms-auto text-white">
+          <a
+            onClick={handleForgotPassword}
+            className="ms-auto cursor-pointer text-white"
+          >
             Forgot your password?
           </a>
 

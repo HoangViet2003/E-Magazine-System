@@ -25,7 +25,7 @@ export default function SearchArticle() {
   }
 
   return (
-    <div className="relative flex-grow xl:ms-6">
+    <div className="relative flex-grow ">
       <form
         onSubmit={handleSubmit}
         className="flex overflow-hidden rounded bg-searchBackground"
