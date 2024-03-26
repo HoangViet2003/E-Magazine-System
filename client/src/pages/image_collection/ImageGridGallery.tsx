@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Gallery } from "react-grid-gallery";
-import { images } from "../../utils/images";
 import ImageLightbox from "./ImageLightbox";
+import { Image } from "react-grid-gallery";
 
-export default function ImageGridGallery({images}) {
+export default function ImageGridGallery({ images }) {
   const [index, setIndex] = useState(-1);
 
   const currentImage = images[index];

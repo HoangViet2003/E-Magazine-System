@@ -34,27 +34,33 @@ export default function ContributionTable() {
     navigate(`/myFaculty/contributions/submission/${id}`);
   }
 
-  if (loadingSubmission) return <Spinner />;
+  // if (loadingSubmission) return <Spinner />;
 
   return (
-    <Table columns="0.3fr 2.4fr 1fr 1fr">
-      <Table.Header>
-        <ContributionOperation />
-      </Table.Header>
+    <>
+      {loadingSubmission ? (
+        <Spinner />
+      ) : (
+        <Table columns="0.3fr 2.4fr 1fr 1fr">
+          <Table.Header>
+            <ContributionOperation />
+          </Table.Header>
 
-      <Table.Body
-        data={submissions}
-        render={(data) => (
-          <div
-            onDoubleClick={() => {
-              openFolder(data._id);
-            }}
-            key={data._id}
-          >
-            <ContributionRow data={data} />
-          </div>
-        )}
-      />
-    </Table>
+          <Table.Body
+            data={submissions}
+            render={(data) => (
+              <div
+                onDoubleClick={() => {
+                  openFolder(data._id);
+                }}
+                key={data._id}
+              >
+                <ContributionRow data={data} />
+              </div>
+            )}
+          />
+        </Table>
+      )}
+    </>
   );
 }

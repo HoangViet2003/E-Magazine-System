@@ -1,5 +1,4 @@
 import ImageGridGallery from "../../image_collection/ImageGridGallery";
-import img from "../../../assets/Logo.png";
 import { useEffect, useState } from "react";
 import { Image } from "react-grid-gallery";
 
@@ -21,8 +20,6 @@ export default function SubmissionImage({ articles }) {
     });
   }
 
-  console.log(imageCollection);
-
   useEffect(() => {
     // Map over articleImg, call getImgSize for each image, and update imageCollection
     Promise.all(
@@ -31,7 +28,7 @@ export default function SubmissionImage({ articles }) {
       // sizes is an array of objects with width and height
       // Create an array of Image objects
       const updatedImageCollection = sizes.map((size, index) => ({
-        src: articleImg.content[0],
+        src: articleImg[index].content[0],
         width: size.width,
         height: size.height,
       }));

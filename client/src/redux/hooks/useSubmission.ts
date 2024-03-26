@@ -33,8 +33,9 @@ export const useSubmission = () => {
       dispatch(setAllSubmissions(data?.submissions));
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
     }
-    dispatch(setLoadingSubmission(false));
   };
 
   const getSubmissionByContributionId = async (contributionId) => {

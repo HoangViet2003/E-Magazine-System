@@ -11,14 +11,16 @@ import { useEffect, useState } from "react";
 import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
 import Comment from "../../../ui/Comment";
+import { useContribution } from "../../../redux/hooks/useContribution";
 
 export default function Submission() {
   const navigate = useNavigate();
   const { submissionId } = useParams();
   const { submissions } = useSubmission();
-  // const { contributions } = useContribution();
   const { getArticlesBySubmissionId, isLoading } = useArticle();
   const [articles, setArticles] = useState([]);
+
+  const { contributions } = useContribution();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -35,9 +37,9 @@ export default function Submission() {
     (submission) => submission._id === submissionId,
   )[0];
 
-  // const contribution = contributions.filter(
-  //   (contribution) => contribution._id === selectedSubmission.contributionId,
-  // )[0];
+  const containedContribution = contributions.filter(
+    (contribution) => selectedSubmission.contributionId === contribution._id,
+  )[0];
 
   return (
     <div>
@@ -54,10 +56,12 @@ export default function Submission() {
           <h1
             className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
             onClick={() =>
-              navigate(`/myFaculty/contributions/${selectedSubmission._id}`)
+              navigate(
+                `/myFaculty/contributions/${selectedSubmission.contributionId}`,
+              )
             }
           >
-            2024 Contribution$
+            {`${new Date(containedContribution.academicYear).getFullYear()} Contribution`}
           </h1>
           <img src={BreadcrumbPointer} />
 
@@ -67,8 +71,7 @@ export default function Submission() {
                 <Dropdowns.Toggle id={submissionId}>
                   <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
                     <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                      {/* {selectedSubmission.user.name} */}
-                      sdfsdf
+                      {selectedSubmission.user.name}
                     </h1>
                     <img src={DropdownIcon} alt="" />
                   </span>
