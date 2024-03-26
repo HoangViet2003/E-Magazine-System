@@ -15,13 +15,14 @@ const {
 	Faculty,
 	Comment,
 	Submission,
+	Notification,
 } = require("../models");
 const { handleSendEmail } = require("../utils/sendMail");
-
 const EmitterSingleton = require("../configs/eventEmitter");
 const sendMail = require("../utils/sendMail");
 const emitterInstance = EmitterSingleton.getInstance();
 const emitter = emitterInstance.getEmitter();
+const {emitNotification} = require("../utils/initSocket");
 
 const uploadArticle = async (req, res) => {
 	try {
@@ -58,6 +59,7 @@ const uploadArticle = async (req, res) => {
 					content: html,
 					type: type,
 					facultyId: student.facultyId,
+					contributionId: submission.contributionId,
 				};
 			});
 
@@ -87,7 +89,7 @@ const uploadArticle = async (req, res) => {
 						throw new Error("Please upload only image files");
 					}
 
-					return `https://magazine-images-upload.s3.ap-southeast-1.amazonaws.com/article/${file.originalname}`;
+					return `https://magazine-images-upload.s3.ap-southeast-1.amazonaws.com/articles/${file.originalname}`;
 				} catch (error) {
 					return null;
 				}
@@ -106,6 +108,7 @@ const uploadArticle = async (req, res) => {
 				content: images,
 				title: student.name + "'s images",
 				facultyId: student.facultyId,
+				contributionId: submission.contributionId,
 			});
 		} else {
 			return res.status(400).send({
@@ -126,7 +129,9 @@ const uploadArticle = async (req, res) => {
 		// });
 
 		// TODO: Send email to student to confirm the upload
-		// handleSendEmail(student.name, student.email, "Article Uploaded");
+		handleSendEmail(student.name, student.email, "Article Uploaded");
+
+	
 
 		//find marketing coordinator
 		const marketingCoordinator = await User.findOne({
@@ -136,21 +141,19 @@ const uploadArticle = async (req, res) => {
 
 		//send email to marketing coordinator
 
-		// handleSendEmail(
-		// 	marketingCoordinator.name,
-		// 	marketingCoordinator.email,
-		// 	"New Article Uploaded"
-		// );
+		handleSendEmail(
+			marketingCoordinator.name,
+			marketingCoordinator.email,
+			"New Article Uploaded"
+		);
 
-		// TODO : Send email to student
+		emitNotification(marketingCoordinator._id.toString(), `New Article Uploaded by ${student.name}, please review it`);
+		await Notification.create({
+			userId: marketingCoordinator._id,
+			message: `New Article Uploaded by ${student.name}, please review it`,
+		});
 
-		// TODO: Create history for contribution
 
-		// TODO: Create notification for admin
-		// emitter.to(marketingCoordinator._id).emit("newArticle", {
-		// 	message: "New article uploaded",
-		// 	article
-		// });
 
 		return res.status(201).send({
 			message: "Article uploaded successfully",

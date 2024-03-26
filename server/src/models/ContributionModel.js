@@ -20,7 +20,7 @@ const contributionSchema = new mongoose.Schema(
 			required: true,
 		},
 		academicYear: {
-			type: string,
+			type: String,
 			required: true,
 		},
 		closureDate: {

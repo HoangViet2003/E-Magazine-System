@@ -15,16 +15,22 @@ const emitter = emitterInstance.getEmitter();
 
 const createContribution = async (req, res) => {
 	try {
-		const { facultyId, status } = req.body;
+		const { facultyId, status,academicYear } = req.body;
 
-		const academicYear = new Date();
 		const closureDate = new Date();
+
+		//final closureDtate is 3 day after closure date
+		const finalClosureDate = new Date(
+			closureDate.getTime() + 3 * 24 * 60 * 60 * 1000
+		);
 
 		const newContribution = new Contribution({
 			facultyId,
 			status,
 			academicYear,
 			closureDate,
+			finalClosureDate,
+
 		});
 
 		await newContribution.save();
