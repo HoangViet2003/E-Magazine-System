@@ -3,7 +3,7 @@ import { Gallery } from "react-grid-gallery";
 import { images } from "../../utils/images";
 import ImageLightbox from "./ImageLightbox";
 
-export default function ImageGridGallery() {
+export default function ImageGridGallery({images}) {
   const [index, setIndex] = useState(-1);
 
   const currentImage = images[index];

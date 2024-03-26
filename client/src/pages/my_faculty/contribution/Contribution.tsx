@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useContribution } from "../../../redux/hooks/useContribution";
+import { useEffect } from "react";
 
 import MainHeader from "../../../ui/MainHeader";
 import Dropdowns from "../../../ui/Dropdowns";
@@ -7,15 +8,22 @@ import Dropdowns from "../../../ui/Dropdowns";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import ContributionTable from "./ContributionTable";
+import { useSubmission } from "../../../redux/hooks/useSubmission";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
   const { yearContributeId } = useParams();
   const { contributions } = useContribution();
 
+  const { fetchAllSubmission } = useSubmission();
+
   const selectedContribution = contributions.filter(
     (contribution) => contribution._id === yearContributeId,
   )[0];
+
+  useEffect(() => {
+    fetchAllSubmission();
+  }, []);
 
   return (
     <div>

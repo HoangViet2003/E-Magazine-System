@@ -1,21 +1,46 @@
 import ImageGridGallery from "../../image_collection/ImageGridGallery";
 import img from "../../../assets/Logo.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Image } from "react-grid-gallery";
 
-export default function SubmissionImage() {
-  function getImgSize(imgSrc) {
-    const newImg = new Image();
+export default function SubmissionImage({ articles }) {
+  const articleImg = articles.filter((article) => article.type === "image");
+  const [imageCollection, setImageCollection] = useState<Image[]>([]);
 
-    newImg.onload = function () {
-      const height = newImg.height;
-      const width = newImg.width;
-    };
+  function getImgSize(
+    imgSrc: string,
+  ): Promise<{ width: number; height: number }> {
+    return new Promise((resolve) => {
+      const newImg = new window.Image();
 
-    newImg.src = imgSrc;
+      newImg.onload = function () {
+        resolve({ width: newImg.width, height: newImg.height });
+      };
+
+      newImg.src = imgSrc;
+    });
   }
 
   useEffect(() => {
-    getImgSize(img);
+    // Map over articleImg, call getImgSize for each image, and update imageCollection
+    Promise.all(
+      articleImg.map((article) =>
+        getImgSize(
+          "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
+        ),
+      ),
+    ).then((sizes) => {
+      // sizes is an array of objects with width and height
+      // Create an array of Image objects
+      const updatedImageCollection = sizes.map((size, index) => ({
+        src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
+        width: size.width,
+        height: size.height,
+      }));
+
+      // Update the state
+      setImageCollection(updatedImageCollection);
+    });
   }, []);
 
   return (
@@ -24,7 +49,7 @@ export default function SubmissionImage() {
         Image collections
       </h3>
 
-      <ImageGridGallery />
+      <ImageGridGallery images={imageCollection} />
     </div>
   );
 }

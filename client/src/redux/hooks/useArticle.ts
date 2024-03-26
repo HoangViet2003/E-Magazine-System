@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAllArticles, setLoadingArticle } from "../slices/ArticleSlice";
 import { RootState } from "../index";
 
-const url = "https://e-magazine.onrender.com/api/v1/";
+const url = "https://e-magazine.onrender.com/api/v1";
 const token = localStorage.getItem("token");
 
 export const useArticle = () => {
@@ -24,8 +24,6 @@ export const useArticle = () => {
         },
       });
 
-      console.log(data);
-
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
@@ -35,6 +33,34 @@ export const useArticle = () => {
       console.log(error);
     }
     dispatch(setLoadingArticle(false));
+  };
+
+  const getArticlesBySubmissionId = async (submissionId?: string) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      if (!submissionId) {
+        throw new Error("Submission ID is required.");
+      }
+
+      const { data, status } = await axios({
+        method: "get",
+        url: `${url}/article/submission/${submissionId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (status !== 200) {
+        throw new Error("Error fetching articles");
+      }
+
+      return data?.articles;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
   };
 
   const searchArticleQuery = async (query: string) => {
@@ -65,6 +91,7 @@ export const useArticle = () => {
     isLoading,
     articles,
     fetchAllArticle,
+    getArticlesBySubmissionId,
     searchArticleQuery,
   };
 };

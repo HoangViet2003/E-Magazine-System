@@ -1,45 +1,49 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "./UserSlice";
 
-const fakeSubmission = [
-  {
-    _id: "1",
-    title: "Viet's submission",
-    owner: "Hoang Viet",
-    contributionId: "1",
-    createdAt: "2024-03-20T04:46:31.010Z",
-    updatedAt: "2024-03-20T04:46:31.010Z",
-  },
-  {
-    _id: "2",
-    title: "Tuan Anh's submission",
-    owner: "Tuan Anh",
-    contributionId: "1",
-    createdAt: "2024-03-20T04:46:31.010Z",
-    updatedAt: "2024-03-20T04:46:31.010Z",
-  },
-  {
-    _id: "3",
-    title: "Tung's submission",
-    owner: "Tung Ngo",
-    contributionId: "1",
-    createdAt: "2024-03-20T04:46:31.010Z",
-    updatedAt: "2024-03-20T04:46:31.010Z",
-  },
-  {
-    _id: "4",
-    title: "Ha's submission",
-    owner: "Ha Nguyen",
-    contributionId: "1",
-    createdAt: "2024-03-20T04:46:31.010Z",
-    updatedAt: "2024-03-20T04:46:31.010Z",
-  },
-];
+// const fakeSubmission = [
+//   {
+//     _id: "1",
+//     title: "Viet's submission",
+//     owner: "Hoang Viet",
+//     contributionId: "1",
+//     createdAt: "2024-03-20T04:46:31.010Z",
+//     updatedAt: "2024-03-20T04:46:31.010Z",
+//   },
+//   {
+//     _id: "2",
+//     title: "Tuan Anh's submission",
+//     owner: "Tuan Anh",
+//     contributionId: "1",
+//     createdAt: "2024-03-20T04:46:31.010Z",
+//     updatedAt: "2024-03-20T04:46:31.010Z",
+//   },
+//   {
+//     _id: "3",
+//     title: "Tung's submission",
+//     owner: "Tung Ngo",
+//     contributionId: "1",
+//     createdAt: "2024-03-20T04:46:31.010Z",
+//     updatedAt: "2024-03-20T04:46:31.010Z",
+//   },
+//   {
+//     _id: "4",
+//     title: "Ha's submission",
+//     owner: "Ha Nguyen",
+//     contributionId: "1",
+//     createdAt: "2024-03-20T04:46:31.010Z",
+//     updatedAt: "2024-03-20T04:46:31.010Z",
+//   },
+// ];
 
 export interface Submission {
   _id: string;
-  title: string;
-  owner: string;
+  title?: string;
+  user: User;
   contributionId: string;
+  isCommented: boolean;
+  isSelectedForPublication: boolean;
+  isFavorite: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -47,17 +51,18 @@ export interface Submission {
 interface SubmissionState {
   submissions: Submission[];
   isLoading: boolean;
-  currentPage: number;
-  totalPages: number;
-  totalLength: number;
+
+  // currentPage: number;
+  // totalPages: number;
+  // totalLength: number;
 }
 
 const initialState: SubmissionState = {
-  submissions: fakeSubmission,
+  submissions: [],
   isLoading: false,
-  currentPage: 1,
-  totalPages: 0,
-  totalLength: 0,
+  // currentPage: 1,
+  // totalPages: 0,
+  // totalLength: 0,
 };
 
 const SubmissionSlice = createSlice({
