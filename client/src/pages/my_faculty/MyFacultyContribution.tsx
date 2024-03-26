@@ -12,7 +12,7 @@ export default function MyFacultyContribution() {
   const navigate = useNavigate();
   const { contributions, fetchAllContribution, isLoading } = useContribution();
 
-  function calculateClosureDate(date) {
+  function calculateClosureDate(date: Date) {
     const today = new Date();
 
     // Calculate the difference in milliseconds between the given date and today
@@ -48,8 +48,7 @@ export default function MyFacultyContribution() {
                 <img src={FolderIcon} />
 
                 <span className={ellipsis + " font-semibold leading-tight"}>
-                  {new Date(contribution.academicYear).getFullYear() +
-                    " Contributions"}
+                  {contribution.academicYear + " Contributions"}
 
                   {contribution.status === "open" && (
                     <div

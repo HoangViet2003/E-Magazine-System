@@ -6,7 +6,7 @@ import ImgIcon from "../../assets/icons/Img_box_fill.svg";
 import ProfileImg from "../../assets/profile1.png";
 
 const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
-  const { title, updatedAt, studentName, type } = data;
+  const { title, updatedAt, student, type } = data;
 
   const action = "test action";
 
@@ -34,7 +34,7 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {studentName}
+        {student.name}
         test
       </div>
       <div className={commonCell}>{formattedDate}</div>

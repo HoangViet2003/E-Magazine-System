@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "./UserSlice";
 
 // const fakeData = [
 //   {
@@ -49,18 +50,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // ];
 
 export interface Article {
-  _id?: string;
-  title?: string;
-  facultyId?: string;
-  studentId?: string;
-  studentName?: string;
-  uploadDate?: string;
-  status?: string;
-  academicYear?: string;
-  closureDate?: string;
+  _id: string;
+  title: string;
+  facultyId: string;
+  student: User;
   updatedAt: string;
   createdAt: string;
-  articleId?: string;
   content: string[];
   type: string;
 }

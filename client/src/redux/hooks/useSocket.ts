@@ -17,7 +17,7 @@ export default function useSocket() {
     if (socket) socket.disconnect();
   };
 
-  const subscribeToNotifications = (id:any) => {
+  const subscribeToNotifications = (id: any) => {
     if (!socket) return true;
     socket.on(`notification`, (msg: any) => {
       console.log("Websocket event sendNotification received!", msg);

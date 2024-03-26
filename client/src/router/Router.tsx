@@ -12,12 +12,11 @@ import TextEditor from "../pages/text_editor/TextEditor";
 import Contribution from "../pages/my_faculty/contribution/Contribution";
 
 import { v4 as uuidv4 } from "uuid";
-import ImageCollection from "../pages/image_collection/ImageCollection";
 import Login from "../pages/login/LoginForm";
 import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +34,8 @@ const router = createBrowserRouter([
           pauseOnHover
           theme="light"
           limit={1}
-
-        />        <AppLayOut />
+        />{" "}
+        <AppLayOut />
       </ProtectedRoute>
     ),
     children: [
@@ -56,10 +55,6 @@ const router = createBrowserRouter([
       {
         path: "/myFaculty/contributions/:contributeId",
         element: <Contribution />,
-      },
-      {
-        path: "/myFaculty/images/:imagesId",
-        element: <ImageCollection />,
       },
       {
         path: "/myFaculty/contributions/submission/:submissionId",

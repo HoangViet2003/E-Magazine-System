@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { Image } from "react-grid-gallery";
+
+import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 import PrevIcon from "../../assets/icons/angle-left-svgrepo-com.svg";
 import NextIcon from "../../assets/icons/angle-right-svgrepo-com.svg";
-import { CustomImage } from "../../utils/images";
-import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 
 export default function ImageLightbox({
   currentImage,
@@ -12,9 +13,9 @@ export default function ImageLightbox({
   handleMovePrev,
   handleMoveNext,
 }: {
-  currentImage: CustomImage;
-  nextImage: CustomImage;
-  prevImage: CustomImage;
+  currentImage: Image;
+  nextImage: Image;
+  prevImage: Image;
   handleClose: () => void;
   handleMovePrev: () => void;
   handleMoveNext: () => void;

@@ -1,10 +1,10 @@
-import Dropdowns from "../../ui/Dropdowns";
+import { useAuth } from "../../redux/hooks/useAuth";
 
+import Dropdowns from "../../ui/Dropdowns";
 import NotificationIcon from "../../assets/icons/Bell_pin_fill.svg";
 import User from "../../assets/default-user.jpg";
 import UserIcon from "../../assets/icons/User_fill.svg";
 import SignoutIcon from "../../assets/icons/Sign_out_circle_duotone_line.svg";
-import { useAuth } from "../../redux/hooks/useAuth";
 
 export default function UserAvatar() {
   const { logout } = useAuth();
@@ -14,9 +14,9 @@ export default function UserAvatar() {
       <Dropdowns>
         <Dropdowns.Dropdown>
           <Dropdowns.Toggle id="faculty">
-            <button className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block">
+            <div className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block">
               <img src={NotificationIcon} />
-            </button>
+            </div>
           </Dropdowns.Toggle>
 
           <Dropdowns.List id="faculty">

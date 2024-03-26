@@ -18,7 +18,7 @@ export const useArticle = () => {
     try {
       const { data, status } = await axios({
         method: "get",
-        url: `${url}/article/faculty/65fd4994b9790ad205e7ca7e`,
+        url: `${url}/article/faculty/65ffed86f65b006fda7d0c9a`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -27,6 +27,8 @@ export const useArticle = () => {
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
+
+      console.log(data);
 
       dispatch(setAllArticles(data?.articles));
     } catch (error) {
@@ -73,8 +75,6 @@ export const useArticle = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log(data);
 
       if (status !== 200) {
         throw new Error("Error fetching Articles");

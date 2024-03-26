@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Gallery } from "react-grid-gallery";
+import { Gallery, Image } from "react-grid-gallery";
 import ImageLightbox from "./ImageLightbox";
-import { Image } from "react-grid-gallery";
 
-export default function ImageGridGallery({ images }) {
+const ImageGridGallery: React.FC<{ images: Image[] }> = ({ images }) => {
   const [index, setIndex] = useState(-1);
 
   const currentImage = images[index];
@@ -38,4 +37,6 @@ export default function ImageGridGallery({ images }) {
       )}
     </div>
   );
-}
+};
+
+export default ImageGridGallery;

@@ -1,11 +1,19 @@
-import { useNavigate } from "react-router-dom";
 import DocsIcon from "../../../assets/icons/icon-document-text.svg";
+import { Article } from "../../../redux/slices/ArticleSlice";
+import { URL } from "../../../utils/constant";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
-export default function SubmissionDocument({ articles }) {
-  const navigate = useNavigate();
+// const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
+
+const SubmissionDocument: React.FC<{ articles: Article[] }> = ({
+  articles,
+}) => {
   const docsfiles = articles.filter((article) => article.type === "word");
+
+  function openNewDocument(id: string) {
+    window.open(`${URL}/documents/${id}`, "_blank");
+  }
 
   return (
     <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
@@ -14,12 +22,12 @@ export default function SubmissionDocument({ articles }) {
       </h3>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {docsfiles.length > 0 ? (
+        {docsfiles && docsfiles.length > 0 ? (
           docsfiles.map((file, index) => (
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              onClick={() => navigate(`contributions/${file._id}`)}
+              onClick={() => openNewDocument(file._id)}
             >
               <div className={"flex items-center gap-4"}>
                 <img src={DocsIcon} />
@@ -36,4 +44,6 @@ export default function SubmissionDocument({ articles }) {
       </div>
     </div>
   );
-}
+};
+
+export default SubmissionDocument;

@@ -28,8 +28,7 @@ export default function MyFacultyTable({
 
   if (contributeId) {
     filteredArticles = articles.filter(
-      (article) =>
-        new Date(article.createdAt).getFullYear() === contributeId,
+      (article) => new Date(article.createdAt).getFullYear() === contributeId,
     );
   }
 

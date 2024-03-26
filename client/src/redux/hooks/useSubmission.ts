@@ -38,7 +38,7 @@ export const useSubmission = () => {
     }
   };
 
-  const getSubmissionByContributionId = async (contributionId) => {
+  const getSubmissionByContributionId = async (contributionId: string) => {
     dispatch(setLoadingSubmission(true));
 
     try {

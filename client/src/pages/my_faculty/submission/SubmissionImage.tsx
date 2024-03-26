@@ -1,8 +1,10 @@
-import ImageGridGallery from "../../image_collection/ImageGridGallery";
 import { useEffect, useState } from "react";
 import { Image } from "react-grid-gallery";
+import { Article } from "../../../redux/slices/ArticleSlice";
 
-export default function SubmissionImage({ articles }) {
+import ImageGridGallery from "../../image_collection/ImageGridGallery";
+
+const SubmissionImage: React.FC<{ articles: Article[] }> = ({ articles }) => {
   const articleImg = articles.filter((article) => article.type === "image");
   const [imageCollection, setImageCollection] = useState<Image[]>([]);
 
@@ -47,4 +49,6 @@ export default function SubmissionImage({ articles }) {
       <ImageGridGallery images={imageCollection} />
     </div>
   );
-}
+};
+
+export default SubmissionImage;

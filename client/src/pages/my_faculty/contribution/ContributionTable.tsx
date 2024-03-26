@@ -12,11 +12,14 @@ export default function ContributionTable() {
     useSubmission();
   const navigate = useNavigate();
   const { contributeId } = useParams();
-  const [submissions, setSubmissions] = useState<Submission>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
 
   useEffect(() => {
-    getSubmissionByContributionId(contributeId);
-  }, []);
+    if (contributeId) {
+      getSubmissionByContributionId(contributeId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contributeId]);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -28,9 +31,10 @@ export default function ContributionTable() {
     };
 
     fetchArticles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contributeId]);
 
-  function openFolder(id) {
+  function openFolder(id: string) {
     navigate(`/myFaculty/contributions/submission/${id}`);
   }
 

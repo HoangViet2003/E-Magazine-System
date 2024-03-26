@@ -47,9 +47,7 @@ export default function MyFaculty() {
                 <Dropdowns.Toggle id={selectedContribution._id}>
                   <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
                     <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                      {new Date(
-                        selectedContribution.academicYear,
-                      ).getFullYear() + " Contribution"}
+                      {selectedContribution.academicYear + " Contributions"}
                     </h1>
                     <img src={DropdownIcon} alt="" />
                   </span>

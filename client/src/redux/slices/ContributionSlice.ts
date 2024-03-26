@@ -33,7 +33,7 @@ export interface Contribution {
   facultyId: string;
   submission: Submission;
   status: string;
-  academicYear: string;
+  academicYear: number;
   closureDate: string;
   finalClosureDate: string;
   createdAt: string;

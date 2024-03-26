@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "./UserSlice";
+import { Contribution } from "./ContributionSlice";
 
 // const fakeSubmission = [
 //   {
@@ -40,7 +41,7 @@ export interface Submission {
   _id: string;
   title?: string;
   user: User;
-  contributionId: string;
+  contributionId: Contribution;
   isCommented: boolean;
   isSelectedForPublication: boolean;
   isFavorite: boolean;

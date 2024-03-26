@@ -34,9 +34,7 @@ export default function ContributionOperation() {
           />
         )}
       </div>
-      {/* <div className={ellipsis + " cursor-default select-none"}>
-        Latest action
-      </div> */}
+
       <div
         className={ellipsis + " flex cursor-pointer select-none gap-1"}
         onClick={() =>
