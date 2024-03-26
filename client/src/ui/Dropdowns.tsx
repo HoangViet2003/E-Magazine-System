@@ -33,14 +33,28 @@ function Dropdowns({ children }: { children: ReactNode }) {
 
   return (
     <DropdownsContext.Provider
-      value={{ openId, close, open, position, setPosition }}
+      value={{
+        openId,
+        close,
+        open,
+        position,
+        setPosition,
+      }}
     >
       {children}
     </DropdownsContext.Provider>
   );
 }
 
-function Toggle({ id, children }: { id: string; children: ReactNode }) {
+function Toggle({
+  id,
+  children,
+  startPosition = "left",
+}: {
+  id: string;
+  children: ReactNode;
+  startPosition?: string;
+}) {
   const { openId, close, open, setPosition } = useContext(
     DropdownsContext,
   ) as DropdownsContextValue;
@@ -51,10 +65,17 @@ function Toggle({ id, children }: { id: string; children: ReactNode }) {
     if (buttonElement) {
       const rect = buttonElement.getBoundingClientRect();
 
-      setPosition({
-        x: window.innerWidth - rect.width - rect.x,
-        y: rect.y + rect.height + 8,
-      });
+      console.log(startPosition);
+      if (startPosition === "left")
+        setPosition({
+          x: rect.x,
+          y: rect.y + rect.height + 8,
+        });
+      else
+        setPosition({
+          x: window.innerWidth - rect.width - rect.x,
+          y: rect.y + rect.height + 8,
+        });
 
       openId === "" || openId !== id ? open(id) : close();
     }
@@ -63,7 +84,15 @@ function Toggle({ id, children }: { id: string; children: ReactNode }) {
   return <button onClick={handleClick}>{children}</button>;
 }
 
-function List({ id, children }: { id: string; children: ReactNode }) {
+function List({
+  id,
+  children,
+  startPosition = "left",
+}: {
+  id: string;
+  children: ReactNode;
+  startPosition?: string;
+}) {
   const { openId, position, close } = useContext(
     DropdownsContext,
   ) as DropdownsContextValue;
@@ -76,8 +105,10 @@ function List({ id, children }: { id: string; children: ReactNode }) {
 
   return createPortal(
     <ul
-      className={`fixed w-60 rounded-sm border border-borderColor bg-white shadow-md`}
-      style={{ top: y, right: x }}
+      className={`fixed w-60 rounded-sm border border-borderColor bg-white shadow-lg`}
+      style={
+        startPosition === "left" ? { top: y, left: x } : { top: y, right: x }
+      }
       ref={ref as React.RefObject<HTMLUListElement>}
     >
       {children}

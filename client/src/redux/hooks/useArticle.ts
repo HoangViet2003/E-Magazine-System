@@ -28,8 +28,6 @@ export const useArticle = () => {
         throw new Error("Error fetching articles");
       }
 
-      console.log(data);
-
       dispatch(setAllArticles(data?.articles));
     } catch (error) {
       console.log(error);

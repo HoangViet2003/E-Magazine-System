@@ -28,7 +28,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
 
   return (
     <div
-      className="fixed top-20 w-[700px] border border-borderColor bg-white px-8 py-6 shadow-xl"
+      className="fixed top-20 z-10 w-[700px] border border-borderColor bg-white px-8 py-6 shadow-xl"
       ref={ref}
     >
       <button

@@ -27,7 +27,7 @@ const SubmissionDocument: React.FC<{ articles: Article[] }> = ({
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              onClick={() => openNewDocument(file._id)}
+              onDoubleClick={() => openNewDocument(file._id)}
             >
               <div className={"flex items-center gap-4"}>
                 <img src={DocsIcon} />

@@ -42,7 +42,9 @@ export default function MyFacultyContribution() {
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              onClick={() => navigate(`contributions/${contribution._id}`)}
+              onDoubleClick={() =>
+                navigate(`contributions/${contribution._id}`)
+              }
             >
               <div className={"flex items-center gap-4"}>
                 <img src={FolderIcon} />

@@ -13,13 +13,13 @@ export default function UserAvatar() {
     <div className="flex items-center gap-4">
       <Dropdowns>
         <Dropdowns.Dropdown>
-          <Dropdowns.Toggle id="faculty">
+          <Dropdowns.Toggle id="faculty" startPosition="right">
             <div className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block">
               <img src={NotificationIcon} />
             </div>
           </Dropdowns.Toggle>
 
-          <Dropdowns.List id="faculty">
+          <Dropdowns.List id="faculty" startPosition="right">
             <Dropdowns.Button icon={UserIcon}>
               <span className="font-bold" style={{ color: "#004AD7" }}>
                 Profile
@@ -36,7 +36,7 @@ export default function UserAvatar() {
 
       <Dropdowns>
         <Dropdowns.Dropdown>
-          <Dropdowns.Toggle id="faculty">
+          <Dropdowns.Toggle id="faculty" startPosition="right">
             <a>
               <img
                 src={User}
@@ -46,7 +46,7 @@ export default function UserAvatar() {
             </a>
           </Dropdowns.Toggle>
 
-          <Dropdowns.List id="faculty">
+          <Dropdowns.List id="faculty" startPosition="right">
             <Dropdowns.Button icon={UserIcon}>
               <span className="font-bold" style={{ color: "#004AD7" }}>
                 Profile

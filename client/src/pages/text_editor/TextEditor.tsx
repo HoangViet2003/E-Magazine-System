@@ -53,8 +53,6 @@ export default function TextEditor() {
 
     const interval = setInterval(() => {
       socket.emit("save-document", quill.getContents());
-
-      console.log(quill.getContents());
     }, SAVE_INTERVAL_MS); // save every 2s
 
     return () => {

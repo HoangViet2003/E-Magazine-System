@@ -1,4 +1,4 @@
-export default function googleDrive({ fill = "#6B6C7E" }: { fill: string }) {
+export default function googleDrive({ fill = "#6B6C7E" }: { fill?: string }) {
   return (
     <svg
       width="16"
