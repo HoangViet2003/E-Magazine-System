@@ -7,13 +7,6 @@ const contributionSchema = new mongoose.Schema(
 			ref: "Faculty",
 			required: true,
 		},
-		submissions: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Submission",
-				required: true,
-			},
-		],
 		status: {
 			type: String,
 			enum: ["open", "closed"],
@@ -38,14 +31,7 @@ const contributionSchema = new mongoose.Schema(
 );
 
 //populate submissions
-contributionSchema.pre(/^find/, function (next) {
-	this.populate({
-		path: "submissions",
-		select: "user isCommented",
-	});
 
-	next();
-});
 
 const Contribution = mongoose.model("Contribution", contributionSchema);
 

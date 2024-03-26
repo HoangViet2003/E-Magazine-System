@@ -40,6 +40,15 @@ submissionSchema.pre(/^find/, function (next) {
     next();
 });
 
+submissionSchema.pre(/^find/, function (next) {
+	this.populate({
+		path: "contributionId",
+		select: "academicYear",
+	});
+
+	next();
+});
+
 const Submission = mongoose.model("Submission", submissionSchema);
 
 module.exports = Submission;
