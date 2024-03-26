@@ -16,12 +16,27 @@ import ImageCollection from "../pages/image_collection/ImageCollection";
 import Login from "../pages/login/LoginForm";
 import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
   {
     element: (
       <ProtectedRoute>
-        <AppLayOut />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          limit={1}
+
+        />        <AppLayOut />
       </ProtectedRoute>
     ),
     children: [
