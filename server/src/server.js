@@ -9,8 +9,8 @@ const { Server, Socket } = require("socket.io");
 
 // const { errorHandler } = require("#middlewares");
 const { config, pinocfg, routes, db, eventEmitter } = require("./configs");
-
 const app = express();
+const {initSocket} = require("./utils/initSocket");
 // const logger = pinoHttp(pinocfg);
 const httpServer = require("http").createServer(app);
 
@@ -20,23 +20,7 @@ const io = new Server(httpServer, {
 	},
 });
 
-io.on("connection", (socket) => {
-	socket.on("join", (id) => {
-		socket.join(id);
-
-		console.log("User has joined: ", id);
-
-		socket.emit("joined", `You has joined ${id}`);
-
-		socket.to("65fff16b2efcd832390a8534").emit("newArticle", {
-			message: "New article uploaded",
-		});
-	});
-
-	socket.on("disconnect", (id) => {
-		console.log("User has left: ", id);
-	});
-});
+initSocket(io);
 
 /* ------------------------ cors ------------------------ */
 app.use(cors());

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const articleSchema = new mongoose.Schema(
 	{
+		contributionId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Contribution",
+			required: true,
+		},
 		submissionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Submission",

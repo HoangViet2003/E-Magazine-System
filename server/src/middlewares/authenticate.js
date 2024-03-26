@@ -50,6 +50,20 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 	// 		message: "You are not allowed to perform this action",
 	// 	});
 	// }
+
+	//check if the user has access to the specified article
+	const articleIdRequest =
+		req.params.articleId || req.body.articleId || req.query.articleId;
+
+	if (articleIdRequest) {
+		const article = await Article.findOne({facultyId: req.user.facultyId});
+
+		if(!article){
+			return res.status(403).send({
+				message: "You are not allowed to perform this action",
+			})
+		}
+	}
 	next();
 };
 
@@ -78,17 +92,19 @@ const authenticateStudent = async (req, res, next) => {
 	// 	}
 	// }
 
-	// //check if the user has access to the specified article
-	// const articleIdRequest =
-	// 	req.params.articleId || req.body.articleId || req.query.articleId;
-	// if (articleIdRequest) {
-	// 	const article = await Article.findById(articleIdRequest);
-	// 	if (!article || article.studentId.toString() !== req.user._id.toString()) {
-	// 		return res.status(403).json({
-	// 			message: "You do not have access to this resource",
-	// 		});
-	// 	}
-	// }
+	//check if the user has access to the specified article
+	const articleIdRequest =
+		req.params.articleId || req.body.articleId || req.query.articleId;
+
+	if (articleIdRequest) {
+		const article = await Article.findOne({ facultyId: req.user.facultyId });
+
+		if (!article) {
+			return res.status(403).send({
+				message: "You are not allowed to perform this action",
+			});
+		}
+	}
 
 	next();
 };
