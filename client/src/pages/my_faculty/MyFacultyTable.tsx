@@ -10,9 +10,9 @@ import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
 
 export default function MyFacultyTable({
-  yearContribute,
+  contributeId,
 }: {
-  yearContribute?: number;
+  contributeId?: number;
 }) {
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
@@ -26,10 +26,10 @@ export default function MyFacultyTable({
   // FILTER
   let filteredArticles = articles;
 
-  if (yearContribute) {
+  if (contributeId) {
     filteredArticles = articles.filter(
       (article) =>
-        new Date(article.createdAt).getFullYear() === yearContribute,
+        new Date(article.createdAt).getFullYear() === contributeId,
     );
   }
 

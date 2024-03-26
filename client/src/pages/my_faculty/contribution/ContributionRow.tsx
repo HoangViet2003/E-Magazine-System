@@ -4,7 +4,7 @@ import FolderIcon from "../../../assets/icons/folder.svg";
 import ProfileImg from "../../../assets/profile1.png";
 
 const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
-  const { title, user, updatedAt } = data;
+  const { user, updatedAt } = data;
 
   const date = new Date(updatedAt);
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;

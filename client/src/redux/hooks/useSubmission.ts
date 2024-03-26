@@ -37,9 +37,14 @@ export const useSubmission = () => {
     dispatch(setLoadingSubmission(false));
   };
 
-  const fetchSubmissionByContributionId = async (contributionId) => {
+  const getSubmissionByContributionId = async (contributionId) => {
     dispatch(setLoadingSubmission(true));
+
     try {
+      if (!contributionId) {
+        throw new Error("Contribution ID is required.");
+      }
+
       const { data, status } = await axios({
         method: "get",
         url: `${url}/submissions/contribution/${contributionId}`,
@@ -48,21 +53,23 @@ export const useSubmission = () => {
         },
       });
 
-      if (status !== 200) {
-        throw new Error("Error fetching articles");
-      }
+      // console.log(data);
 
-      // dispatch(setAllSubmissions(data?.articles));
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+      return data?.submissions;
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
     }
-    dispatch(setLoadingSubmission(false));
   };
 
   return {
     isLoading,
     submissions,
     fetchAllSubmission,
-    fetchSubmissionByContributionId,
+    getSubmissionByContributionId,
   };
 };

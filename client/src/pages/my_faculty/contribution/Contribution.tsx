@@ -12,16 +12,20 @@ import { useSubmission } from "../../../redux/hooks/useSubmission";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
-  const { yearContributeId } = useParams();
-  const { contributions } = useContribution();
+  const { contributeId } = useParams();
+  const { contributions, fetchAllContribution } = useContribution();
 
   const { fetchAllSubmission } = useSubmission();
 
-  const selectedContribution = contributions.filter(
-    (contribution) => contribution._id === yearContributeId,
-  )[0];
+  const selectedContribution =
+    contributions.length > 0
+      ? contributions.filter(
+          (contribution) => contribution._id === contributeId,
+        )[0]
+      : undefined;
 
   useEffect(() => {
+    fetchAllContribution();
     fetchAllSubmission();
   }, []);
 
@@ -37,25 +41,31 @@ export default function MyFaculty() {
           </h1>
           <img src={BreadcrumbPointer} />
 
-          <Dropdowns>
-            <Dropdowns.Dropdown>
-              <Dropdowns.Toggle id={selectedContribution._id}>
-                <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                  <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                    {selectedContribution.title}
-                  </h1>
-                  <img src={DropdownIcon} alt="" />
-                </span>
-              </Dropdowns.Toggle>
+          {selectedContribution && (
+            <Dropdowns>
+              <Dropdowns.Dropdown>
+                <Dropdowns.Toggle id={selectedContribution._id}>
+                  <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
+                    <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
+                      {new Date(
+                        selectedContribution.academicYear,
+                      ).getFullYear() + " Contribution"}
+                    </h1>
+                    <img src={DropdownIcon} alt="" />
+                  </span>
+                </Dropdowns.Toggle>
 
-              <Dropdowns.List id={selectedContribution._id}>
-                <Dropdowns.Button icon={DropdownIcon}>
-                  Download
-                </Dropdowns.Button>
-                <Dropdowns.Button icon={DropdownIcon}>Delete</Dropdowns.Button>
-              </Dropdowns.List>
-            </Dropdowns.Dropdown>
-          </Dropdowns>
+                <Dropdowns.List id={selectedContribution._id}>
+                  <Dropdowns.Button icon={DropdownIcon}>
+                    Download
+                  </Dropdowns.Button>
+                  <Dropdowns.Button icon={DropdownIcon}>
+                    Delete
+                  </Dropdowns.Button>
+                </Dropdowns.List>
+              </Dropdowns.Dropdown>
+            </Dropdowns>
+          )}
         </div>
       </MainHeader>
 

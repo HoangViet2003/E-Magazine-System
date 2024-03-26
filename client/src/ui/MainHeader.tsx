@@ -34,12 +34,7 @@ const MainHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
               <img src={ShareIcon} />
               Share
             </button>
-            {openComment && (
-              <Comment
-                openComment={openComment}
-                setOpenComment={setOpenComment}
-              />
-            )}
+            {openComment && <Comment setOpenComment={setOpenComment} />}
           </div>
         )}
 

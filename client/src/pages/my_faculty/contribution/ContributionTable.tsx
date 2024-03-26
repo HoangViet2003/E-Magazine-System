@@ -3,11 +3,32 @@ import ContributionOperation from "./ContributionOperation";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
 import ContributionRow from "./ContributionRow";
 import Spinner from "../../../ui/Spinner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Submission } from "../../../redux/slices/SubmissionSlice";
 
 export default function ContributionTable() {
-  const { submissions, isLoading: loadingSubmission } = useSubmission();
+  const { isLoading: loadingSubmission, getSubmissionByContributionId } =
+    useSubmission();
   const navigate = useNavigate();
+  const { contributeId } = useParams();
+  const [submissions, setSubmissions] = useState<Submission>([]);
+
+  useEffect(() => {
+    getSubmissionByContributionId(contributeId);
+  }, []);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      if (contributeId) {
+        const fetchedSubmission =
+          await getSubmissionByContributionId(contributeId);
+        setSubmissions(fetchedSubmission);
+      }
+    };
+
+    fetchArticles();
+  }, [contributeId]);
 
   function openFolder(id) {
     navigate(`/myFaculty/contributions/submission/${id}`);

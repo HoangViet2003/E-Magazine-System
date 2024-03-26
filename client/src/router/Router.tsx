@@ -39,7 +39,7 @@ const router = createBrowserRouter([
         element: <MyFaculty />,
       },
       {
-        path: "/myFaculty/contributions/:yearContributeId",
+        path: "/myFaculty/contributions/:contributeId",
         element: <Contribution />,
       },
       {

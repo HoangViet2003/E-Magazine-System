@@ -21,19 +21,17 @@ export default function SubmissionImage({ articles }) {
     });
   }
 
+  console.log(imageCollection);
+
   useEffect(() => {
     // Map over articleImg, call getImgSize for each image, and update imageCollection
     Promise.all(
-      articleImg.map((article) =>
-        getImgSize(
-          "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
-        ),
-      ),
+      articleImg.map((article) => getImgSize(article.content[0])),
     ).then((sizes) => {
       // sizes is an array of objects with width and height
       // Create an array of Image objects
       const updatedImageCollection = sizes.map((size, index) => ({
-        src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
+        src: articleImg.content[0],
         width: size.width,
         height: size.height,
       }));
