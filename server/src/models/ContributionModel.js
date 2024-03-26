@@ -20,10 +20,14 @@ const contributionSchema = new mongoose.Schema(
 			required: true,
 		},
 		academicYear: {
-			type: Date,
+			type: string,
 			required: true,
 		},
 		closureDate: {
+			type: Date,
+			required: true,
+		},
+		finalClosureDate: {
 			type: Date,
 			required: true,
 		},

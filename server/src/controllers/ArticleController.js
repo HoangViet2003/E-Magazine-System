@@ -14,7 +14,7 @@ const {
 	User,
 	Faculty,
 	Comment,
-	Submission
+	Submission,
 } = require("../models");
 const { handleSendEmail } = require("../utils/sendMail");
 
@@ -290,33 +290,35 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 //get article by id
 const getArticleById = async (req, res) => {
 	try {
-		//check user have permission to get their article
-		//if not return 403 error
 		const { articleId } = req.params;
-
 		const user = req.user;
-		const article = await Article.findById(articleId);
 
-		if (user.role === "student") {
-			if (article.studentId.toString() != user._id.toString()) {
-				return res
-					.status(403)
-					.json({ error: "You are not allowed to perform this action" });
-			}
-		} else if (user.role === "marketing coordinator") {
-			const contribution = await Contribution.findOne(article.contributionId);
-			const faculty = await Faculty.findOne(contribution.facultyId);
-			if (faculty.marketingCoordinatorId.toString() != user._id.toString()) {
-				return res
-					.status(403)
-					.json({ error: "You are not allowed to perform this action" });
-			}
-		}
+		const article = await Article.findOne({ _id: articleId }).populate(
+			"student",
+			"name email facultyId"
+		);
 
 		if (!article) {
 			return res
 				.status(404)
 				.json({ status: "error", error: "Article not found" });
+		}
+
+		// Check if user is a student and the article's student is not the current user
+		if (
+			user.role === "student" &&
+			article.student._id.toString() !== user._id.toString()
+		) {
+			return res
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" });
+		}
+
+		// Check if user's faculty matches the article's faculty
+		if (article.facultyId.toString() !== user.facultyId.toString()) {
+			return res
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" });
 		}
 
 		res.status(200).json({ article });
@@ -349,7 +351,6 @@ const getAllArticlesByFacultyId = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
-
 
 //delete article by id
 const deleteArticle = async (req, res) => {
@@ -453,68 +454,43 @@ const getSuggestionArticles = async (req, res) => {
 
 const filterArticle = async (req, res) => {
 	try {
-		const {
-			contributionId,
-			type,
-			isFavorite,
-			isSelectedForPublication,
-			title,
-		} = req.query;
+		const { type, title } = req.query;
 		const page = parseInt(req.query.page) || 1;
 		const user = req.user;
 		const limit = 5;
 		const skip = (page - 1) * limit;
 
-		// if (req.user.role === "student") {
-		// 	const contribution = await Contribution.findById(contributionId);
-		// 	if (
-		// 		!contribution ||
-		// 		contribution.facultyId.toString() !== req.user.facultyId.toString()
-		// 	) {
-		// 		return res.status(403).json({
-		// 			message: "You do not have access to this resource",
-		// 		});
-		// 	}
-		// }
+		let matchQuery = {
+			
+			facultyId: user.facultyId,
+			type: type,
+		};
 
-		// Get all keys from req.query
-		const articlesKeys = Object.keys(req.query);
+		let articles;
 
-		// Constructing the match query for aggregation
-		let matchQuery = {};
-
-		// Check if keys are present in req.query and add them to matchQuery
-		articlesKeys.forEach((key) => {
-			if (key === "title") {
-				matchQuery.title = { $regex: new RegExp(req.query[key], "i") };
-			} else {
-				matchQuery[key] = req.query[key];
-			}
-		});
-
-		// Using a single aggregation pipeline for fetching articles and getting total count
-		const [articles, totalLength] = await Promise.all([
-			Article.find(matchQuery,{facultyId:user.facultyId}).skip(skip).limit(limit),
-			Article.aggregate([{ $match: matchQuery }, { $count: "total" }]),
-		]);
-
-		if (articles.length === 0) {
-			return res
-				.status(404)
-				.json({ status: "error", message: "No articles found" });
+		// Modify matchQuery for students
+		if (user.role === "student") {
+			matchQuery.student = user._id;
 		}
 
-		// Extracting the total count from the result
-		const totalCount = totalLength.length > 0 ? totalLength[0].total : 0;
+		  if (title) {
+				matchQuery.title = { $regex: new RegExp(title, "i") };
+			}
+
+		articles = await Article.find(matchQuery).skip(skip).limit(limit);
+
+		// Using a single aggregation pipeline for fetching articles and getting total count
+		const totalLength = await Article.find(matchQuery).countDocuments();
 
 		res.status(200).json({
 			articles,
-			totalPage: Math.ceil(totalCount / limit),
+			totalPage: Math.ceil(totalLength / limit),
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
+
 
 //donwload all article selected as zip file
 const downloadAllArticleSelected = async (req, res) => {
