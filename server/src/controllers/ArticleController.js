@@ -269,11 +269,11 @@ const getAllArticlesByStudentId = async (req, res) => {
 		const skip = (page - 1) * limit;
 
 		const articles = await Article.find({
-			studentId: student._id,
+			student: student._id,
 		})
 			.skip(skip)
 			.limit(limit)
-			.populate("studentId", "name"); // Populate the studentId field with name
+			
 
 		const totalLength = Article.find({
 			studentId: student._id,
