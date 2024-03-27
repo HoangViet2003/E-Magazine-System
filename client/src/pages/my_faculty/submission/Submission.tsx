@@ -16,8 +16,8 @@ import SubmissionTable from "./SubmissionTable";
 export default function Submission() {
   const navigate = useNavigate();
   const { submissionId } = useParams();
-  // const { submissions, fetchAllSubmission, getSubmissionByStudent } =
-  //   useSubmission();
+  const { submissions, fetchAllSubmission, getSubmissionByStudent } =
+    useSubmission();
   // const { getArticlesBySubmissionId, isLoading } = useArticle();
   // const [articles, setArticles] = useState([]);
   const role = localStorage.getItem("role");

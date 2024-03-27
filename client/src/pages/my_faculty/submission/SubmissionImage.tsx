@@ -17,7 +17,6 @@ const SubmissionImage = () => {
     const fetchArticle = async () => {
       if (id) {
         const article = await getArticleById(id);
-
         setArticle(article);
       }
     };
