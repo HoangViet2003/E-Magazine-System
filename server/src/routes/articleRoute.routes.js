@@ -41,6 +41,14 @@ router.patch(
 	authenticateMarketingCoordinator,
 	ArticleController.updateArticlesForPublication
 );
+
+router.post(
+	"/article/create-doc",
+	authenticateToken,
+	authenticateStudent,
+	ArticleController.createBlankWordFile
+
+);
 router.patch("/article/favourite",authenticateToken,authenticateMarketingCoordinator, ArticleController.updateArticleFavorite);
 router.get("/article/suggestions",authenticateToken, ArticleController.getSuggestionArticles);
 router.get("/article/filter", authenticateToken, ArticleController.filterArticle);

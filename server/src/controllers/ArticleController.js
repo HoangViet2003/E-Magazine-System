@@ -18,11 +18,10 @@ const {
 	Notification,
 } = require("../models");
 const { handleSendEmail } = require("../utils/sendMail");
+const { emitNotification } = require("../utils/initSocket");
 const EmitterSingleton = require("../configs/eventEmitter");
-const sendMail = require("../utils/sendMail");
 const emitterInstance = EmitterSingleton.getInstance();
 const emitter = emitterInstance.getEmitter();
-const {emitNotification} = require("../utils/initSocket");
 
 const uploadArticle = async (req, res) => {
 	try {
@@ -59,7 +58,7 @@ const uploadArticle = async (req, res) => {
 					content: html,
 					type: type,
 					facultyId: student.facultyId,
-					contributionId: submission.contributionId,
+					contributionId: submission.contributionId._id,
 				};
 			});
 
@@ -108,7 +107,7 @@ const uploadArticle = async (req, res) => {
 				content: images,
 				title: student.name + "'s images",
 				facultyId: student.facultyId,
-				contributionId: submission.contributionId,
+				contributionId: submission.contributionId._id,
 			});
 		} else {
 			return res.status(400).send({
@@ -131,8 +130,6 @@ const uploadArticle = async (req, res) => {
 		// TODO: Send email to student to confirm the upload
 		handleSendEmail(student.name, student.email, "Article Uploaded");
 
-	
-
 		//find marketing coordinator
 		const marketingCoordinator = await User.findOne({
 			role: "marketing coordinator",
@@ -147,13 +144,14 @@ const uploadArticle = async (req, res) => {
 			"New Article Uploaded"
 		);
 
-		emitNotification(marketingCoordinator._id.toString(), `New Article Uploaded by ${student.name}, please review it`);
+		emitNotification(
+			marketingCoordinator._id.toString(),
+			`New Article Uploaded by ${student.name}, please review it`
+		);
 		await Notification.create({
 			userId: marketingCoordinator._id,
 			message: `New Article Uploaded by ${student.name}, please review it`,
 		});
-
-
 
 		return res.status(201).send({
 			message: "Article uploaded successfully",
@@ -190,7 +188,7 @@ const updateArticle = async (req, res) => {
 				// Upload new images
 				await uploadFiles(file, "articles/");
 				await fs.promises.unlink(file.path);
-				return `https://magazine-images-upload.s3.ap-southeast-1.amazonaws.com/article/${file.originalname}`;
+				return `https://magazine-images-upload.s3.ap-southeast-1.amazonaws.com/articles/${file.originalname}`;
 			});
 
 			const uploadedImages = await Promise.all(uploadPromises);
@@ -234,6 +232,29 @@ const updateArticle = async (req, res) => {
 		});
 	} catch (error) {
 		return res.status(500).send({ status: "error", message: error.message });
+	}
+};
+
+//create word file
+const createBlankWordFile = async (req, res) => {
+	try {
+		const {submissionId} = req.body;
+		const user = req.user;
+		const article = await Article.create({
+			submissionId: submissionId,
+			title: "Blank Article",
+			type: "word",
+			student: user._id,
+			facultyId: user.facultyId,
+			contributionId:submission.contributionId._id
+
+
+
+		});
+
+		res.status(201).json({ article});
+	} catch(err) {
+		res.status(500).json({ error: err.message });
 	}
 };
 
@@ -464,7 +485,6 @@ const filterArticle = async (req, res) => {
 		const skip = (page - 1) * limit;
 
 		let matchQuery = {
-			
 			facultyId: user.facultyId,
 			type: type,
 		};
@@ -476,9 +496,9 @@ const filterArticle = async (req, res) => {
 			matchQuery.student = user._id;
 		}
 
-		  if (title) {
-				matchQuery.title = { $regex: new RegExp(title, "i") };
-			}
+		if (title) {
+			matchQuery.title = { $regex: new RegExp(title, "i") };
+		}
 
 		articles = await Article.find(matchQuery).skip(skip).limit(limit);
 
@@ -493,7 +513,6 @@ const filterArticle = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
-
 
 //donwload all article selected as zip file
 const downloadAllArticleSelected = async (req, res) => {
@@ -639,4 +658,5 @@ module.exports = {
 	deleteArticle,
 	getDashboard,
 	getAllArticlesBySubmissionId,
+	createBlankWordFile,
 };
