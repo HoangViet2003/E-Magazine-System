@@ -8,12 +8,13 @@ import Dropdowns from "../../../ui/Dropdowns";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import ContributionTable from "./ContributionTable";
-import { useSubmission } from "../../../redux/hooks/useSubmission";
+// import { useSubmission } from "../../../redux/hooks/useSubmission";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
   const { contributeId } = useParams();
   const { contributions, fetchAllContribution } = useContribution();
+  const role = localStorage.getItem("role");
 
   // const { fetchAllSubmission } = useSubmission();
 
@@ -35,9 +36,11 @@ export default function MyFaculty() {
         <div className="flex items-center">
           <h1
             className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
-            onClick={() => navigate("/myFaculty")}
+            onClick={() =>
+              role === "student" ? navigate("/student") : navigate("/myFaculty")
+            }
           >
-            My Faculty
+            {role === "student" ? "Your Submission" : "My Faculty"}
           </h1>
           <img src={BreadcrumbPointer} />
 

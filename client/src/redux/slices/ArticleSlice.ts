@@ -84,8 +84,12 @@ const ArticleSlice = createSlice({
     setLoadingArticle(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
-    setAllArticles(state, action: PayloadAction<Article[]>) {
-      state.articles = action.payload;
+    setAllArticles(state, action: PayloadAction<ArticleState>) {
+      console.log(action.payload);
+
+      state.articles = action.payload.articles;
+      state.totalLength = action.payload.totalLength;
+      state.totalPages = action.payload.totalPages;
     },
   },
 });

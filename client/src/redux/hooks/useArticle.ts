@@ -9,7 +9,7 @@ const token = localStorage.getItem("token");
 export const useArticle = () => {
   const dispatch = useDispatch();
 
-  const { isLoading, articles } = useSelector(
+  const { isLoading, articles, totalLength } = useSelector(
     (state: RootState) => state.article,
   );
 
@@ -35,7 +35,29 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
-  const getArticleByStudentId = async (page) => {
+  const getArticleById = async (articleId: string) => {
+    dispatch(setLoadingArticle(true));
+    try {
+      const { data, status } = await axios({
+        method: "get",
+        url: `${url}/article/${articleId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (status !== 200) {
+        throw new Error("Error fetching articles");
+      }
+
+      return data?.article;
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(setLoadingArticle(false));
+  };
+
+  const getArticleByStudentId = async (page: number) => {
     dispatch(setLoadingArticle(true));
 
     try {
@@ -51,9 +73,7 @@ export const useArticle = () => {
         throw new Error("Error fetching articles");
       }
 
-      console.log(data);
-
-      dispatch(setAllArticles(data?.articles));
+      dispatch(setAllArticles(data));
     } catch (error) {
       console.log(error);
     } finally {
@@ -61,8 +81,13 @@ export const useArticle = () => {
     }
   };
 
-  const getArticlesBySubmissionId = async (submissionId?: string) => {
+  const getArticlesBySubmissionId = async (
+    submissionId?: string,
+    page: number,
+  ) => {
     dispatch(setLoadingArticle(true));
+
+    console.log(page);
 
     try {
       if (!submissionId) {
@@ -71,7 +96,7 @@ export const useArticle = () => {
 
       const { data, status } = await axios({
         method: "get",
-        url: `${url}/article/submission/${submissionId}`,
+        url: `${url}/article/submission/${submissionId}?page=${page}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,7 +106,9 @@ export const useArticle = () => {
         throw new Error("Error fetching articles");
       }
 
-      return data?.articles;
+      console.log(data);
+
+      return { articles: data?.articles, totalLength: data?.totalLength };
     } catch (error) {
       console.error(error);
     } finally {
@@ -112,9 +139,11 @@ export const useArticle = () => {
   };
 
   return {
+    totalLength,
     isLoading,
     articles,
     fetchAllArticle,
+    getArticleById,
     getArticlesBySubmissionId,
     searchArticleQuery,
     getArticleByStudentId,

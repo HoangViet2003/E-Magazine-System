@@ -8,7 +8,7 @@ import MyFacultyOperation from "./MyFacultyOperation";
 import { URL } from "../../utils/constant";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../../ui/Pagination";
 
 export default function MyFacultyTable({
@@ -21,15 +21,23 @@ export default function MyFacultyTable({
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
 
-  const { articles, isLoading: loadingArticle } = useArticle();
+  const {
+    articles,
+    isLoading: loadingArticle,
+    totalLength: articleLength,
+  } = useArticle();
 
   const navigate = useNavigate();
 
   const { getArticleByStudentId } = useArticle();
 
+  // const [page, setPage] = useState(1);
+
   useEffect(() => {
-    getArticleByStudentId();
-  }, []);
+    const page = parseInt(searchParams.get("page") || "1");
+
+    getArticleByStudentId(page);
+  }, [searchParams]);
 
   // FILTER
   let filteredArticles = articles;
@@ -83,7 +91,7 @@ export default function MyFacultyTable({
         />
       </Table>
 
-      <Pagination />
+      <Pagination count={articleLength} />
     </>
   );
 }

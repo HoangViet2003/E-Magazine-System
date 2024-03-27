@@ -9,35 +9,38 @@ import SubmissionFile from "./SubmissionFile";
 import { useEffect, useState } from "react";
 import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
+import { Submission as SubmissionObj } from "../../../redux/slices/SubmissionSlice";
+import MyFacultyTable from "../MyFacultyTable";
+import SubmissionTable from "./SubmissionTable";
 
 export default function Submission() {
   const navigate = useNavigate();
   const { submissionId } = useParams();
-  const { submissions, fetchAllSubmission } = useSubmission();
-  const { getArticlesBySubmissionId, isLoading } = useArticle();
-  const [articles, setArticles] = useState([]);
+  // const { submissions, fetchAllSubmission, getSubmissionByStudent } =
+  //   useSubmission();
+  // const { getArticlesBySubmissionId, isLoading } = useArticle();
+  // const [articles, setArticles] = useState([]);
   const role = localStorage.getItem("role");
-
+  const [currSubmission, setCurrSubmission] = useState<SubmissionObj>();
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      if (submissionId) {
-        const fetchedArticles = await getArticlesBySubmissionId(submissionId);
-        setArticles(fetchedArticles);
+    const getSubmission = async () => {
+      if (role === "student") {
+        const fetchedSubmission = await getSubmissionByStudent();
+        setCurrSubmission(fetchedSubmission);
       }
     };
-    fetchArticles();
-    fetchAllSubmission();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submissionId]); // Corrected dependency: submissionId only
 
-  const selectedSubmission = submissions.filter(
-    (submission) => submission._id === submissionId,
-  )[0];
+    getSubmission();
+  }, []);
+
+  // const selectedSubmission = submissions.filter(
+  //   (submission) => submission._id === submissionId,
+  // )[0];
 
   return (
     <div>
-      {selectedSubmission && (
+      {currSubmission && (
         <MainHeader>
           <div className="relative flex items-center">
             <h1
@@ -51,12 +54,16 @@ export default function Submission() {
             <h1
               className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
               onClick={() =>
-                navigate(
-                  `/myFaculty/contributions/${selectedSubmission.contributionId._id}`,
-                )
+                role === "student"
+                  ? navigate(
+                      `/student/contributions/${currSubmission.contributionId._id}`,
+                    )
+                  : navigate(
+                      `/myFaculty/contributions/${currSubmission.contributionId._id}`,
+                    )
               }
             >
-              {`${selectedSubmission.contributionId.academicYear} Contribution`}
+              {`${currSubmission.contributionId.academicYear} Contribution`}
             </h1>
             <img src={BreadcrumbPointer} />
 
@@ -66,7 +73,7 @@ export default function Submission() {
                   <Dropdowns.Toggle id={submissionId}>
                     <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
                       <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                        {selectedSubmission.user.name}
+                        {currSubmission.user.name}
                       </h1>
                       <img src={DropdownIcon} alt="" />
                     </span>
@@ -87,13 +94,9 @@ export default function Submission() {
         </MainHeader>
       )}
 
-      {isLoading ? (
-        <Spinner />
-      ) : articles && articles.length > 0 ? (
-        <SubmissionFile articles={articles} />
-      ) : (
-        <div>No articles found.</div>
-      )}
+      <div className="my-5 flex flex-col gap-5 xl:ps-6">
+        <SubmissionTable />
+      </div>
     </div>
   );
 }

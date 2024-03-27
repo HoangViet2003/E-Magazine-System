@@ -18,6 +18,7 @@ import Submission from "../pages/my_faculty/submission/Submission";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
+import SubmissionImage from "../pages/my_faculty/submission/SubmissionImage";
 
 const router = createBrowserRouter([
   {
@@ -80,18 +81,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/documents",
-    element: <Navigate replace to={`${uuidv4()}`} />,
-  },
-  {
-    path: "/documents/:id",
-    element: <TextEditor />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
     element: (
       <ProtectedRoute>
         <ToastContainer
@@ -144,7 +133,24 @@ const router = createBrowserRouter([
         path: "/trash",
         element: <LandingPage />,
       },
+      {
+        path: "/images/:id",
+        element: <SubmissionImage />,
+      },
     ],
+  },
+  {
+    path: "/documents",
+    element: <Navigate replace to={`${uuidv4()}`} />,
+  },
+
+  {
+    path: "/documents/:id",
+    element: <TextEditor />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
