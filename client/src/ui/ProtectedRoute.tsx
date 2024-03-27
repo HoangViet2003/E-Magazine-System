@@ -5,11 +5,9 @@ import Spinner from "./Spinner";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const { isAuth, isLoading, setUserFromToken, user } = useAuth();
+  const { isLoading, setUserFromToken } = useAuth();
   const userToken = localStorage.getItem("user");
   const role = localStorage.getItem("role");
-
-  console.log(role);
 
   const marketingCorRestrictedPaths = ["dashboard", "myFaculty"];
 

@@ -15,7 +15,7 @@ export default function MyFaculty() {
   const { contributeId } = useParams();
   const { contributions, fetchAllContribution } = useContribution();
 
-  const { fetchAllSubmission } = useSubmission();
+  // const { fetchAllSubmission } = useSubmission();
 
   const selectedContribution =
     contributions.length > 0
