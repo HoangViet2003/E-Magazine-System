@@ -121,6 +121,14 @@ const router = createBrowserRouter([
         element: <StudentHomepage />,
       },
       {
+        path: "/student/contributions/:contributeId",
+        element: <Contribution />,
+      },
+      {
+        path: "/student/contributions/submission/:submissionId",
+        element: <Submission />,
+      },
+      {
         path: "/selectedSubmission",
         element: <LandingPage />,
       },

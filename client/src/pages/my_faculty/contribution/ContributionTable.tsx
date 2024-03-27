@@ -8,37 +8,38 @@ import { useEffect, useState } from "react";
 import { Submission } from "../../../redux/slices/SubmissionSlice";
 
 export default function ContributionTable() {
-  const { isLoading: loadingSubmission, getSubmissionByContributionId } =
-    useSubmission();
+  const {
+    isLoading: loadingSubmission,
+    getSubmissionByContributionId,
+    getSubmissionByStudent,
+  } = useSubmission();
   const navigate = useNavigate();
   const { contributeId } = useParams();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-
-  useEffect(() => {
-    if (contributeId) {
-      getSubmissionByContributionId(contributeId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contributeId]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchArticles = async () => {
       if (contributeId) {
         const fetchedSubmission =
-          await getSubmissionByContributionId(contributeId);
-        setSubmissions(fetchedSubmission);
+          role === "student"
+            ? await getSubmissionByStudent()
+            : await getSubmissionByContributionId(contributeId);
+
+        setSubmissions([fetchedSubmission]);
       }
     };
+
+    console.log(submissions);
 
     fetchArticles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contributeId]);
 
   function openFolder(id: string) {
-    navigate(`/myFaculty/contributions/submission/${id}`);
+    if (role === "student") navigate(`/student/contributions/submission/${id}`);
+    else navigate(`/myFaculty/contributions/submission/${id}`);
   }
-
-  // if (loadingSubmission) return <Spinner />;
 
   return (
     <>

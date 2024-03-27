@@ -10,9 +10,9 @@ import { useArticle } from "../../redux/hooks/useArticle";
 export default function StudentHomepage() {
   const { getArticleByStudentId } = useArticle();
 
-  useEffect(() => {
-    getArticleByStudentId();
-  }, []);
+  // useEffect(() => {
+  //   getArticleByStudentId();
+  // }, []);
 
   return (
     <div>

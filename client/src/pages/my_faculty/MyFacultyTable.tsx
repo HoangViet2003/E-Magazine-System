@@ -8,6 +8,8 @@ import MyFacultyOperation from "./MyFacultyOperation";
 import { URL } from "../../utils/constant";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
+import { useEffect } from "react";
+import Pagination from "../../ui/Pagination";
 
 export default function MyFacultyTable({
   contributeId,
@@ -22,6 +24,12 @@ export default function MyFacultyTable({
   const { articles, isLoading: loadingArticle } = useArticle();
 
   const navigate = useNavigate();
+
+  const { getArticleByStudentId } = useArticle();
+
+  useEffect(() => {
+    getArticleByStudentId();
+  }, []);
 
   // FILTER
   let filteredArticles = articles;
@@ -50,28 +58,32 @@ export default function MyFacultyTable({
   if (loadingArticle) return <Spinner />;
 
   return (
-    <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">
-      <Table.Header>
-        <MyFacultyOperation />
-      </Table.Header>
+    <>
+      <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">
+        <Table.Header>
+          <MyFacultyOperation />
+        </Table.Header>
 
-      <Table.Body
-        data={sortedData}
-        render={(data) => (
-          <div
-            onDoubleClick={() => {
-              if (data.type === "word") {
-                openNewDocument(data._id);
-              } else {
-                openImageCollection(data._id);
-              }
-            }}
-            key={data._id}
-          >
-            <FacultyRow data={data} />
-          </div>
-        )}
-      />
-    </Table>
+        <Table.Body
+          data={sortedData}
+          render={(data) => (
+            <div
+              onDoubleClick={() => {
+                if (data.type === "word") {
+                  openNewDocument(data._id);
+                } else {
+                  openImageCollection(data._id);
+                }
+              }}
+              key={data._id}
+            >
+              <FacultyRow data={data} />
+            </div>
+          )}
+        />
+      </Table>
+
+      <Pagination />
+    </>
   );
 }

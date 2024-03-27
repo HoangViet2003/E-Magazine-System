@@ -16,6 +16,8 @@ export default function Submission() {
   const { submissions, fetchAllSubmission } = useSubmission();
   const { getArticlesBySubmissionId, isLoading } = useArticle();
   const [articles, setArticles] = useState([]);
+  const role = localStorage.getItem("role");
+
 
   useEffect(() => {
     const fetchArticles = async () => {

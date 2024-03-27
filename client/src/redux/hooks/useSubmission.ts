@@ -54,12 +54,33 @@ export const useSubmission = () => {
         },
       });
 
-      // console.log(data);
-
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
       return data?.submissions;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const getSubmissionByStudent = async () => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      const { data, status } = await axios({
+        method: "get",
+        url: `${url}/submission/student`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+      return data?.submission;
     } catch (error) {
       console.log(error);
     } finally {
@@ -72,5 +93,6 @@ export const useSubmission = () => {
     submissions,
     fetchAllSubmission,
     getSubmissionByContributionId,
+    getSubmissionByStudent,
   };
 };

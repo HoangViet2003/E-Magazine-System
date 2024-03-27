@@ -35,13 +35,13 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
-  const getArticleByStudentId = async () => {
+  const getArticleByStudentId = async (page) => {
     dispatch(setLoadingArticle(true));
 
     try {
       const { data, status } = await axios({
         method: "get",
-        url: `${url}/article/student`,
+        url: `${url}/article/student?page=${page}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
