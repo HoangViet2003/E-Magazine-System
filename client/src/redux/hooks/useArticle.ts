@@ -1,10 +1,8 @@
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllArticles, setLoadingArticle } from "../slices/ArticleSlice";
 import { RootState } from "../index";
-
-const url = "https://e-magazine.onrender.com/api/v1";
-const token = localStorage.getItem("token");
+import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
+import axios from "../../utils/axios.js";
 
 export const useArticle = () => {
   const dispatch = useDispatch();
@@ -16,13 +14,12 @@ export const useArticle = () => {
   const fetchAllArticle = async () => {
     dispatch(setLoadingArticle(true));
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/article/faculty/65ffed86f65b006fda7d0c9a`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const id = "65ffed86f65b006fda7d0c9a";
+      const { data, status } = await axios.get(
+        GET_API(id).GET_ARTICLES_BY_FACULTY_ID,
+      );
+
+      console.log(status, "status");
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -61,13 +58,11 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(true));
 
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/article/student?page=${page}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API('',page).GET_ALL_STUDENT_ARTICLES
+      );
+
+      console.log(status, "status");
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -83,7 +78,7 @@ export const useArticle = () => {
 
   const getArticlesBySubmissionId = async (
     submissionId?: string,
-    page: number,
+    page?: number,
   ) => {
     dispatch(setLoadingArticle(true));
 
@@ -93,14 +88,9 @@ export const useArticle = () => {
       if (!submissionId) {
         throw new Error("Submission ID is required.");
       }
-
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/article/submission/${submissionId}?page=${page}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API(submissionId).GET_ARTICLES_BY_SUBMISSION_ID
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -116,16 +106,12 @@ export const useArticle = () => {
     }
   };
 
-  const searchArticleQuery = async (query: string) => {
+  const searchArticleQuery = async (query: string,page =1) => {
     dispatch(setLoadingArticle(true));
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/article/search?query=${query}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        `${GET_API("", page).GET_FACULTY_BY_ID}&title=${query}`,
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching Articles");
