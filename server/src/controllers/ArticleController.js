@@ -179,7 +179,7 @@ const updateArticle = async (req, res) => {
 
 		if (type === "word" && files.length > 0) {
 			//update content in article to new content
-			article.content = content;
+			article.content[0] = content;
 		}
 
 		if (files && files.length > 0 && type === "image") {
@@ -275,7 +275,7 @@ const getAllArticlesByStudentId = async (req, res) => {
 			.limit(limit)
 			
 
-		const totalLength = Article.find({
+		const totalLength = await Article.find({
 			student: student._id,
 		}).countDocuments();
 
