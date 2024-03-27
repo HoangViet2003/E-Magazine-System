@@ -1,4 +1,6 @@
 const { Submission } = require("../models");
+const { handleSendEmail } = require("../utils/sendMail");
+const { emitNotification } = require("../utils/initSocket");
 
 const createSubmission = async (req, res) => {
 	try {
@@ -116,6 +118,40 @@ const updateFavorite = async (req, res) => {
 	}
 };
 
+const addCommentSubmission = async (req, res) => {
+	try {
+		const { submissionId } = req.params;
+		const { comment } = req.body;
+
+		const submission = await Submission.findById(submissionId);
+
+		if (!submission) {
+			return res.status(404).json({ message: "Submission not found" });
+		}
+
+		submission.comment = comment;
+		submission.isCommented = true;
+		await submission.save();
+
+		// Send email to student
+		const student = submission.user;
+		// handleSendEmail(
+		// 	student.email,
+		// 	"Submission Comment",
+		// 	`Your submission has been commented on. Please check your submission for more details`
+		// );
+
+		console.log("Student", student._id);
+
+		// Emit notification to student
+		emitNotification(student._id.toString(), "Your submission has been commented on");
+
+		res.status(200).json({ message:"Add comment to submission successfully",submission });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
 module.exports = {
 	createSubmission,
 	getAllSubmissions,
@@ -123,4 +159,5 @@ module.exports = {
 	getSubmissionByStudentId,
 	updateForPublication,
 	updateFavorite,
+	addCommentSubmission
 };

@@ -29,6 +29,7 @@ const articleSchema = new mongoose.Schema(
 		content: {
 			type: Array, // Store as TEXT or VARCHAR
 			required: true,
+			default: [],
 		},
 		type: {
 			type: String,
