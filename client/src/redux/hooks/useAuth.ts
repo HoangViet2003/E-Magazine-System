@@ -51,6 +51,7 @@ export function useAuth() {
 
         localStorage.setItem("token", data.token.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("role", data.user.role);
 
         alert("Login successfully");
 

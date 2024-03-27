@@ -35,6 +35,32 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
+  const getArticleByStudentId = async () => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      const { data, status } = await axios({
+        method: "get",
+        url: `${url}/article/student`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (status !== 200) {
+        throw new Error("Error fetching articles");
+      }
+
+      console.log(data);
+
+      dispatch(setAllArticles(data?.articles));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
   const getArticlesBySubmissionId = async (submissionId?: string) => {
     dispatch(setLoadingArticle(true));
 
@@ -91,5 +117,6 @@ export const useArticle = () => {
     fetchAllArticle,
     getArticlesBySubmissionId,
     searchArticleQuery,
+    getArticleByStudentId,
   };
 };

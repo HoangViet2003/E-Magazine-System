@@ -42,7 +42,7 @@ export default function SearchArticle() {
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
-          className="w-full bg-searchBackground px-4 py-2 placeholder:text-defaultTextColor"
+          className="w-full bg-searchBackground px-4 py-2 outline-none placeholder:text-defaultTextColor"
         />
         <button className="px-4 hover:bg-slate-200">
           <img src={SearchIcon} alt="search" className="w-6 xl:w-5" />

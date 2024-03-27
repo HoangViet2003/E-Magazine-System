@@ -1,12 +1,17 @@
 import { ReactNode, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../redux/hooks/useAuth";
 import Spinner from "./Spinner";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const { isAuth, isLoading, setUserFromToken } = useAuth();
+  const { isAuth, isLoading, setUserFromToken, user } = useAuth();
   const userToken = localStorage.getItem("user");
+  const role = localStorage.getItem("role");
+
+  console.log(role);
+
+  const marketingCorRestrictedPaths = ["dashboard", "myFaculty"];
 
   useEffect(() => {
     if (userToken) {
@@ -16,6 +21,13 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  if (
+    role === "student" &&
+    marketingCorRestrictedPaths.some((word) => location.pathname.includes(word))
+  ) {
+    return <Navigate to="/student" />;
+  }
+
   if (isLoading)
     return (
       <div>
@@ -23,7 +35,5 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
       </div>
     );
 
-  if (isAuth) return children;
-
-  return null;
+  return <>{children}</>;
 }

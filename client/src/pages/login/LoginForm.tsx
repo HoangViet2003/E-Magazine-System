@@ -5,11 +5,12 @@ import SpinnerMini from "../../ui/SpinnerMini";
 import LoginBackground from "../../assets/natural-4821583_1920.png";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("staff1@gmail.com");
-  const [password, setPassword] = useState("staff123");
+  const [email, setEmail] = useState("student2@gmail.com");
+  const [password, setPassword] = useState("student123");
   const [emailError, setEmailError] = useState("");
-  const { login, isLoading, setUserFromToken } = useAuth();
+  const { login, isLoading, setUserFromToken, user } = useAuth();
   const userToken = localStorage.getItem("user");
+  const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -30,9 +31,10 @@ export default function LoginForm() {
   useEffect(() => {
     if (userToken) {
       setUserFromToken(userToken);
-      navigate("/dashboard");
+      if (role === "marketing coordinator") navigate("/dashboard");
+      if (role === "student") navigate("/student");
     }
-  }, [navigate, setUserFromToken, userToken]);
+  }, [navigate, setUserFromToken, role, userToken]);
 
   return (
     <div
