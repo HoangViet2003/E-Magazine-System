@@ -6,9 +6,16 @@ body {
     margin: 0;
 }
 
+.editor-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #f4f6fc;
+}
+
 .editor-container .ql-editor {
-    width: 8.5in;
-    min-height: 11in;
+    width: 11.5in;
+    min-height: 14in;
     padding: 1in;
     margin: 1rem;
     box-shadow: 0 0 5px 0 rgb(0, 0, 0, .5);
@@ -19,17 +26,21 @@ body {
     border: none;
     display: flex;
     justify-content: center;
+    margin: 10px;
+    background-color: #f4f6fc;
 }
 
 .editor-container .ql-toolbar.ql-snow {
     display: flex;
     justify-content: center;
     position: sticky;
-    top: 0;
+    top: 72px;
     z-index: 1;
-    background-color: #F3F3F3;
+    background-color: #e6eeff;
+    margin: 0 20px;
+    border-radius: 30px;
+    padding: 12px 0;
     border: none;
-    box-shadow: 0 0 5px 0 rgb(0, 0, 0, .5);
 }
 
 @page {
