@@ -276,12 +276,13 @@ const getAllArticlesByStudentId = async (req, res) => {
 			
 
 		const totalLength = Article.find({
-			studentId: student._id,
+			student: student._id,
 		}).countDocuments();
 
 		res.status(200).json({
 			articles,
 			totalPage: Math.ceil(totalLength / limit),
+			totalLength: totalLength,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -305,6 +306,7 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 		res.status(200).json({
 			articles,
 			totalPage: Math.ceil(totalLength / limit),
+			totalLength: totalLength,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
@@ -370,6 +372,7 @@ const getAllArticlesByFacultyId = async (req, res) => {
 		res.status(200).json({
 			articles,
 			totalPage: Math.ceil(totalLength / limit),
+			
 		});
 	} catch (error) {
 		res.status(500).json({ error: error.message });
