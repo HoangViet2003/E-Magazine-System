@@ -477,9 +477,9 @@ const filterArticle = async (req, res) => {
 		const limit = 5
 		const skip = (page - 1) * limit
 
-		let matchQuery = {
-			facultyId: user.facultyId,
-			type: type,
+		let matchQuery = { type }
+		if (user.role !== "marketing manager" || user.role !== "admin") {
+			matchQuery["facultyId"] = user.facultyId
 		}
 
 		let articles
@@ -558,19 +558,15 @@ const getDashboard = async (req, res) => {
 		let startDate = new Date()
 		let endDate = new Date()
 
-		if ((chosenRange = "This month")) {
+		if (chosenRange == "This month") {
 			startDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
 			endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0)
-		} else if ((chosenRange = "This year")) {
+		} else if (chosenRange == "This year") {
 			startDate = new Date(startDate.getFullYear(), 0, 1)
 			endDate = new Date(endDate.getFullYear(), 11, 31)
 		} else {
-			startDate = new Date(
-				startDate.setDate(startDate.getDate() - startDate.getDay())
-			)
-			endDate = new Date(
-				endDate.setDate(endDate.getDate() + (6 - endDate.getDay()))
-			)
+			startDate.setDate(startDate.getDate() - startDate.getDay())
+			endDate.setDate(endDate.getDate() + (6 - endDate.getDay()))
 		}
 
 		let query = {}
@@ -589,20 +585,20 @@ const getDashboard = async (req, res) => {
 			query["contributionId"] = contribution._id
 		}
 
-		const articles = await Article.find(query)
+		const articles = await Article.find(query).populate("student", "_id")
 
 		const totalArticles = articles.length
 
 		// get the articles that are selected for publication
 		const selectedArticles = articles.filter(
-			(article) => article.isSelectedForPublication
+			(article) => article.status == "selected"
 		)
 		const totalSelectedArticles = selectedArticles.length
 
 		// get the total number of contributors
 		const contributors = new Set()
 		articles.forEach((article) => {
-			contributors.add(article.studentId)
+			contributors.add(article.student._id)
 		})
 		const totalContributors = contributors.size
 
