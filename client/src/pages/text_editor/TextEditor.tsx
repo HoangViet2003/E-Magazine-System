@@ -1,13 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-
 import io, { Socket } from "socket.io-client";
-
 import "./textEditor.css";
 import TextEditorHeader from "./TextEditorHeader";
+import { useArticle } from "../../redux/hooks";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import Spinner from "../../ui/Spinner";
+import Sekeleton from "../../components/sekeleton/Sekeleton";
+import ReactDOM from "react-dom";
+
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -36,8 +41,14 @@ export default function TextEditor() {
   const { id: documentId } = useParams();
   const [socket, setSocket] = useState<Socket | undefined>();
   const [quill, setQuill] = useState<Quill | null>(null);
+  const { article, getArticleById, updateArticle, isLoading } = useArticle();
 
-  // useEffect(() => {
+  const id = window.location.pathname.split("/")[2];
+
+  useEffect(() => {
+    getArticleById(id);
+  }, []);
+
   //   const s = io("http://localhost:3001");
   //   setSocket(s);
 
@@ -110,15 +121,62 @@ export default function TextEditor() {
       theme: "snow",
       modules: { toolbar: TOOLBAR_OPTION },
     });
+
+
+    if (article?.content && Array.isArray(article.content) && article.content.length > 0) {
+      // Take the first element of article.content
+      const content = article.content[0];
+      // Set the content of the Quill editor
+      q.root.innerHTML = content;
+    } else {
+      q.setText("Loading..."); // Show loading text if no content yet
+
+      //show skeleton
+
+
+      // <Sekeleton />;
+ 
+
+    }
     // q.disable();
     // q.setText("Loading...");
     setQuill(q);
-  }, []);
+  }, [article.content]);
+
+  const handleUpdateDocument = () => {
+    if (!quill || !quill.root) {
+      toast.error("Quill editor not initialized");
+      return;
+    }
+
+    const updatedContent = quill.root.innerHTML;
+    const formData = new FormData();
+    formData.append("content", updatedContent);
+    formData.append("type", String(article.type));
+    formData.append("title", String(article.title));
+
+    updateArticle(article._id, formData)
+
+  };
 
   return (
     <div>
-      <TextEditorHeader />
-      <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        limit={1}
+      />
+      <TextEditorHeader title={article?.title || ''} handleUpdateDocument={handleUpdateDocument} isLoading={isLoading}/>
+      {isLoading ? <Spinner /> : <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>} 
+      
     </div>
   );
 }

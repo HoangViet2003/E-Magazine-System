@@ -1,6 +1,5 @@
 const GET_API = (id: string, page = 1) => {
   return {
- 
     // article
     GET_DASHBOARD: `/article/dashboard`,
     GET_ALL_STUDENT_ARTICLES: `/article/student?page=${page}`,
@@ -49,7 +48,6 @@ const POST_API = (id: string) => {
 
 const PUT_API = (id: string) => {
   return {
- 
     // article
     UPDATE_ARTICLE: `/article/${id}`,
     UPDATE_ARTICLE_FAVORITE: `/article/favourite`,
@@ -69,16 +67,14 @@ const PUT_API = (id: string) => {
 
 const DELETE_API = (id: string) => {
   return {
-  
     // comments
-    DELETE_COMMENT:  `/comment/${id}`,
+    DELETE_COMMENT: `/comment/${id}`,
     // contributions
-    DELETE_CONTRIBUTION: 
-      `/contribution/${id}`,
+    DELETE_CONTRIBUTION: `/contribution/${id}`,
     // faculties
-    DELETE_FACULTY:  `/faculty/${id}`,
+    DELETE_FACULTY: `/faculty/${id}`,
     // submissions
-    DELETE_SUBMISSION:  `/submission/${id}`,
+    DELETE_SUBMISSION: `/submission/${id}`,
   };
 };
 
