@@ -54,7 +54,6 @@ const uploadArticle = async (req, res) => {
 					title: file.originalname,
 					content: html,
 					type: type,
-					facultyId: student.facultyId,
 					contributionId: submission.contributionId._id,
 				}
 			})
@@ -64,14 +63,6 @@ const uploadArticle = async (req, res) => {
 
 			// Save the updated contribution
 			article = await Article.create(newArticles)
-
-			// return res.status(201).send({
-			// 	status: "success",
-			// 	message: "Article(s) uploaded successfully",
-			// 	articles: createdArticles,
-			// });
-
-			// Save the updated contribution
 		} else if (type === "image") {
 			// If Type is "image" and images are uploaded
 			const uploadPromises = req.files.map(async (file) => {
@@ -102,7 +93,6 @@ const uploadArticle = async (req, res) => {
 				type,
 				content: images,
 				title: student.name + "'s images",
-				facultyId: student.facultyId,
 				contributionId: submission.contributionId._id,
 			})
 		} else {
@@ -122,32 +112,6 @@ const uploadArticle = async (req, res) => {
 		// await req.files.forEach(async (file) => {
 		// 	await fs.promises.unlink(file.path);
 		// });
-
-		// TODO: Send email to student to confirm the upload
-		handleSendEmail(student.name, student.email, "Article Uploaded")
-
-		//find marketing coordinator
-		const marketingCoordinator = await User.findOne({
-			role: "marketing coordinator",
-			facultyId: student.facultyId,
-		})
-
-		//send email to marketing coordinator
-
-		handleSendEmail(
-			marketingCoordinator.name,
-			marketingCoordinator.email,
-			"New Article Uploaded"
-		)
-
-		emitNotification(
-			marketingCoordinator._id.toString(),
-			`New Article Uploaded by ${student.name}, please review it`
-		)
-		await Notification.create({
-			userId: marketingCoordinator._id,
-			message: `New Article Uploaded by ${student.name}, please review it`,
-		})
 
 		return res.status(201).send({
 			message: "Article uploaded successfully",
@@ -334,13 +298,22 @@ const getArticleById = async (req, res) => {
 				.json({ error: "You are not allowed to perform this action" })
 		}
 
-		// Check if user's faculty matches the article's faculty
-		if (article.facultyId.toString() !== user.facultyId.toString()) {
+		// if user is a marketing coordinator, check if the article's faculty is the same as the user's faculty
+		if (
+			user.role == "marketing coordinator" &&
+			article.student.facultyId.toString() != req.user.facultyId.toString()
+		) {
 			return res
 				.status(403)
 				.json({ error: "You are not allowed to perform this action" })
 		}
 
+		// Check if a managner, check if the article status is selected
+		if (user.role == "marketing manager" && article.status !== "selected") {
+			return res
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" })
+		}
 		res.status(200).json({ article })
 	} catch (error) {
 		res.status(500).json({ error: error.message })
@@ -635,7 +608,6 @@ const getDashboard = async (req, res) => {
 			totalArticlesWithoutComments,
 		})
 	} catch (error) {
-		console.error(error)
 		return res.status(500).json({ error: error.message })
 	}
 }
