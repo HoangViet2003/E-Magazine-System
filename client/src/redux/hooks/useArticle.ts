@@ -38,23 +38,6 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
-  const getArticleById = async (articleId: string) => {
-    dispatch(setLoadingArticle(true));
-    try {
-      const { data, status } = await axios.get(
-        GET_API(articleId).GET_ARTICLE_BY_ID,
-      );
-
-      if (status !== 200) {
-        throw new Error("Error fetching articles");
-      }
-
-      return data?.article;
-    } catch (error) {
-      console.log(error);
-    }
-    dispatch(setLoadingArticle(false));
-  };
 
   const getArticleByStudentId = async (page: number) => {
     dispatch(setLoadingArticle(true));
@@ -172,7 +155,6 @@ export const useArticle = () => {
     getArticlesBySubmissionId,
     searchArticleQuery,
     getArticleByStudentId,
-    getArticleById,
     updateArticle,
   };
 };
