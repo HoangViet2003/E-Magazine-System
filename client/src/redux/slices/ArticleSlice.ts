@@ -67,10 +67,26 @@ interface ArticleState {
   totalLength: number;
   articles: Article[];
   // Article: Article;
+  article: Article
 }
 
 const initialState: ArticleState = {
   articles: [],
+  article: {
+    _id: "",
+    title: "",
+    facultyId: "",
+    student: {
+      _id: "",
+      name: "",
+      email: "",
+      facultyId: "",
+    },
+    updatedAt: "",
+    createdAt: "",
+    content: [],
+    type: "",
+  },
   isLoading: false,
   currentPage: 1,
   totalPages: 0,
@@ -89,11 +105,14 @@ const ArticleSlice = createSlice({
       state.totalLength = action.payload.totalLength;
       state.totalPages = action.payload.totalPages;
     },
+    setArticle(state, action: PayloadAction<Article>) {
+      state.article = action.payload;
+    },
   },
 });
 
 const { reducer, actions } = ArticleSlice;
 
-export const { setLoadingArticle, setAllArticles } = actions;
+export const { setLoadingArticle, setAllArticles,setArticle } = actions;
 
 export default reducer;

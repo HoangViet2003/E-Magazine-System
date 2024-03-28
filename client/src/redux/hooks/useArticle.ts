@@ -1,13 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setAllArticles, setLoadingArticle } from "../slices/ArticleSlice";
+import {
+  setAllArticles,
+  setLoadingArticle,
+  setArticle,
+} from "../slices/ArticleSlice";
 import { RootState } from "../index";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const useArticle = () => {
   const dispatch = useDispatch();
 
-  const { isLoading, articles, totalLength } = useSelector(
+  const { isLoading, articles, totalLength, article } = useSelector(
     (state: RootState) => state.article,
   );
 
@@ -114,14 +120,59 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
+  const getArticleById = async (id: string) => {
+    try {
+      dispatch(setLoadingArticle(true));
+
+      const { data, status } = await axios.get(GET_API(id).GET_ARTICLE_BY_ID);
+      if (status !== 200) {
+        throw new Error("Error fetching article");
+      }
+
+      console.log(data)
+
+      dispatch(setArticle(data?.article));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
+  const updateArticle = async (id: string, formData: FormData) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      const { status } = await axios.put(PUT_API(id).UPDATE_ARTICLE, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (status !== 200) {
+        throw new Error("Error updating article");
+      }
+      dispatch(setLoadingArticle(false));
+      toast.success("Article updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating article");
+    }
+  };
+
+  
+
   return {
     totalLength,
     isLoading,
     articles,
+    article,
     fetchAllArticle,
     getArticleById,
     getArticlesBySubmissionId,
     searchArticleQuery,
     getArticleByStudentId,
+    getArticleById,
+    updateArticle,
   };
 };

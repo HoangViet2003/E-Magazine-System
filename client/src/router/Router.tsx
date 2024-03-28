@@ -15,8 +15,6 @@ import { v4 as uuidv4 } from "uuid";
 import Login from "../pages/login/LoginForm";
 import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/my_faculty/submission/SubmissionImage";
 
@@ -24,19 +22,6 @@ const router = createBrowserRouter([
   {
     element: (
       <ProtectedRoute>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          limit={1}
-        />{" "}
         <AppLayOut />
       </ProtectedRoute>
     ),
@@ -83,19 +68,7 @@ const router = createBrowserRouter([
   {
     element: (
       <ProtectedRoute>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          limit={1}
-        />{" "}
+
         <AppLayOut />
       </ProtectedRoute>
     ),
