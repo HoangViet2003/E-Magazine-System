@@ -394,7 +394,6 @@ const deleteArticle = async (req, res) => {
 const updateArticlesForPublication = async (req, res) => {
 	try {
 		const { articleIds } = req.body
-		const user = req.user
 
 		//check if articleIds is empty
 		if (!articleIds) {
@@ -404,17 +403,30 @@ const updateArticlesForPublication = async (req, res) => {
 			})
 		}
 
-		// check marketing coordinator is the marketing coordinator of the faculty
+		// Check if the finalClosure date of the contribution has passed
+		const article = await Article.findById(articleIds[0])
+
+		const contribution = await Contribution.findById(article.contributionId)
+
+		if (!contribution) {
+			return res.status(404).json({ error: "Contribution not found" })
+		}
+
+		if (contribution.finalClosureDate < new Date()) {
+			return res.status(403).json({
+				error:
+					"The final closure date of the contribution has passed. You cannot select the articles",
+			})
+		}
 
 		// Update articles with the given IDs to set isSelectedForPublication to true
-		const updatedArticles = await Article.updateMany(
+		await Article.updateMany(
 			{ _id: { $in: articleIds } },
-			{ $set: { isSelectedForPublication: true } },
-			{ new: true } // To get the updated documents back
+			{ $set: { status: "selected" } }
 		)
 
 		return res.status(200).json({
-			updatedArticles,
+			message: "Articles have been selected for publication",
 		})
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
@@ -424,7 +436,6 @@ const updateArticlesForPublication = async (req, res) => {
 const updateArticleFavorite = async (req, res) => {
 	try {
 		const { articleIds } = req.body
-		const user = req.user
 
 		//check if articleId is empty
 		if (!articleIds) {
