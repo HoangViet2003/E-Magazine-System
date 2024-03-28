@@ -62,7 +62,7 @@ export default function MyFacultyTable({
   }
 
   function openImageCollection(id: string) {
-    navigate(`/myFaculty/images/${id}`);
+    navigate(`/images/${id}`);
   }
 
   if (loadingArticle) return <Spinner />;

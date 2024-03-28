@@ -60,7 +60,7 @@ export default function ImageLightbox({
   }
 
   return (
-    <div className="fixed left-0    top-0 flex h-screen w-screen items-center justify-between overflow-hidden">
+    <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-between overflow-hidden">
       <div
         className="absolute right-0 top-0 -z-10 h-screen w-screen bg-black opacity-80"
         onClick={handleClose}
