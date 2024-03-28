@@ -5,7 +5,6 @@ const historySchema = new mongoose.Schema(
 		submissionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Submission",
-			required: true,
 		},
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,

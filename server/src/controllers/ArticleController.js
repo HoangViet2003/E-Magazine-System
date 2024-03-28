@@ -22,7 +22,7 @@ const emitter = emitterInstance.getEmitter()
 
 const uploadArticle = async (req, res) => {
 	try {
-		const { type } = req.body
+		const { type, title } = req.body
 		const student = req.user
 
 		if (!req.files || req.files.length === 0) {
@@ -31,7 +31,7 @@ const uploadArticle = async (req, res) => {
 				message: "No file uploaded",
 			})
 		}
-		const submission = await Submission.findOne({ user: student._id })
+
 		let article
 
 		// Check if contribution exists
@@ -49,12 +49,10 @@ const uploadArticle = async (req, res) => {
 				const html = result.value // The generated HTML
 
 				return {
-					submissionId: submission._id,
 					student: student._id,
 					title: file.originalname,
 					content: html,
 					type: type,
-					contributionId: submission.contributionId._id,
 				}
 			})
 
@@ -88,12 +86,10 @@ const uploadArticle = async (req, res) => {
 				.map((result) => result.value)
 
 			article = await Article.create({
-				submissionId: submission._id,
 				student: student._id,
+				title,
 				type,
 				content: images,
-				title: student.name + "'s images",
-				contributionId: submission.contributionId._id,
 			})
 		} else {
 			return res.status(400).send({
@@ -103,7 +99,6 @@ const uploadArticle = async (req, res) => {
 		}
 
 		const history = await History.create({
-			submissionId: submission._id,
 			action: "create",
 			userId: student._id,
 		})
