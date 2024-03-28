@@ -87,4 +87,10 @@ router.get(
 	ArticleController.getArticleById
 )
 
+router.delete(
+	"/article/:articleId",
+	authenticateToken,
+	authenticateStudent,
+	ArticleController.deleteArticle
+)
 module.exports = router

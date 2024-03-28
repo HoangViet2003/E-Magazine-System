@@ -344,9 +344,11 @@ const getAllArticlesByFacultyId = async (req, res) => {
 const deleteArticle = async (req, res) => {
 	try {
 		const { articleId } = req.params
-		const user = req.user
 
-		const article = await Article.findById(articleId)
+		const article = await Article.findById(articleId).populate(
+			"student",
+			"_id role facultyId"
+		)
 
 		if (!article) {
 			return res
@@ -354,7 +356,34 @@ const deleteArticle = async (req, res) => {
 				.json({ status: "error", error: "Article not found" })
 		}
 
-		await Article.findByIdAndDelete(id)
+		if (article.status !== "draft") {
+			// finding the submission of the article
+			const submission = await Submission.findById(article.submissionId)
+
+			// if the closure date of the submission is passed, the article cannot be deleted
+			if (submission.closureDate < new Date()) {
+				return res.status(403).json({
+					error:
+						"The closure date of the submission has passed. You cannot delete the article",
+				})
+			}
+
+			// if the status of the article is selected, the article cannot be deleted
+			if (article.status === "selected") {
+				return res.status(403).json({
+					error: "The article has been selected. You cannot delete the article",
+				})
+			}
+		}
+
+		// if the user is not student and the owner of the article is not the user, the article cannot be deleted
+		if (article.student._id.toString() !== req.user._id.toString()) {
+			return res
+				.status(403)
+				.json({ error: "You are not allowed to perform this action" })
+		}
+
+		await Article.findByIdAndDelete(articleId)
 
 		res.status(200).json({ message: "Article deleted" })
 	} catch (error) {
