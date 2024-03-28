@@ -161,24 +161,26 @@ const uploadArticle = async (req, res) => {
 
 const updateArticle = async (req, res) => {
 	const { articleId } = req.params
-	const { content, type, title } = req.body
+	const { content, title } = req.body
 	const { files } = req
 
 	try {
 		const article = await Article.findById(articleId)
 
-		if (!article && !type) {
-			throw new Error("Article does not exist or invalid type")
+		if (!article) {
+			throw new Error("Article does not exist!")
 		}
 
-		article.title = title
+		if (title) {
+			article.title = title
+		}
 
-		if (type === "word" && files.length > 0) {
+		if (article.type === "word" && files.length > 0) {
 			//update content in article to new content
 			article.content[0] = content
 		}
 
-		if (files && files.length > 0 && type === "image") {
+		if (files && files.length > 0 && article.type === "image") {
 			const uploadPromises = files.map(async (file) => {
 				// Assuming uploadFiles and deleteFiles functions are defined
 				// Upload new images
