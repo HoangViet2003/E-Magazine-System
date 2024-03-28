@@ -1,10 +1,13 @@
 import Header from "../layout/header/Header";
 import Sidebar from "../layout/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
-import { SidebarProvider } from "../layout/sidebar/SidebarContext";
+import {
+  SidebarProvider,
+  useSidebarContext,
+} from "../layout/sidebar/SidebarContext";
 import { useAuth } from "../redux/hooks/useAuth";
 import SidebarStudent from "../layout/sidebar/SidebarStudent";
-import UploadImage from "./UploadImage";
+import UploadImage from "./UploadFile";
 
 export default function AppLayOut() {
   const { user } = useAuth();
@@ -18,7 +21,10 @@ export default function AppLayOut() {
           {user.role === "marketing coordinator" && <Sidebar />}
 
           <Outlet />
-          <UploadImage />
+
+          {/* <button onClick={() => setOpenImageUpload(true)}>test</button> */}
+
+          {/* <UploadImage /> */}
         </div>
       </div>
     </SidebarProvider>

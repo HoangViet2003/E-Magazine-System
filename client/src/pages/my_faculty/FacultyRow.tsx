@@ -34,7 +34,7 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {student.name}
+        {student?.name ?? "N/A"}
         test
       </div>
       <div className={commonCell}>{formattedDate}</div>

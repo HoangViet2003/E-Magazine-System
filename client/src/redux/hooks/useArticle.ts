@@ -3,6 +3,7 @@ import {
   setAllArticles,
   setLoadingArticle,
   setArticle,
+  addNewArticle,
 } from "../slices/ArticleSlice";
 import { RootState } from "../index";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
@@ -16,6 +17,8 @@ export const useArticle = () => {
   const { isLoading, articles, totalLength, article } = useSelector(
     (state: RootState) => state.article,
   );
+
+  const { user } = useSelector((state: RootState) => state.user);
 
   const fetchAllArticle = async (page: number) => {
     dispatch(setLoadingArticle(true));
@@ -118,11 +121,11 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(false));
   };
 
-  const uploadArticleImage = async (formData: FormData) => {
+  const uploadArticle = async (formData: FormData) => {
     dispatch(setLoadingArticle(true));
 
     try {
-      const { status } = await axios.post(
+      const { data, status } = await axios.post(
         POST_API("").UPLOAD_ARTICLE,
         formData,
         {
@@ -136,6 +139,7 @@ export const useArticle = () => {
         throw new Error("Error updating article");
       }
 
+      dispatch(addNewArticle({ article: data?.article, user }));
       console.log("success");
     } catch (error) {
       console.log(error);
@@ -176,6 +180,6 @@ export const useArticle = () => {
     searchArticleQuery,
     getArticleByStudentId,
     updateArticle,
-    uploadArticleImage,
+    uploadArticle,
   };
 };

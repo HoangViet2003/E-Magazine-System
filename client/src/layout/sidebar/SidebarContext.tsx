@@ -5,27 +5,33 @@ const SidebarContext = createContext({
   openSidebar: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setOpenSidebar: (value: boolean) => {},
-  openUploadImage: false,
+  openImageUpload: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setOpenUploadImage: (value: boolean) => {},
+  setOpenImageUpload: (value: boolean) => {},
+  openDocUpload: false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setOpenDocUpload: (value: boolean) => {},
 });
 
 export const useSidebarContext = () => useContext(SidebarContext);
 
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
-  const [openUploadImage, setOpenUploadImage] = useState(false);
+  const [openDocUpload, setOpenDocUpload] = useState(false);
+  const [openImageUpload, setOpenImageUpload] = useState(false);
 
   useAddNoScrollClass(openSidebar);
-  useAddNoScrollClass(openUploadImage);
+  useAddNoScrollClass(openImageUpload);
 
   return (
     <SidebarContext.Provider
       value={{
         openSidebar,
         setOpenSidebar,
-        openUploadImage,
-        setOpenUploadImage,
+        openImageUpload,
+        setOpenImageUpload,
+        openDocUpload,
+        setOpenDocUpload,
       }}
     >
       {children}

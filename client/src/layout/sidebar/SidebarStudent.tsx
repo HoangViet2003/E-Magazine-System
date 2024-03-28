@@ -16,13 +16,19 @@ import NewDocumentIcon from "../../assets/icons/sidebar-icons/fileDocLight";
 import ImageIcon from "../../assets/icons/sidebar-icons/imgDuoTone";
 import Logo from "../../assets/Logo.png";
 import Dropdowns from "../../ui/Dropdowns";
+import UploadImage from "../../ui/UploadFile";
 
 export default function SidebarStudent() {
   const currentPath = useLocation().pathname;
   const windowWidth = useWindowWidth();
-  const { openSidebar, setOpenSidebar } = useSidebarContext();
   const [isHovered, setIsHovered] = useState(false);
-  const { setOpenUploadImage } = useSidebarContext();
+  const { openSidebar, setOpenSidebar } = useSidebarContext();
+  const {
+    openImageUpload,
+    setOpenImageUpload,
+    openDocUpload,
+    setOpenDocUpload,
+  } = useSidebarContext();
 
   const navLinks = [
     {
@@ -98,16 +104,19 @@ export default function SidebarStudent() {
                     Files upload
                   </span>
                 </Dropdowns.Button>
-                <Dropdowns.Button icon={<NewDocumentIcon />}>
+                <Dropdowns.Button
+                  onClick={() => setOpenDocUpload(true)}
+                  icon={<NewDocumentIcon />}
+                >
                   <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                     New Document
                   </span>
                 </Dropdowns.Button>
-                <Dropdowns.Button icon={<ImageIcon />}>
-                  <span
-                    className="font-normal text-[#6B6C7E] hover:text-[#004AD7]"
-                    onClick={() => setOpenUploadImage(true)}
-                  >
+                <Dropdowns.Button
+                  icon={<ImageIcon />}
+                  onClick={() => setOpenImageUpload(true)}
+                >
+                  <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                     New Gallery
                   </span>
                 </Dropdowns.Button>
@@ -135,6 +144,9 @@ export default function SidebarStudent() {
             onClick={() => setOpenSidebar(false)}
           ></div>
         )}
+
+        {openImageUpload && <UploadImage type="image" />}
+        {openDocUpload && <UploadImage type="word" />}
       </>,
       document.body,
     )
@@ -159,16 +171,19 @@ export default function SidebarStudent() {
                 Files upload
               </span>
             </Dropdowns.Button>
-            <Dropdowns.Button icon={<NewDocumentIcon />}>
+            <Dropdowns.Button
+              onClick={() => setOpenDocUpload(true)}
+              icon={<NewDocumentIcon />}
+            >
               <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                 New Document
               </span>
             </Dropdowns.Button>
-            <Dropdowns.Button icon={<ImageIcon />}>
-              <span
-                className="font-normal text-[#6B6C7E] hover:text-[#004AD7]"
-                onClick={() => setOpenUploadImage(true)}
-              >
+            <Dropdowns.Button
+              onClick={() => setOpenImageUpload(true)}
+              icon={<ImageIcon />}
+            >
+              <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                 New Gallery
               </span>
             </Dropdowns.Button>
@@ -188,6 +203,8 @@ export default function SidebarStudent() {
           </MainNav>
         ))}
       </ul>
+      {openImageUpload && <UploadImage type="image" />}
+      {openDocUpload && <UploadImage type="word" />}
     </div>
   );
 }

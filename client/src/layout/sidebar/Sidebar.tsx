@@ -17,7 +17,6 @@ export default function Sidebar() {
   const currentPath = useLocation().pathname;
   const windowWidth = useWindowWidth();
   const { openSidebar, setOpenSidebar } = useSidebarContext();
-  const [isHovered, setIsHovered] = useState(false);
 
   const navLinks = [
     {

@@ -53,7 +53,7 @@ export interface Article {
   _id: string;
   title: string;
   facultyId: string;
-  student: User;
+  student?: User;
   updatedAt: string;
   createdAt: string;
   content: string[];
@@ -66,8 +66,7 @@ interface ArticleState {
   totalPages: number;
   totalLength: number;
   articles: Article[];
-  // Article: Article;
-  article: Article
+  article: Article;
 }
 
 const initialState: ArticleState = {
@@ -108,11 +107,23 @@ const ArticleSlice = createSlice({
     setArticle(state, action: PayloadAction<Article>) {
       state.article = action.payload;
     },
+    addNewArticle(
+      state,
+      action: PayloadAction<{ article: Article; user: User }>,
+    ) {
+      action.payload.article = {
+        ...action.payload.article,
+        student: action.payload.user,
+      };
+
+      state.articles.push(action.payload.article);
+    },
   },
 });
 
 const { reducer, actions } = ArticleSlice;
 
-export const { setLoadingArticle, setAllArticles,setArticle } = actions;
+export const { setLoadingArticle, setAllArticles, setArticle, addNewArticle } =
+  actions;
 
 export default reducer;
