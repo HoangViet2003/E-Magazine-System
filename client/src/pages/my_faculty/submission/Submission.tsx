@@ -51,21 +51,25 @@ export default function Submission() {
             </h1>
             <img src={BreadcrumbPointer} />
 
-            <h1
-              className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
-              onClick={() =>
-                role === "student"
-                  ? navigate(
-                      `/student/contributions/${currSubmission.contributionId._id}`,
-                    )
-                  : navigate(
-                      `/myFaculty/contributions/${currSubmission.contributionId._id}`,
-                    )
-              }
-            >
-              {`${currSubmission.contributionId.academicYear} Contribution`}
-            </h1>
-            <img src={BreadcrumbPointer} />
+            {role !== "student" && (
+              <>
+                <h1
+                  className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
+                  onClick={() =>
+                    role === "student"
+                      ? navigate(
+                          `/student/contributions/${currSubmission.contributionId._id}`,
+                        )
+                      : navigate(
+                          `/myFaculty/contributions/${currSubmission.contributionId._id}`,
+                        )
+                  }
+                >
+                  {`${currSubmission.contributionId.academicYear} Contribution`}
+                </h1>
+                <img src={BreadcrumbPointer} />
+              </>
+            )}
 
             {submissionId && (
               <Dropdowns>

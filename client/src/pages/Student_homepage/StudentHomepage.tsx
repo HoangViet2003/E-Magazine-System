@@ -4,16 +4,8 @@ import Dropdowns from "../../ui/Dropdowns";
 import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 import MyFacultyContribution from "../my_faculty/MyFacultyContribution";
 import MyFacultyTable from "../my_faculty/MyFacultyTable";
-import { useEffect } from "react";
-import { useArticle } from "../../redux/hooks/useArticle";
 
 export default function StudentHomepage() {
-  const { getArticleByStudentId } = useArticle();
-
-  // useEffect(() => {
-  //   getArticleByStudentId();
-  // }, []);
-
   return (
     <div>
       <MainHeader>

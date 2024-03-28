@@ -1,16 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useContribution } from "../../redux/hooks/useContribution";
 
 import FolderIcon from "../../assets/icons/folder.svg";
 import Spinner from "../../ui/Spinner";
+import { useSubmission } from "../../redux/hooks/useSubmission";
+import { Submission } from "../../redux/slices/SubmissionSlice";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
 export default function MyFacultyContribution() {
   const navigate = useNavigate();
   const { contributions, fetchAllContribution, isLoading } = useContribution();
+  const { getSubmissionByStudent } = useSubmission();
+  const role = localStorage.getItem("role");
+  const [submission, setSubmission] = useState<Submission>();
 
   function calculateClosureDate(date: Date) {
     const today = new Date();
@@ -28,6 +33,17 @@ export default function MyFacultyContribution() {
     fetchAllContribution();
   }, []);
 
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      if (role === "student") {
+        const submissionData = await getSubmissionByStudent();
+        setSubmission(submissionData);
+      }
+    };
+
+    fetchSubmission();
+  }, [getSubmissionByStudent, role]);
+
   return (
     <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
       <h3 className="font-semibold" style={{ color: "#6B6C7E" }}>
@@ -37,13 +53,15 @@ export default function MyFacultyContribution() {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className="2 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {contributions.map((contribution, index) => (
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
               onDoubleClick={() =>
-                navigate(`contributions/${contribution._id}`)
+                role === "student"
+                  ? navigate(`submission/${submission?._id}`)
+                  : navigate(`contributions/${contribution._id}`)
               }
             >
               <div className={"flex items-center gap-4"}>

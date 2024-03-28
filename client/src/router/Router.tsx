@@ -44,7 +44,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/",
-        element: <Navigate replace to="/dashboard" />,
+        element: <Navigate replace to="/login" />,
       },
       {
         path: "/dashboard",
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
       {
         index: true,
         path: "/",
-        element: <Navigate replace to="/student" />,
+        element: <Navigate replace to="/login" />,
       },
       {
         path: "/student",
@@ -114,7 +114,7 @@ const router = createBrowserRouter([
         element: <Contribution />,
       },
       {
-        path: "/student/contributions/submission/:submissionId",
+        path: "/student/submission/:submissionId",
         element: <Submission />,
       },
       {
