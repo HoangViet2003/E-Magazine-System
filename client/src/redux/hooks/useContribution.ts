@@ -4,10 +4,8 @@ import {
   setAllContribution,
   setLoadingContribution,
 } from "../slices/ContributionSlice";
-import axios from "axios";
-
-const url = "https://e-magazine.onrender.com/api/v1";
-const token = localStorage.getItem("token");
+import axios from "../../utils/axios.js";
+import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 
 export const useContribution = () => {
   const dispatch = useDispatch();
@@ -19,13 +17,9 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(true));
 
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/contributions`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API("").GET_ALL_CONTRIBUTIONS,
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");

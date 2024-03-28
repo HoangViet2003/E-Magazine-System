@@ -4,7 +4,8 @@ import {
   setAllSubmissions,
   setLoadingSubmission,
 } from "../slices/SubmissionSlice";
-import axios from "axios";
+import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
+import axios from "../../utils/axios.js";
 
 const url = "https://e-magazine.onrender.com/api/v1";
 const token = localStorage.getItem("token");
@@ -18,13 +19,7 @@ export const useSubmission = () => {
   const fetchAllSubmission = async () => {
     dispatch(setLoadingSubmission(true));
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/submissions`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(GET_API("").GET_ALL_SUBMISSIONS);
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -46,13 +41,9 @@ export const useSubmission = () => {
         throw new Error("Contribution ID is required.");
       }
 
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/submissions/contribution/${contributionId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API(contributionId).GET_SUBMISSION_BY_CONTRIBUTION_ID,
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching submissions");
@@ -69,13 +60,9 @@ export const useSubmission = () => {
     dispatch(setLoadingSubmission(true));
 
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/submission/student`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API("").GET_SUBMISSION_BY_STUDENT_ID,
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching submissions");

@@ -36,7 +36,6 @@ export default function MyFacultyTable({
           submissionId,
           page,
         );
-        console.log(fetchedArticles);
 
         setArticles(fetchedArticles?.articles || []);
         setArticleCount(fetchedArticles?.totalLength || 0);

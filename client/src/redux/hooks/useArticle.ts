@@ -19,8 +19,6 @@ export const useArticle = () => {
         GET_API(id).GET_ARTICLES_BY_FACULTY_ID,
       );
 
-      console.log(status, "status");
-
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
@@ -35,13 +33,9 @@ export const useArticle = () => {
   const getArticleById = async (articleId: string) => {
     dispatch(setLoadingArticle(true));
     try {
-      const { data, status } = await axios({
-        method: "get",
-        url: `${url}/article/${articleId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data, status } = await axios.get(
+        GET_API(articleId).GET_ARTICLE_BY_ID,
+      );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -59,10 +53,8 @@ export const useArticle = () => {
 
     try {
       const { data, status } = await axios.get(
-        GET_API('',page).GET_ALL_STUDENT_ARTICLES
+        GET_API("", page).GET_ALL_STUDENT_ARTICLES,
       );
-
-      console.log(status, "status");
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
@@ -82,21 +74,17 @@ export const useArticle = () => {
   ) => {
     dispatch(setLoadingArticle(true));
 
-    console.log(page);
-
     try {
       if (!submissionId) {
         throw new Error("Submission ID is required.");
       }
       const { data, status } = await axios.get(
-        GET_API(submissionId).GET_ARTICLES_BY_SUBMISSION_ID
+        GET_API(submissionId, page).GET_ARTICLES_BY_SUBMISSION_ID,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
-
-      console.log(data);
 
       return { articles: data?.articles, totalLength: data?.totalLength };
     } catch (error) {
@@ -106,7 +94,7 @@ export const useArticle = () => {
     }
   };
 
-  const searchArticleQuery = async (query: string,page =1) => {
+  const searchArticleQuery = async (query: string, page = 1) => {
     dispatch(setLoadingArticle(true));
     try {
       const { data, status } = await axios.get(
