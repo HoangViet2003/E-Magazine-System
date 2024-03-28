@@ -17,6 +17,7 @@ import ImageIcon from "../../assets/icons/sidebar-icons/imgDuoTone";
 import Logo from "../../assets/Logo.png";
 import Dropdowns from "../../ui/Dropdowns";
 import UploadImage from "../../ui/UploadFile";
+import { useArticle } from "../../redux/hooks";
 
 export default function SidebarStudent() {
   const currentPath = useLocation().pathname;
@@ -29,6 +30,7 @@ export default function SidebarStudent() {
     openDocUpload,
     setOpenDocUpload,
   } = useSidebarContext();
+  const { createNewDocument } = useArticle();
 
   const navLinks = [
     {
@@ -70,6 +72,10 @@ export default function SidebarStudent() {
     },
   ];
 
+  async function openNewDocument() {
+    await createNewDocument();
+  }
+
   return windowWidth < 1024 ? (
     createPortal(
       <>
@@ -99,13 +105,16 @@ export default function SidebarStudent() {
               </Dropdowns.Toggle>
 
               <Dropdowns.List id="newDocumentMobile">
-                <Dropdowns.Button icon={<FileUploadIcon />}>
+                <Dropdowns.Button
+                  icon={<FileUploadIcon />}
+                  onClick={() => setOpenDocUpload(true)}
+                >
                   <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                     Files upload
                   </span>
                 </Dropdowns.Button>
                 <Dropdowns.Button
-                  onClick={() => setOpenDocUpload(true)}
+                  onClick={openNewDocument}
                   icon={<NewDocumentIcon />}
                 >
                   <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
@@ -166,13 +175,16 @@ export default function SidebarStudent() {
           </Dropdowns.Toggle>
 
           <Dropdowns.List id="newDocument">
-            <Dropdowns.Button icon={<FileUploadIcon />}>
+            <Dropdowns.Button
+              onClick={() => setOpenDocUpload(true)}
+              icon={<FileUploadIcon />}
+            >
               <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                 Files upload
               </span>
             </Dropdowns.Button>
             <Dropdowns.Button
-              onClick={() => setOpenDocUpload(true)}
+              onClick={openNewDocument}
               icon={<NewDocumentIcon />}
             >
               <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">

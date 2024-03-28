@@ -52,7 +52,7 @@ import { User } from "./UserSlice";
 export interface Article {
   _id: string;
   title: string;
-  facultyId: string;
+  facultyId?: string;
   student?: User;
   updatedAt: string;
   createdAt: string;

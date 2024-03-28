@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useSidebarContext } from "./SidebarContext";
-import { useState } from "react";
 import useWindowWidth from "../../redux/hooks/useWindowWidth";
 
 import MainNav from "./MainNav";

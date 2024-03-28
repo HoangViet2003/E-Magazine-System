@@ -6,7 +6,7 @@ import { useSidebarContext } from "../layout/sidebar/SidebarContext";
 import DropComponent from "./DropComponent";
 import SpinnerMini from "./SpinnerMini";
 
-export default function UploadImage({ type }) {
+export default function UploadImage({ type }: { type: string }) {
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
 
   const { uploadArticle, isLoading: loadingArticle } = useArticle();
@@ -115,14 +115,12 @@ export default function UploadImage({ type }) {
                   <DropComponent
                     isDragActive={isDragActive}
                     previews={previews}
-                    setPreviews={setPreviews}
                     type={type}
                   />
                 ) : (
                   <DropComponent
                     isDragActive={isDragActive}
                     previews={previews}
-                    setPreviews={setPreviews}
                     type={type}
                   />
                 )}

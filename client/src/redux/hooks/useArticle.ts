@@ -1,3 +1,5 @@
+import axios from "../../utils/axios.js";
+import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAllArticles,
@@ -5,10 +7,9 @@ import {
   setArticle,
   addNewArticle,
 } from "../slices/ArticleSlice";
-import { RootState } from "../index";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
-import axios from "../../utils/axios.js";
 import { toast } from "react-toastify";
+import { URL } from "../../utils/constant.js";
 import "react-toastify/dist/ReactToastify.css";
 
 export const useArticle = () => {
@@ -136,11 +137,32 @@ export const useArticle = () => {
       );
 
       if (status !== 200 && status !== 201) {
-        throw new Error("Error updating article");
+        throw new Error("Error upload article");
       }
 
       dispatch(addNewArticle({ article: data?.article, user }));
       console.log("success");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
+  const createNewDocument = async () => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      const { data, status } = await axios.post(
+        POST_API("").CREATE_BLANK_WORD_FILE,
+      );
+
+      if (status !== 200 && status !== 201) {
+        throw new Error("Error create article");
+      }
+
+      dispatch(addNewArticle({ article: data?.article, user }));
+      window.open(`${URL}/documents/${data?.article._id}`, "_blank");
     } catch (error) {
       console.log(error);
     } finally {
@@ -181,5 +203,6 @@ export const useArticle = () => {
     getArticleByStudentId,
     updateArticle,
     uploadArticle,
+    createNewDocument,
   };
 };

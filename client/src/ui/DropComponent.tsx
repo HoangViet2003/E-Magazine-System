@@ -1,15 +1,18 @@
-// import UploadImageIcon from "../assets/icons/uploadImg-icons/Upload icon.svg";
 import UploadImageIcon from "../assets/icons/uploadImg-icons/uploadIcon";
 import WordIcon from "../assets/icons/textEditor-icons/icon-document-text.svg";
 
+interface DropComponentProps {
+  isDragActive: boolean;
+  previews: string[];
+  type: string;
+}
 export default function DropComponent({
   isDragActive,
   previews,
-  setPreviews,
   type,
-}) {
+}: DropComponentProps) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-[20px]">
+    <div className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-[20px]">
       <UploadImageIcon fill={type === "image" ? "#483EA8" : "#004AD7"} />
 
       <div>
