@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const contributionSchema = new mongoose.Schema(
 	{
@@ -28,11 +28,10 @@ const contributionSchema = new mongoose.Schema(
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
-);
+)
 
 //populate submissions
 
+const Contribution = mongoose.model("Contribution", contributionSchema)
 
-const Contribution = mongoose.model("Contribution", contributionSchema);
-
-module.exports = Contribution;
+module.exports = Contribution

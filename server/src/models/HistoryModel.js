@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const historySchema = new mongoose.Schema(
 	{
@@ -21,8 +21,8 @@ const historySchema = new mongoose.Schema(
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
-);
+)
 
-const History = mongoose.model("History", historySchema);
+const History = mongoose.model("History", historySchema)
 
-module.exports = History;
+module.exports = History

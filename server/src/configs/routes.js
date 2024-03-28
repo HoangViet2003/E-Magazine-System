@@ -1,4 +1,4 @@
-const { catchAsync } = require("../utils");
+const { catchAsync } = require("../utils")
 const {
 	userRoute,
 	authenticationRoute,
@@ -6,8 +6,8 @@ const {
 	contributionRoute,
 	facultyRoute,
 	commentRoute,
-	submissionRoute
-} = require("../routes");
+	submissionRoute,
+} = require("../routes")
 
 /**
  * @param {Object} app express application
@@ -16,17 +16,17 @@ const routes = (app) => {
 	app.get(
 		"/",
 		catchAsync((req, res) => {
-			return res.send("Hello world!");
+			return res.send("Hello world!")
 		})
-	);
+	)
 
-	app.use("/api/v1", authenticationRoute);
-	app.use("/api/v1", articleRoute);
-	app.use("/api/v1", contributionRoute);
-	app.use("/api/v1", userRoute);
-	app.use("/api/v1", facultyRoute);
-	app.use("/api/v1", commentRoute);
-	app.use("/api/v1", submissionRoute);
-};
+	app.use("/api/v1", authenticationRoute)
+	app.use("/api/v1", articleRoute)
+	app.use("/api/v1", contributionRoute)
+	app.use("/api/v1", userRoute)
+	app.use("/api/v1", facultyRoute)
+	app.use("/api/v1", commentRoute)
+	app.use("/api/v1", submissionRoute)
+}
 
-module.exports = routes;
+module.exports = routes

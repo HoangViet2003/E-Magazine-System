@@ -1,30 +1,30 @@
-const EventEmitter = require("events");
-const { Server } = require("socket.io");
+const EventEmitter = require("events")
+const { Server } = require("socket.io")
 
 class EmitterSingleton {
 	constructor() {
-		this.emitter = new EventEmitter();
-		this.socketIO = new Server();
+		this.emitter = new EventEmitter()
+		this.socketIO = new Server()
 
 		this.emitter.on("detectFileChange", (data) => {
-			this.socketIO.emit("detectFileChange", data);
-		});
+			this.socketIO.emit("detectFileChange", data)
+		})
 	}
 
 	static getInstance() {
 		if (!EmitterSingleton._instance) {
-			EmitterSingleton._instance = new EmitterSingleton();
+			EmitterSingleton._instance = new EmitterSingleton()
 		}
-		return EmitterSingleton._instance;
+		return EmitterSingleton._instance
 	}
 
 	getEmitter() {
-		return this.emitter;
+		return this.emitter
 	}
 
 	setSocketIO(socketIO) {
-		this.socketIO = socketIO;
+		this.socketIO = socketIO
 	}
 }
 
-module.exports = EmitterSingleton;
+module.exports = EmitterSingleton

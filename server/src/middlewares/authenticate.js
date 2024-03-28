@@ -1,42 +1,42 @@
-const jwt = require("jsonwebtoken");
-const { User, Faculty, Contribution,Article } = require("../models");
+const jwt = require("jsonwebtoken")
+const { User, Faculty, Contribution, Article } = require("../models")
 
 const authenticateToken = async (req, res, next) => {
-	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1];
+	const authHeader = req.headers["authorization"]
+	const token = authHeader && authHeader.split(" ")[1]
 	if (!token)
 		return res.status(403).send({
 			status: "error",
 			message: "Invalid token",
-		});
+		})
 
 	jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
 		if (err)
 			return res.status(403).send({
 				status: "error",
 				message: "Invalid token",
-			});
+			})
 
-		const userInfo = await User.findById(user._id);
+		const userInfo = await User.findById(user._id)
 
 		if (!userInfo)
 			return res.status(401).send({
 				status: "error",
 				message: "User does not exist",
-			});
+			})
 
-		req.user = userInfo;
+		req.user = userInfo
 
-		next();
-	});
-};
+		next()
+	})
+}
 
 const authenticateMarketingCoordinator = async (req, res, next) => {
 	//Check if user is a marketing coordinator
 	if (req.user.role !== "marketing coordinator") {
 		return res.status(403).send({
 			message: "You are not allowed to perform this action",
-		});
+		})
 	}
 
 	// const facultyIdRequest =
@@ -53,26 +53,26 @@ const authenticateMarketingCoordinator = async (req, res, next) => {
 
 	//check if the user has access to the specified article
 	const articleIdRequest =
-		req.params.articleId || req.body.articleId || req.query.articleId;
+		req.params.articleId || req.body.articleId || req.query.articleId
 
 	if (articleIdRequest) {
-		const article = await Article.findOne({facultyId: req.user.facultyId});
+		const article = await Article.findOne({ facultyId: req.user.facultyId })
 
-		if(!article){
+		if (!article) {
 			return res.status(403).send({
 				message: "You are not allowed to perform this action",
 			})
 		}
 	}
-	next();
-};
+	next()
+}
 
 const authenticateStudent = async (req, res, next) => {
 	//Check if user is a student
 	if (req.user.role !== "student") {
 		return res.status(403).send({
 			message: "You are not allowed to perform this action",
-		});
+		})
 	}
 
 	// const contributionIdRequest =
@@ -94,20 +94,20 @@ const authenticateStudent = async (req, res, next) => {
 
 	//check if the user has access to the specified article
 	const articleIdRequest =
-		req.params.articleId || req.body.articleId || req.query.articleId;
+		req.params.articleId || req.body.articleId || req.query.articleId
 
 	if (articleIdRequest) {
-		const article = await Article.findOne({ facultyId: req.user.facultyId });
+		const article = await Article.findOne({ facultyId: req.user.facultyId })
 
 		if (!article) {
 			return res.status(403).send({
 				message: "You are not allowed to perform this action",
-			});
+			})
 		}
 	}
 
-	next();
-};
+	next()
+}
 
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
@@ -115,11 +115,11 @@ const authenticateMarketingManager = async (req, res, next) => {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
-		});
+		})
 	}
 
-	next();
-};
+	next()
+}
 
 const authenticateAdministrator = async (req, res, next) => {
 	//Check if user is an administrator
@@ -127,10 +127,10 @@ const authenticateAdministrator = async (req, res, next) => {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",
-		});
+		})
 	}
-	next();
-};
+	next()
+}
 
 module.exports = {
 	authenticateToken,
@@ -138,4 +138,4 @@ module.exports = {
 	authenticateMarketingManager,
 	authenticateAdministrator,
 	authenticateStudent,
-};
+}

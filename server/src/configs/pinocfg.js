@@ -1,4 +1,4 @@
-const pino = require("pino");
+const pino = require("pino")
 const option = {
 	transport: {
 		target: "pino-pretty",
@@ -8,11 +8,11 @@ const option = {
 			sync: false,
 		},
 	},
-};
+}
 if (process.env.NODE_ENV !== "production") {
-	option.transport.options.ignore = "pid,hostname,reqId,res,req,responseTime";
+	option.transport.options.ignore = "pid,hostname,reqId,res,req,responseTime"
 	option.transport.options.messageFormat =
-		"{msg} [{req.method} {req.url}:> {responseTime}ms]";
+		"{msg} [{req.method} {req.url}:> {responseTime}ms]"
 }
 
 const pinocfg = {
@@ -24,19 +24,19 @@ const pinocfg = {
 				remoteAddress: req.remoteAddress,
 				remotePort: req.remotePort,
 				body: req.raw.body,
-			};
+			}
 		},
 		res: pino.stdSerializers.res,
 		err: pino.stdSerializers.err,
 	},
 	customLogLevel: function (req, res, err) {
 		if (res.statusCode >= 400 && res.statusCode < 500) {
-			return "warn";
+			return "warn"
 		} else if (res.statusCode >= 500 || err) {
-			return "error";
+			return "error"
 		}
-		return "info";
+		return "info"
 	},
-};
+}
 
-module.exports = pinocfg;
+module.exports = pinocfg

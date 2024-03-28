@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const submissionSchema = new mongoose.Schema(
 	{
@@ -12,9 +12,9 @@ const submissionSchema = new mongoose.Schema(
 			ref: "Contribution",
 			required: true,
 		},
-		comment:{
+		comment: {
 			type: String,
-			default: null
+			default: null,
 		},
 		isCommented: {
 			type: Boolean,
@@ -32,27 +32,27 @@ const submissionSchema = new mongoose.Schema(
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
-);
+)
 
-//populate user 
+//populate user
 submissionSchema.pre(/^find/, function (next) {
-    this.populate({
-        path: "user",
-        select: "name email",
-    });
+	this.populate({
+		path: "user",
+		select: "name email",
+	})
 
-    next();
-});
+	next()
+})
 
 submissionSchema.pre(/^find/, function (next) {
 	this.populate({
 		path: "contributionId",
 		select: "academicYear",
-	});
+	})
 
-	next();
-});
+	next()
+})
 
-const Submission = mongoose.model("Submission", submissionSchema);
+const Submission = mongoose.model("Submission", submissionSchema)
 
-module.exports = Submission;
+module.exports = Submission

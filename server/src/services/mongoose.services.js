@@ -1,5 +1,5 @@
 const calLengthPage = (lengthField) => {
-	const obj = {};
+	const obj = {}
 	obj[lengthField] = [
 		{
 			$count: "totalLength",
@@ -9,13 +9,13 @@ const calLengthPage = (lengthField) => {
 				totalPage: { $ceil: { $divide: ["$totalLength", 10] } },
 			},
 		},
-	];
-	return obj;
-};
+	]
+	return obj
+}
 
-const paginate = (page) => [{ $skip: (page - 1) * 10 }, { $limit: 10 }];
+const paginate = (page) => [{ $skip: (page - 1) * 10 }, { $limit: 10 }]
 
 module.exports = {
 	calLengthPage,
 	paginate,
-};
+}

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const facultySchema = new mongoose.Schema(
 	{
@@ -14,8 +14,8 @@ const facultySchema = new mongoose.Schema(
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
 	}
-);
+)
 
-const Faculty = mongoose.model("Faculty", facultySchema);
+const Faculty = mongoose.model("Faculty", facultySchema)
 
-module.exports = Faculty;
+module.exports = Faculty

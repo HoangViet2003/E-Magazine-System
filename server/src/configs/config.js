@@ -1,7 +1,7 @@
-const dotenv = require("dotenv");
-const path = require("path");
+const dotenv = require("dotenv")
+const path = require("path")
 
-dotenv.config({ path: path.join(__dirname, "../../.env") });
+dotenv.config({ path: path.join(__dirname, "../../.env") })
 
 const config = {
 	BASE: {
@@ -41,15 +41,15 @@ const config = {
 	ENV: process.env.NODE_ENV || "development",
 
 	get HttpUrl() {
-		return `${this.BASE.HOSTNAME}:${this.BASE.PORT}`;
+		return `${this.BASE.HOSTNAME}:${this.BASE.PORT}`
 	},
 
 	get DBUri() {
 		return (
 			this.DB.URL ||
 			`mongodb://${this.DB.HOST}:${this.DB.PORT}/${this.DB.DATABASE}`
-		);
+		)
 	},
-};
+}
 
-module.exports = config;
+module.exports = config

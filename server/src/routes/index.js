@@ -6,4 +6,4 @@ module.exports = {
 	facultyRoute: require("./facultyRoute.routes"),
 	commentRoute: require("./commentRoute.routes"),
 	submissionRoute: require("./submissionRoute.routes"),
-};
+}
