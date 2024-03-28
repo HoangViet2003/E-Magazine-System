@@ -21,16 +21,13 @@ export default function ContributionTable() {
   useEffect(() => {
     const fetchArticles = async () => {
       if (contributeId) {
-        const fetchedSubmission =
-          role === "student"
-            ? await getSubmissionByStudent()
-            : await getSubmissionByContributionId(contributeId);
-
-        setSubmissions([fetchedSubmission]);
+        if (role === "student") {
+          setSubmissions([await getSubmissionByStudent()]);
+        } else {
+          setSubmissions(await getSubmissionByContributionId(contributeId));
+        }
       }
     };
-
-    console.log(submissions);
 
     fetchArticles();
     // eslint-disable-next-line react-hooks/exhaustive-deps

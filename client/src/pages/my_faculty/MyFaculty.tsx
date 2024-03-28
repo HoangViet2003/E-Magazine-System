@@ -11,9 +11,9 @@ import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 export default function MyFaculty() {
   const { fetchAllArticle } = useArticle();
 
-  useEffect(() => {
-    fetchAllArticle();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllArticle();
+  // }, []);
 
   return (
     <div>

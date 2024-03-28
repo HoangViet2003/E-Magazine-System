@@ -7,9 +7,6 @@ import {
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 
-const url = "https://e-magazine.onrender.com/api/v1";
-const token = localStorage.getItem("token");
-
 export const useSubmission = () => {
   const dispatch = useDispatch();
   const { isLoading, submissions } = useSelector(

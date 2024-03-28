@@ -11,19 +11,21 @@ export const useArticle = () => {
     (state: RootState) => state.article,
   );
 
-  const fetchAllArticle = async () => {
+  const fetchAllArticle = async (page: number) => {
     dispatch(setLoadingArticle(true));
     try {
       const id = "65ffed86f65b006fda7d0c9a";
       const { data, status } = await axios.get(
-        GET_API(id).GET_ARTICLES_BY_FACULTY_ID,
+        GET_API(id, page).GET_ARTICLES_BY_FACULTY_ID,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
 
-      dispatch(setAllArticles(data?.articles));
+      console.log(data);
+
+      dispatch(setAllArticles(data));
     } catch (error) {
       console.log(error);
     }

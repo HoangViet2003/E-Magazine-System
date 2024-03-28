@@ -27,7 +27,6 @@ export default function MyFaculty() {
 
   useEffect(() => {
     fetchAllContribution();
-    // fetchAllSubmission();
   }, []);
 
   return (

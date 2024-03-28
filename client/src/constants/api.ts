@@ -4,7 +4,7 @@ const GET_API = (id: string, page = 1) => {
     GET_DASHBOARD: `/article/dashboard`,
     GET_ALL_STUDENT_ARTICLES: `/article/student?page=${page}`,
     GET_ARTICLE_BY_ID: `/article/${id}`,
-    GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}`,
+    GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}?page=${page}`,
     GET_ARTICLES_BY_SUBMISSION_ID: `/article/submission/${id}?page=${page}`,
     GET_SUGGESTION_ARTICLES: `/article/suggestions`,
     GET_FILTERED_ARTICLES: `/article/filter`,
