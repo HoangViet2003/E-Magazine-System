@@ -22,6 +22,7 @@ export default function SidebarStudent() {
   const windowWidth = useWindowWidth();
   const { openSidebar, setOpenSidebar } = useSidebarContext();
   const [isHovered, setIsHovered] = useState(false);
+  const { setOpenUploadImage } = useSidebarContext();
 
   const navLinks = [
     {
@@ -80,9 +81,9 @@ export default function SidebarStudent() {
 
           <Dropdowns>
             <Dropdowns.Dropdown>
-              <Dropdowns.Toggle id="newDocument">
+              <Dropdowns.Toggle id="newDocumentMobile">
                 <div
-                  className="flex gap-4 rounded-lg border border-borderColor px-4 py-3 shadow-lg hover:bg-activeTabBg hover:text-[#004AD7]"
+                  className="ms-4 flex gap-4 rounded-lg border border-borderColor px-4 py-3 shadow-lg hover:bg-activeTabBg hover:text-[#004AD7]"
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
@@ -91,7 +92,7 @@ export default function SidebarStudent() {
                 </div>
               </Dropdowns.Toggle>
 
-              <Dropdowns.List id="newDocument">
+              <Dropdowns.List id="newDocumentMobile">
                 <Dropdowns.Button icon={<FileUploadIcon />}>
                   <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
                     Files upload
@@ -103,7 +104,10 @@ export default function SidebarStudent() {
                   </span>
                 </Dropdowns.Button>
                 <Dropdowns.Button icon={<ImageIcon />}>
-                  <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
+                  <span
+                    className="font-normal text-[#6B6C7E] hover:text-[#004AD7]"
+                    onClick={() => setOpenUploadImage(true)}
+                  >
                     New Gallery
                   </span>
                 </Dropdowns.Button>
@@ -161,7 +165,10 @@ export default function SidebarStudent() {
               </span>
             </Dropdowns.Button>
             <Dropdowns.Button icon={<ImageIcon />}>
-              <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
+              <span
+                className="font-normal text-[#6B6C7E] hover:text-[#004AD7]"
+                onClick={() => setOpenUploadImage(true)}
+              >
                 New Gallery
               </span>
             </Dropdowns.Button>

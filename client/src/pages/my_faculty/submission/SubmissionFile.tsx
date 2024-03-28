@@ -1,6 +1,6 @@
 import { Article } from "../../../redux/slices/ArticleSlice";
 import SubmissionDocument from "./SubmissionDocument";
-import SubmissionImage from "./SubmissionImage";
+import SubmissionImage from "../../image_collection/ImageCollection";
 
 const SubmissionFile: React.FC<{ articles: Article[] }> = ({ articles }) => {
   return (

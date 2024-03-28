@@ -16,7 +16,7 @@ import Login from "../pages/login/LoginForm";
 import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
-import SubmissionImage from "../pages/my_faculty/submission/SubmissionImage";
+import SubmissionImage from "../pages/image_collection/ImageCollection";
 
 const router = createBrowserRouter([
   {
@@ -68,7 +68,6 @@ const router = createBrowserRouter([
   {
     element: (
       <ProtectedRoute>
-
         <AppLayOut />
       </ProtectedRoute>
     ),

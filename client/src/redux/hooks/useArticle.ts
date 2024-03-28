@@ -29,15 +29,12 @@ export const useArticle = () => {
         throw new Error("Error fetching articles");
       }
 
-      console.log(data);
-
       dispatch(setAllArticles(data));
     } catch (error) {
       console.log(error);
     }
     dispatch(setLoadingArticle(false));
   };
-
 
   const getArticleByStudentId = async (page: number) => {
     dispatch(setLoadingArticle(true));
@@ -112,11 +109,36 @@ export const useArticle = () => {
         throw new Error("Error fetching article");
       }
 
-      console.log(data)
+      console.log(data);
 
       dispatch(setArticle(data?.article));
     } catch (error) {
       console.error(error);
+    }
+    dispatch(setLoadingArticle(false));
+  };
+
+  const uploadArticleImage = async (formData: FormData) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      const { status } = await axios.post(
+        POST_API("").UPLOAD_ARTICLE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      if (status !== 200 && status !== 201) {
+        throw new Error("Error updating article");
+      }
+
+      console.log("success");
+    } catch (error) {
+      console.log(error);
     } finally {
       dispatch(setLoadingArticle(false));
     }
@@ -143,8 +165,6 @@ export const useArticle = () => {
     }
   };
 
-  
-
   return {
     totalLength,
     isLoading,
@@ -156,5 +176,6 @@ export const useArticle = () => {
     searchArticleQuery,
     getArticleByStudentId,
     updateArticle,
+    uploadArticleImage,
   };
 };

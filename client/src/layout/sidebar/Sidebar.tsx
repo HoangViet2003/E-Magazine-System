@@ -11,12 +11,7 @@ import CheckCircleIcon from "../../assets/icons/sidebar-icons/checkCircle";
 import TimeIcon from "../../assets/icons/sidebar-icons/time";
 import StarIcon from "../../assets/icons/sidebar-icons/star";
 import TrashIcon from "../../assets/icons/sidebar-icons/trash";
-import PlusIcon from "../../assets/icons/sidebar-icons/plusIcon";
-import FileUploadIcon from "../../assets/icons/sidebar-icons/uploadLight";
-import NewDocumentIcon from "../../assets/icons/sidebar-icons/fileDocLight";
-import ImageIcon from "../../assets/icons/sidebar-icons/imgDuoTone";
 import Logo from "../../assets/Logo.png";
-import Dropdowns from "../../ui/Dropdowns";
 
 export default function Sidebar() {
   const currentPath = useLocation().pathname;
@@ -119,39 +114,6 @@ export default function Sidebar() {
     )
   ) : (
     <div>
-      {/* <Dropdowns>
-        <Dropdowns.Dropdown>
-          <Dropdowns.Toggle id="newDocument">
-            <div
-              className="flex gap-4 rounded-lg border border-borderColor px-4 py-3 shadow-lg hover:bg-activeTabBg hover:text-[#004AD7]"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <PlusIcon fill={isHovered ? "#004AD7" : "#6B6C7E"} />
-              <span>New</span>
-            </div>
-          </Dropdowns.Toggle>
-
-          <Dropdowns.List id="newDocument">
-            <Dropdowns.Button icon={<FileUploadIcon />}>
-              <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
-                Files upload
-              </span>
-            </Dropdowns.Button>
-            <Dropdowns.Button icon={<NewDocumentIcon />}>
-              <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
-                New Document
-              </span>
-            </Dropdowns.Button>
-            <Dropdowns.Button icon={<ImageIcon />}>
-              <span className="font-normal text-[#6B6C7E] hover:text-[#004AD7]">
-                New Gallery
-              </span>
-            </Dropdowns.Button>
-          </Dropdowns.List>
-        </Dropdowns.Dropdown>
-      </Dropdowns> */}
-
       <ul className="flex flex-col py-6 pe-6">
         {navLinks.map((navLink, index) => (
           <MainNav

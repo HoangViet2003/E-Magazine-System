@@ -42,7 +42,7 @@ export default function MyFacultyContribution() {
     };
 
     fetchSubmission();
-  }, [getSubmissionByStudent, role]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4" style={{ color: "#272833" }}>

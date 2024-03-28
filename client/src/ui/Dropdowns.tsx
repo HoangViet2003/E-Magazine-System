@@ -65,7 +65,6 @@ function Toggle({
     if (buttonElement) {
       const rect = buttonElement.getBoundingClientRect();
 
-      console.log(startPosition);
       if (startPosition === "left")
         setPosition({
           x: rect.x,
@@ -105,7 +104,7 @@ function List({
 
   return createPortal(
     <ul
-      className={`fixed w-60 rounded-sm border border-borderColor bg-white shadow-lg`}
+      className={`fixed z-20 w-60 rounded-sm border border-borderColor bg-white shadow-lg`}
       style={
         startPosition === "left" ? { top: y, left: x } : { top: y, right: x }
       }

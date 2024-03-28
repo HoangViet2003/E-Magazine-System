@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
 import { Image } from "react-grid-gallery";
-import { Article } from "../../../redux/slices/ArticleSlice";
-
-import ImageGridGallery from "../../image_collection/ImageGridGallery";
+import ImageGridGallery from "./ImageGridGallery";
 import { useParams } from "react-router-dom";
-import { useArticle } from "../../../redux/hooks/useArticle";
+import { useArticle } from "../../redux/hooks/useArticle";
+import Spinner from "../../ui/Spinner";
 
 const SubmissionImage = () => {
   const { id } = useParams();
-  const [article, setArticle] = useState<Article>();
 
-  const { getArticleById } = useArticle();
+  const { getArticleById, article, isLoading } = useArticle();
   const [imageCollection, setImageCollection] = useState<Image[]>([]);
 
   useEffect(() => {
     const fetchArticle = async () => {
       if (id) {
-        const article = await getArticleById(id);
-        setArticle(article);
+        await getArticleById(id);
       }
     };
 
@@ -64,7 +61,7 @@ const SubmissionImage = () => {
         Image collections
       </h3>
 
-      <ImageGridGallery images={imageCollection} />
+      {isLoading ? <Spinner /> : <ImageGridGallery images={imageCollection} />}
     </div>
   );
 };

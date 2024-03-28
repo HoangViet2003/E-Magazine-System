@@ -64,6 +64,7 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
+
       return data?.submission;
     } catch (error) {
       console.log(error);
