@@ -107,8 +107,13 @@ const getAllSubmissionByContributionId = async (req, res) => {
 //get submission by student id
 const getSubmissionByStudentId = async (req, res) => {
 	try {
+		const { contributionId } = req.query
 		const student = req.user
-		const submission = await Submission.findOne({ user: student._id })
+
+		const submission = await Submission.findOne({
+			user: student._id,
+			contributionId,
+		})
 
 		if (!submission) {
 			return res
