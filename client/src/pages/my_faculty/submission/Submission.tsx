@@ -8,6 +8,9 @@ import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
 import SubmissionTable from "./SubmissionTable";
 import { useContribution } from "../../../redux/hooks";
+import SubmissionEmpty from "./SubmissionEmpty";
+import Spinner from "../../../ui/Spinner";
+import { format } from "date-fns";
 
 export default function Submission() {
   const role = localStorage.getItem("role");
@@ -29,41 +32,46 @@ export default function Submission() {
   } = useSubmission();
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
+  const today = new Date();
 
+  // Get contribution and set in state
   useEffect(() => {
-    const fetchContribution = async () => {
+    const fetchContributions = async () => {
+      await fetchAllContribution();
+    };
+    fetchContributions();
+  }, [contributionId]);
+  useEffect(() => {
+    const fetchContributionById = async () => {
       await getContributionById(contributionId);
     };
-
-    fetchContribution();
+    fetchContributionById();
   }, [contributionId, contributions]);
 
-  useEffect(() => {
-    fetchAllContribution();
-  }, []);
-
+  // fetchAllSubmission for marketer coordinator
   useEffect(() => {
     if (role !== "student") {
       fetchAllSubmission();
     }
   }, []);
 
-  console.log(contribution);
-
   useEffect(() => {
     const getSubmission = async () => {
       if (role === "student") {
-        getSubmissionByStudent();
+        getSubmissionByStudent(contributionId);
       } else {
         if (submissionId) getSubmissionById(submissionId);
       }
     };
-
     getSubmission();
-  }, [submissions]);
+  }, [contributionId, submissions]);
+
+  function formattedDate(date: string) {
+    return format(date, "HH:mm dd/MM/yyyy");
+  }
 
   return (
-    <div>
+    <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
         <MainHeader>
           <div className="relative flex items-center">
@@ -99,6 +107,17 @@ export default function Submission() {
                 : `${submission.contributionId.academicYear} Contributions`}
             </h1>
 
+            {role === "student" && contribution.closureDate && (
+              <p
+                className={`text-sm font-normal italic 
+                ${today.getTime() < new Date(contribution.closureDate).getTime() ? "text-[#004AD7]" : "text-[#8B8989]"}`}
+              >
+                {`Closure Date: ${formattedDate(contribution.closureDate)}
+
+                ${today.getTime() < new Date(contribution.closureDate).getTime() ? "" : "(closed)"}`}
+              </p>
+            )}
+
             {submissionId && role !== "student" && (
               <>
                 <img src={BreadcrumbPointer} />
@@ -129,9 +148,23 @@ export default function Submission() {
         </MainHeader>
       )}
 
-      <div className="my-5 flex flex-col gap-5 xl:ps-6">
-        <SubmissionTable />
-      </div>
+      {loadingSubmission ? (
+        <Spinner />
+      ) : (
+        <div className="my-5 flex flex-col gap-5 xl:ps-6">
+          {submissionId ? (
+            <SubmissionTable />
+          ) : (
+            contribution.closureDate && (
+              <SubmissionEmpty
+                isSubmissionOpen={
+                  today.getTime() < new Date(contribution.closureDate).getTime()
+                }
+              />
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }

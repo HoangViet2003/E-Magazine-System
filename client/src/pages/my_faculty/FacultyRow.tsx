@@ -35,7 +35,6 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
           className="h-8 w-8 rounded-full object-cover"
         />
         {student?.name ?? "N/A"}
-        test
       </div>
       <div className={commonCell}>{formattedDate}</div>
     </Table.Row>

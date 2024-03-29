@@ -9,42 +9,29 @@ import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
 import FacultyRow from "../FacultyRow";
 
-export default function MyFacultyTable({
-  contributeId,
-}: {
-  contributeId?: number;
-}) {
-  const [searchParams] = useSearchParams();
-  const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
-  const [field, direction] = sortBy.split("-");
-  const modifier = direction === "asc" ? 1 : -1;
+export default function SubmissionTable() {
   const {
-    articles,
+    submissionArticles,
     getArticlesBySubmissionId,
+    resetSubmissionArticlesState,
     isLoading: loadingArticle,
     totalLength,
   } = useArticle();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const { submissionId } = useParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (submissionId) getArticlesBySubmissionId(submissionId, page);
+
+    return () => resetSubmissionArticlesState();
   }, [page, submissionId]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
     setPage(page);
   }, [searchParams]);
-
-  // FILTER
-  let filteredArticles = articles;
-
-  if (contributeId) {
-    filteredArticles = articles.filter(
-      (article) => new Date(article.createdAt).getFullYear() === contributeId,
-    );
-  }
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
@@ -54,20 +41,11 @@ export default function MyFacultyTable({
     navigate(`/images/${id}`);
   }
 
-  // SORT
-  const sortedData = filteredArticles.slice().sort((a, b) => {
-    if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
-    if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
-    return 0;
-  });
-
-  if (loadingArticle) return <Spinner />;
-
   return (
     <>
       {loadingArticle ? (
         <Spinner />
-      ) : articles && articles.length > 0 ? (
+      ) : (
         <>
           <Table columns="0.3fr 2.4fr 1.5fr 1fr 1fr">
             <Table.Header>
@@ -75,7 +53,7 @@ export default function MyFacultyTable({
             </Table.Header>
 
             <Table.Body
-              data={sortedData}
+              data={submissionArticles}
               render={(data) => (
                 <div
                   onDoubleClick={() => {
@@ -94,8 +72,6 @@ export default function MyFacultyTable({
           </Table>
           <Pagination count={totalLength} />
         </>
-      ) : (
-        <div>No data</div>
       )}
     </>
   );

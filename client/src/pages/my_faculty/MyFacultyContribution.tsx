@@ -1,12 +1,11 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import { useContribution } from "../../redux/hooks/useContribution";
 
 import FolderIcon from "../../assets/icons/folder.svg";
 import Spinner from "../../ui/Spinner";
 import { useSubmission } from "../../redux/hooks/useSubmission";
-import { Submission } from "../../redux/slices/SubmissionSlice";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
@@ -14,14 +13,19 @@ export default function MyFacultyContribution() {
   const navigate = useNavigate();
   const {
     contributions,
+    isLoading: loadingContribution,
     fetchAllContribution,
-    isLoading,
     getContributionById,
   } = useContribution();
-  const { getSubmissionByStudent, submission } = useSubmission();
+  const {
+    // getSubmissionByStudent,
+    // submission,
+    getSubmissionByStudentToNavigate,
+    isLoading: loadingSubmission,
+  } = useSubmission();
   const role = localStorage.getItem("role");
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
 
   function calculateClosureDate(date: Date) {
     const today = new Date();
@@ -39,32 +43,13 @@ export default function MyFacultyContribution() {
     fetchAllContribution();
   }, []);
 
-  useEffect(() => {
-    const fetchSubmission = async () => {
-      if (role === "student") {
-        getSubmissionByStudent();
-      }
-    };
-
-    fetchSubmission();
-  }, []);
-
   function handleSubmissionNavigate(contributionId: string) {
     getContributionById(contributionId);
     navigate(`contributions/${contributionId}`);
   }
 
-  function handleStudentSubmission(
-    submissionId: string,
-    contributionId: string,
-  ) {
-    if (submissionId) {
-      navigate(`submission/${submissionId}`);
-    } else {
-      navigate("submission");
-      searchParams.set("contributionId", contributionId);
-      setSearchParams(searchParams);
-    }
+  async function handleStudentSubmission(contributionId: string) {
+    getSubmissionByStudentToNavigate(contributionId);
   }
 
   return (
@@ -73,7 +58,7 @@ export default function MyFacultyContribution() {
         Contributions
       </h3>
 
-      {isLoading ? (
+      {loadingContribution && loadingSubmission ? (
         <Spinner />
       ) : (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -81,11 +66,14 @@ export default function MyFacultyContribution() {
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              onDoubleClick={() =>
-                role === "student"
-                  ? handleStudentSubmission(submission._id, contribution._id)
-                  : handleSubmissionNavigate(contribution._id)
-              }
+              // onClick={() => getSubmissionByStudent(contribution._id)}
+              onDoubleClick={async () => {
+                if (role === "student") {
+                  handleStudentSubmission(contribution._id);
+                } else {
+                  handleSubmissionNavigate(contribution._id);
+                }
+              }}
             >
               <div className={"flex items-center gap-4"}>
                 <img src={FolderIcon} />

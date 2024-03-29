@@ -1,6 +1,3 @@
-import { useArticle } from "../../redux/hooks/useArticle";
-import { useEffect } from "react";
-
 import MainHeader from "../../ui/MainHeader";
 import Dropdowns from "../../ui/Dropdowns";
 import MyFacultyTable from "./MyFacultyTable";
@@ -9,12 +6,6 @@ import MyFacultyContribution from "./MyFacultyContribution";
 import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 
 export default function MyFaculty() {
-  const { fetchAllArticle } = useArticle();
-
-  // useEffect(() => {
-  //   fetchAllArticle();
-  // }, []);
-
   return (
     <div>
       <MainHeader>

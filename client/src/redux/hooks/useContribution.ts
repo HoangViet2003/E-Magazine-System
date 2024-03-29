@@ -37,18 +37,17 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(true));
 
     try {
-      if (!contributionId) {
-        throw new Error("Contribution ID is required.");
+      if (contributionId) {
+        const selectedContribution =
+          contributions.length > 0
+            ? contributions.filter(
+                (contribution) => contribution._id === contributionId,
+              )[0]
+            : undefined;
+
+        if (selectedContribution)
+          dispatch(setContribution(selectedContribution));
       }
-
-      const selectedContribution =
-        contributions.length > 0
-          ? contributions.filter(
-              (contribution) => contribution._id === contributionId,
-            )[0]
-          : undefined;
-
-      if (selectedContribution) dispatch(setContribution(selectedContribution));
     } catch (error) {
       console.log(error);
     }

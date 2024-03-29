@@ -7,9 +7,12 @@ import {
 } from "../slices/SubmissionSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isLoading, submissions, submission } = useSelector(
     (state: RootState) => state.submission,
   );
@@ -22,7 +25,6 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
-
 
       dispatch(setAllSubmissions(data?.submissions));
     } catch (error) {
@@ -47,7 +49,6 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
-      // return data?.submissions;
       dispatch(setAllSubmissions(data?.submissions));
     } catch (error) {
       console.log(error);
@@ -56,25 +57,49 @@ export const useSubmission = () => {
     }
   };
 
-  const getSubmissionByStudent = async () => {
+  const getSubmissionByStudent = async (contributionId: string) => {
     dispatch(setLoadingSubmission(true));
 
     try {
+      if (!contributionId) {
+        throw new Error("Contribution ID is required.");
+      }
+
       const { data, status } = await axios.get(
-        GET_API("").GET_SUBMISSION_BY_STUDENT_ID,
+        GET_API(contributionId).GET_SUBMISSION_BY_STUDENT_ID,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
 
-      console.log(data);  
-
-
       dispatch(setSubmission(data?.submission));
     } catch (error) {
       console.log(error);
     } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const getSubmissionByStudentToNavigate = async (contributionId: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      const { data, status } = await axios.get(
+        GET_API(contributionId).GET_SUBMISSION_BY_STUDENT_ID,
+      );
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+
+      dispatch(setSubmission(data?.submission));
+      navigate(`submission/${data?.submission._id}`);
+    } catch (error) {
+      navigate("submission");
+    } finally {
+      searchParams.set("contributionId", contributionId);
+      setSearchParams(searchParams);
+
       dispatch(setLoadingSubmission(false));
     }
   };
@@ -108,6 +133,7 @@ export const useSubmission = () => {
     submissions,
     fetchAllSubmission,
     getSubmissionsByContributionId,
+    getSubmissionByStudentToNavigate,
     getSubmissionByStudent,
     getSubmissionById,
   };

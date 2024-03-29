@@ -20,7 +20,7 @@ const GET_API = (id: string, page = 1) => {
     // submissions
     GET_ALL_SUBMISSIONS: `/submissions`,
     GET_SUBMISSION_BY_CONTRIBUTION_ID: `/submissions/contribution/${id}`,
-    GET_SUBMISSION_BY_STUDENT_ID: `/submission/student`,
+    GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
   };
 };
 

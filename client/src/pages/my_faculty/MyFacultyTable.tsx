@@ -4,7 +4,6 @@ import Table from "../../ui/Table";
 import FacultyRow from "./FacultyRow";
 import MyFacultyOperation from "./MyFacultyOperation";
 
-// import ProfileImg from "../../assets/profile1.png";
 import { URL } from "../../utils/constant";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";

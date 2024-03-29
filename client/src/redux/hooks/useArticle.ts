@@ -6,6 +6,8 @@ import {
   setLoadingArticle,
   setArticle,
   addNewArticle,
+  setSubmissionArticles,
+  resetSubmissionArticles,
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -15,9 +17,8 @@ import "react-toastify/dist/ReactToastify.css";
 export const useArticle = () => {
   const dispatch = useDispatch();
 
-  const { isLoading, articles, totalLength, article } = useSelector(
-    (state: RootState) => state.article,
-  );
+  const { isLoading, articles, totalLength, article, submissionArticles } =
+    useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
 
@@ -76,7 +77,7 @@ export const useArticle = () => {
           throw new Error("Error fetching articles");
         }
 
-        dispatch(setAllArticles(data));
+        dispatch(setSubmissionArticles(data));
       }
     } catch (error) {
       console.error(error);
@@ -189,11 +190,18 @@ export const useArticle = () => {
       toast.error("Error updating article");
     }
   };
+  const resetSubmissionArticlesState = () => {
+    dispatch(setLoadingArticle(true));
+    dispatch(resetSubmissionArticles());
+
+    dispatch(setLoadingArticle(false));
+  };
 
   return {
     totalLength,
     isLoading,
     articles,
+    submissionArticles,
     article,
     fetchAllArticle,
     getArticleById,
@@ -203,5 +211,6 @@ export const useArticle = () => {
     updateArticle,
     uploadArticle,
     createNewDocument,
+    resetSubmissionArticlesState,
   };
 };

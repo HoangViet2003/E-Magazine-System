@@ -44,8 +44,6 @@ export function useAuth() {
         },
       });
 
-      console.log(data);
-
       if (data.status === "success") {
         dispatch(setUser(data.user));
 
