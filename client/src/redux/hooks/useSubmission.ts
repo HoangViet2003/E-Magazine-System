@@ -75,7 +75,7 @@ export const useSubmission = () => {
     }
   };
 
-  const getSubmissionById = async (submissionId) => {
+  const getSubmissionById = async (submissionId: string) => {
     dispatch(setLoadingSubmission(true));
 
     try {

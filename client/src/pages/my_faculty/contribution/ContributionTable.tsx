@@ -5,34 +5,16 @@ import ContributionRow from "./ContributionRow";
 import Spinner from "../../../ui/Spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Submission } from "../../../redux/slices/SubmissionSlice";
 
 export default function ContributionTable() {
   const {
     submissions,
     isLoading: loadingSubmission,
     getSubmissionsByContributionId,
-    getSubmissionByStudent,
   } = useSubmission();
   const navigate = useNavigate();
   const { contributionId } = useParams();
-  // const [submissions, setSubmissions] = useState<Submission[]>([]);
   const role = localStorage.getItem("role");
-
-  // useEffect(() => {
-  //   const fetchArticles = async () => {
-  //     if (contributeId) {
-  //       if (role === "student") {
-  //         setSubmissions([await getSubmissionByStudent()]);
-  //       } else {
-  //         setSubmissions(await getSubmissionsByContributionId(contributeId));
-  //       }
-  //     }
-  //   };
-
-  //   fetchArticles();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [contributeId]);
 
   useEffect(() => {
     if (contributionId) getSubmissionsByContributionId(contributionId);

@@ -8,7 +8,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("student2@gmail.com");
   const [password, setPassword] = useState("student123");
   const [emailError, setEmailError] = useState("");
-  const { login, isLoading, setUserFromToken, user } = useAuth();
+  const { login, isLoading, setUserFromToken } = useAuth();
   const userToken = localStorage.getItem("user");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function LoginForm() {
       if (role === "marketing coordinator") navigate("/dashboard");
       if (role === "student") navigate("/student");
     }
-  }, [navigate, setUserFromToken, role, userToken]);
+  }, [navigate, role, userToken]);
 
   return (
     <div

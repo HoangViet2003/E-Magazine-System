@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Table from "../../../ui/Table";
 
 import { URL } from "../../../utils/constant";
@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
 import FacultyRow from "../FacultyRow";
-import { useSubmission } from "../../../redux/hooks";
 
 export default function MyFacultyTable({
   contributeId,
@@ -25,13 +24,13 @@ export default function MyFacultyTable({
     isLoading: loadingArticle,
     totalLength,
   } = useArticle();
-  const { submission } = useSubmission();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const { submissionId } = useParams();
 
   useEffect(() => {
-    getArticlesBySubmissionId(page);
-  }, [page, submission]);
+    if (submissionId) getArticlesBySubmissionId(submissionId, page);
+  }, [page, submissionId]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");

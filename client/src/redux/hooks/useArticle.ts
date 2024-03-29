@@ -18,7 +18,6 @@ export const useArticle = () => {
   const { isLoading, articles, totalLength, article } = useSelector(
     (state: RootState) => state.article,
   );
-  const { submission } = useSelector((state: RootState) => state.submission);
 
   const { user } = useSelector((state: RootState) => state.user);
 
@@ -62,25 +61,23 @@ export const useArticle = () => {
   };
 
   const getArticlesBySubmissionId = async (
-    // submissionId?: string,
+    submissionId: string,
     page?: number,
   ) => {
     dispatch(setLoadingArticle(true));
 
     try {
-      if (!submission._id) {
-        throw new Error("Submission ID is required.");
-      }
-      const { data, status } = await axios.get(
-        GET_API(submission._id, page).GET_ARTICLES_BY_SUBMISSION_ID,
-      );
+      if (submissionId) {
+        const { data, status } = await axios.get(
+          GET_API(submissionId, page).GET_ARTICLES_BY_SUBMISSION_ID,
+        );
 
-      if (status !== 200) {
-        throw new Error("Error fetching articles");
-      }
+        if (status !== 200) {
+          throw new Error("Error fetching articles");
+        }
 
-      // return { articles: data?.articles, totalLength: data?.totalLength };
-      dispatch(setAllArticles(data));
+        dispatch(setAllArticles(data));
+      }
     } catch (error) {
       console.error(error);
     } finally {

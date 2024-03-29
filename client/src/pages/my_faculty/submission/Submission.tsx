@@ -22,7 +22,9 @@ export default function Submission() {
   } = useSubmission();
 
   useEffect(() => {
-    fetchAllSubmission();
+    if (role !== "student") {
+      fetchAllSubmission();
+    }
   }, []);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function Submission() {
       if (role === "student") {
         getSubmissionByStudent();
       } else {
-        getSubmissionById(submissionId);
+        if (submissionId) getSubmissionById(submissionId);
       }
     };
 
