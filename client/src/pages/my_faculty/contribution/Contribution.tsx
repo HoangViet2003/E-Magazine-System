@@ -16,7 +16,7 @@ export default function MyFaculty() {
     isLoading,
     contribution,
     contributions,
-    setContributionById,
+    getContributionById,
     fetchAllContribution,
   } = useContribution();
   const role = localStorage.getItem("role");
@@ -28,7 +28,7 @@ export default function MyFaculty() {
 
   useEffect(() => {
     if (contributionId) {
-      setContributionById(contributionId);
+      getContributionById(contributionId);
     }
   }, [contributionId, contributions]);
 

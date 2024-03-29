@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useContribution } from "../../redux/hooks/useContribution";
@@ -16,10 +16,12 @@ export default function MyFacultyContribution() {
     contributions,
     fetchAllContribution,
     isLoading,
-    setContributionById,
+    getContributionById,
   } = useContribution();
   const { getSubmissionByStudent, submission } = useSubmission();
   const role = localStorage.getItem("role");
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   function calculateClosureDate(date: Date) {
     const today = new Date();
@@ -47,9 +49,22 @@ export default function MyFacultyContribution() {
     fetchSubmission();
   }, []);
 
-  function handleSubmisionNavigate(contributionId: string) {
-    setContributionById(contributionId);
+  function handleSubmissionNavigate(contributionId: string) {
+    getContributionById(contributionId);
     navigate(`contributions/${contributionId}`);
+  }
+
+  function handleStudentSubmission(
+    submissionId: string,
+    contributionId: string,
+  ) {
+    if (submissionId) {
+      navigate(`submission/${submissionId}`);
+    } else {
+      navigate("submission");
+      searchParams.set("contributionId", contributionId);
+      setSearchParams(searchParams);
+    }
   }
 
   return (
@@ -68,8 +83,8 @@ export default function MyFacultyContribution() {
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
               onDoubleClick={() =>
                 role === "student"
-                  ? navigate(`submission/${submission?._id}`)
-                  : handleSubmisionNavigate(contribution._id)
+                  ? handleStudentSubmission(submission._id, contribution._id)
+                  : handleSubmissionNavigate(contribution._id)
               }
             >
               <div className={"flex items-center gap-4"}>

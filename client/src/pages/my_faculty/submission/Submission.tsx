@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
 
@@ -7,11 +7,18 @@ import Dropdowns from "../../../ui/Dropdowns";
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
 import SubmissionTable from "./SubmissionTable";
+import { useContribution } from "../../../redux/hooks";
 
 export default function Submission() {
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
   const { submissionId } = useParams();
+  const {
+    contribution,
+    contributions,
+    getContributionById,
+    fetchAllContribution,
+  } = useContribution();
   const {
     submission,
     submissions,
@@ -20,12 +27,28 @@ export default function Submission() {
     fetchAllSubmission,
     getSubmissionById,
   } = useSubmission();
+  const [searchParams] = useSearchParams();
+  const contributionId = searchParams.get("contributionId") || "";
+
+  useEffect(() => {
+    const fetchContribution = async () => {
+      await getContributionById(contributionId);
+    };
+
+    fetchContribution();
+  }, [contributionId, contributions]);
+
+  useEffect(() => {
+    fetchAllContribution();
+  }, []);
 
   useEffect(() => {
     if (role !== "student") {
       fetchAllSubmission();
     }
   }, []);
+
+  console.log(contribution);
 
   useEffect(() => {
     const getSubmission = async () => {
@@ -44,28 +67,35 @@ export default function Submission() {
       {!loadingSubmission && (
         <MainHeader>
           <div className="relative flex items-center">
-            <h1
-              className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
-              onClick={() => navigate("/myFaculty")}
-            >
-              My Faculty
-            </h1>
+            {role === "student" ? (
+              <h1
+                className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
+                onClick={() => navigate("/student")}
+              >
+                Your Submission
+              </h1>
+            ) : (
+              <h1
+                className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
+                onClick={() => navigate("/myFaculty")}
+              >
+                My Faculty
+              </h1>
+            )}
             <img src={BreadcrumbPointer} />
 
             <h1
               className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
               onClick={() =>
                 role === "student"
-                  ? navigate(
-                      `/student/contributions/${submission.contributionId._id}`,
-                    )
+                  ? navigate(`/student/contributions/${contributionId}`)
                   : navigate(
                       `/myFaculty/contributions/${submission.contributionId._id}`,
                     )
               }
             >
               {role === "student"
-                ? `${submission.contributionId.academicYear} Contributions`
+                ? `${contribution.academicYear} Contributions`
                 : `${submission.contributionId.academicYear} Contributions`}
             </h1>
 

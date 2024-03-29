@@ -33,7 +33,7 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(false));
   };
 
-  const setContributionById = async (contributionId: string) => {
+  const getContributionById = async (contributionId: string) => {
     dispatch(setLoadingContribution(true));
 
     try {
@@ -60,6 +60,6 @@ export const useContribution = () => {
     contribution,
     contributions,
     fetchAllContribution,
-    setContributionById,
+    getContributionById,
   };
 };

@@ -23,6 +23,7 @@ export const useSubmission = () => {
         throw new Error("Error fetching articles");
       }
 
+
       dispatch(setAllSubmissions(data?.submissions));
     } catch (error) {
       console.log(error);
@@ -66,6 +67,9 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
+
+      console.log(data);  
+
 
       dispatch(setSubmission(data?.submission));
     } catch (error) {
