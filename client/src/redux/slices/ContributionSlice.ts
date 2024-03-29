@@ -30,24 +30,36 @@ import { Submission } from "./SubmissionSlice";
 
 export interface Contribution {
   _id: string;
-  facultyId: string;
-  submission: Submission;
-  status: string;
-  academicYear: number;
-  closureDate: string;
-  finalClosureDate: string;
-  createdAt: string;
-  updatedAt: string;
+  facultyId?: string;
+  submissions?: Submission[];
+  status?: string;
+  academicYear?: number;
+  closureDate?: string;
+  finalClosureDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface ContributionState {
   isLoading: boolean;
   contributions: Contribution[];
+  contribution: Contribution;
 }
 
 const initialState: ContributionState = {
   isLoading: false,
   contributions: [],
+  contribution: {
+    _id: "",
+    facultyId: "",
+    submissions: [],
+    status: "",
+    academicYear: 0,
+    closureDate: "",
+    finalClosureDate: "",
+    createdAt: "",
+    updatedAt: "",
+  },
 };
 
 const ContributionSlice = createSlice({
@@ -60,11 +72,15 @@ const ContributionSlice = createSlice({
     setAllContribution(state, action: PayloadAction<Contribution[]>) {
       state.contributions = action.payload;
     },
+    setContribution(state, action: PayloadAction<Contribution>) {
+      state.contribution = action.payload;
+    },
   },
 });
 
 const { reducer, actions } = ContributionSlice;
 
-export const { setLoadingContribution, setAllContribution } = actions;
+export const { setLoadingContribution, setAllContribution, setContribution } =
+  actions;
 
 export default reducer;

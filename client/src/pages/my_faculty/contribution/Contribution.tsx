@@ -12,62 +12,69 @@ import ContributionTable from "./ContributionTable";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
-  const { contributeId } = useParams();
-  const { contributions, fetchAllContribution } = useContribution();
+  const {
+    isLoading,
+    contribution,
+    contributions,
+    setContributionById,
+    fetchAllContribution,
+  } = useContribution();
   const role = localStorage.getItem("role");
-
-  // const { fetchAllSubmission } = useSubmission();
-
-  const selectedContribution =
-    contributions.length > 0
-      ? contributions.filter(
-          (contribution) => contribution._id === contributeId,
-        )[0]
-      : undefined;
+  const { contributionId } = useParams();
 
   useEffect(() => {
     fetchAllContribution();
   }, []);
 
+  useEffect(() => {
+    if (contributionId) {
+      setContributionById(contributionId);
+    }
+  }, [contributionId, contributions]);
+
   return (
     <div>
-      <MainHeader>
-        <div className="flex items-center">
-          <h1
-            className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
-            onClick={() =>
-              role === "student" ? navigate("/student") : navigate("/myFaculty")
-            }
-          >
-            {role === "student" ? "Your Submission" : "My Faculty"}
-          </h1>
-          <img src={BreadcrumbPointer} />
+      {!isLoading && (
+        <MainHeader>
+          <div className="flex items-center">
+            <h1
+              className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
+              onClick={() =>
+                role === "student"
+                  ? navigate("/student")
+                  : navigate("/myFaculty")
+              }
+            >
+              {role === "student" ? "Your Submission" : "My Faculty"}
+            </h1>
+            <img src={BreadcrumbPointer} />
 
-          {selectedContribution && (
-            <Dropdowns>
-              <Dropdowns.Dropdown>
-                <Dropdowns.Toggle id={selectedContribution._id}>
-                  <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                    <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                      {selectedContribution.academicYear + " Contributions"}
-                    </h1>
-                    <img src={DropdownIcon} alt="" />
-                  </span>
-                </Dropdowns.Toggle>
+            {contribution && (
+              <Dropdowns>
+                <Dropdowns.Dropdown>
+                  <Dropdowns.Toggle id={contribution._id}>
+                    <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
+                      <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
+                        {contribution.academicYear + " Contributions"}
+                      </h1>
+                      <img src={DropdownIcon} alt="" />
+                    </span>
+                  </Dropdowns.Toggle>
 
-                <Dropdowns.List id={selectedContribution._id}>
-                  <Dropdowns.Button icon={DropdownIcon}>
-                    Download
-                  </Dropdowns.Button>
-                  <Dropdowns.Button icon={DropdownIcon}>
-                    Delete
-                  </Dropdowns.Button>
-                </Dropdowns.List>
-              </Dropdowns.Dropdown>
-            </Dropdowns>
-          )}
-        </div>
-      </MainHeader>
+                  <Dropdowns.List id={contribution._id}>
+                    <Dropdowns.Button icon={DropdownIcon}>
+                      Download
+                    </Dropdowns.Button>
+                    <Dropdowns.Button icon={DropdownIcon}>
+                      Delete
+                    </Dropdowns.Button>
+                  </Dropdowns.List>
+                </Dropdowns.Dropdown>
+              </Dropdowns>
+            )}
+          </div>
+        </MainHeader>
+      )}
 
       <div className="my-5 flex flex-col gap-5 xl:ps-6">
         <ContributionTable />

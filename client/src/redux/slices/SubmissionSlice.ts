@@ -39,7 +39,7 @@ import { Contribution } from "./ContributionSlice";
 
 export interface Submission {
   _id: string;
-  title?: string;
+  title: string;
   user: User;
   contributionId: Contribution;
   isCommented: boolean;
@@ -50,6 +50,7 @@ export interface Submission {
 }
 
 interface SubmissionState {
+  submission: Submission;
   submissions: Submission[];
   isLoading: boolean;
 
@@ -59,8 +60,28 @@ interface SubmissionState {
 }
 
 const initialState: SubmissionState = {
-  submissions: [],
   isLoading: false,
+  submissions: [],
+  submission: {
+    _id: "",
+    title: "",
+    user: {
+      _id: "",
+      name: "",
+      email: "",
+      facultyId: "",
+    },
+    contributionId: {
+      _id: "",
+      academicYear: 0,
+    },
+    isCommented: false,
+    isSelectedForPublication: false,
+    isFavorite: false,
+    createdAt: "",
+    updatedAt: "",
+  },
+
   // currentPage: 1,
   // totalPages: 0,
   // totalLength: 0,
@@ -76,11 +97,15 @@ const SubmissionSlice = createSlice({
     setAllSubmissions(state, action: PayloadAction<Submission[]>) {
       state.submissions = action.payload;
     },
+    setSubmission(state, action: PayloadAction<Submission>) {
+      state.submission = action.payload;
+    },
   },
 });
 
 const { reducer, actions } = SubmissionSlice;
 
-export const { setLoadingSubmission, setAllSubmissions } = actions;
+export const { setLoadingSubmission, setAllSubmissions, setSubmission } =
+  actions;
 
 export default reducer;

@@ -1,9 +1,6 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Table from "../../../ui/Table";
 
-// import MyFacultyOperation from "./MyFacultyOperation";
-
-// import ProfileImg from "../../assets/profile1.png";
 import { URL } from "../../../utils/constant";
 import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
@@ -11,7 +8,7 @@ import { useEffect, useState } from "react";
 import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
 import FacultyRow from "../FacultyRow";
-import { Article } from "../../../redux/slices/ArticleSlice";
+import { useSubmission } from "../../../redux/hooks";
 
 export default function MyFacultyTable({
   contributeId,
@@ -22,33 +19,22 @@ export default function MyFacultyTable({
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  const { submissionId } = useParams();
-  const { getArticlesBySubmissionId, isLoading: loadingArticle } = useArticle();
-  const [articles, setArticles] = useState<Article>([]);
-  const [articleCount, setArticleCount] = useState(0);
+  const {
+    articles,
+    getArticlesBySubmissionId,
+    isLoading: loadingArticle,
+    totalLength,
+  } = useArticle();
+  const { submission } = useSubmission();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      if (submissionId) {
-        const fetchedArticles = await getArticlesBySubmissionId(
-          submissionId,
-          page,
-        );
-
-        setArticles(fetchedArticles?.articles || []);
-        setArticleCount(fetchedArticles?.totalLength || 0);
-      }
-    };
-
-    fetchArticles();
-  }, [page]);
+    getArticlesBySubmissionId(page);
+  }, [page, submission]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
-
-    // getArticlesBySubmissionId(submissionId, page);
     setPage(page);
   }, [searchParams]);
 
@@ -107,7 +93,7 @@ export default function MyFacultyTable({
               )}
             />
           </Table>
-          <Pagination count={articleCount} />
+          <Pagination count={totalLength} />
         </>
       ) : (
         <div>No data</div>

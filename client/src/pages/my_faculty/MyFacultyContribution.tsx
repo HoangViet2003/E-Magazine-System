@@ -12,10 +12,14 @@ const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
 export default function MyFacultyContribution() {
   const navigate = useNavigate();
-  const { contributions, fetchAllContribution, isLoading } = useContribution();
-  const { getSubmissionByStudent } = useSubmission();
+  const {
+    contributions,
+    fetchAllContribution,
+    isLoading,
+    setContributionById,
+  } = useContribution();
+  const { getSubmissionByStudent, submission } = useSubmission();
   const role = localStorage.getItem("role");
-  const [submission, setSubmission] = useState<Submission>();
 
   function calculateClosureDate(date: Date) {
     const today = new Date();
@@ -36,13 +40,17 @@ export default function MyFacultyContribution() {
   useEffect(() => {
     const fetchSubmission = async () => {
       if (role === "student") {
-        const submissionData = await getSubmissionByStudent();
-        setSubmission(submissionData);
+        getSubmissionByStudent();
       }
     };
 
     fetchSubmission();
   }, []);
+
+  function handleSubmisionNavigate(contributionId: string) {
+    setContributionById(contributionId);
+    navigate(`contributions/${contributionId}`);
+  }
 
   return (
     <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
@@ -61,7 +69,7 @@ export default function MyFacultyContribution() {
               onDoubleClick={() =>
                 role === "student"
                   ? navigate(`submission/${submission?._id}`)
-                  : navigate(`contributions/${contribution._id}`)
+                  : handleSubmisionNavigate(contribution._id)
               }
             >
               <div className={"flex items-center gap-4"}>
