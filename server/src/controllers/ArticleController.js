@@ -439,14 +439,19 @@ const getSuggestionArticles = async (req, res) => {
 
 const filterArticle = async (req, res) => {
 	try {
-		const { type, title } = req.query
+		const { type, keyword } = req.query
 		const page = parseInt(req.query.page) || 1
 		const user = req.user
 		const limit = 5
 		const skip = (page - 1) * limit
 
-		let matchQuery = { type }
-		if (user.role !== "marketing manager" || user.role !== "admin") {
+		let matchQuery = {
+			title: { $regex: new RegExp(keyword, "i") },
+			content: { $regex: new RegExp(keyword, "i") },
+		}
+
+		// Adjusted condition to check if the user is not a marketing manager AND not an admin
+		if (user.role !== "marketing manager" && user.role !== "admin") {
 			matchQuery["facultyId"] = user.facultyId
 		}
 
@@ -457,14 +462,17 @@ const filterArticle = async (req, res) => {
 			matchQuery.student = user._id
 		}
 
-		if (title) {
-			matchQuery.title = { $regex: new RegExp(title, "i") }
+		if (type) {
+			matchQuery.type = type
 		}
 
-		articles = await Article.find(matchQuery).skip(skip).limit(limit)
+		articles = await Article.find(matchQuery)
+			.skip(skip)
+			.limit(limit)
+			.select("_id title type student updatedAt")
 
 		// Using a single aggregation pipeline for fetching articles and getting total count
-		const totalLength = await Article.find(matchQuery).countDocuments()
+		const totalLength = await Article.countDocuments(matchQuery)
 
 		res.status(200).json({
 			articles,
