@@ -10,6 +10,11 @@ const articleSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Submission",
 		},
+		facultyId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Faculty",
+			required: true,
+		},
 		student: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
