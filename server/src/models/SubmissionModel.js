@@ -12,13 +12,10 @@ const submissionSchema = new mongoose.Schema(
 			ref: "Contribution",
 			required: true,
 		},
-		comment: {
-			type: String,
-			default: null,
-		},
-		isCommented: {
-			type: Boolean,
-			default: false,
+		comments: {
+			type: [mongoose.Schema.Types.ObjectId],
+			ref: "Comment",
+			default: [],
 		},
 		isSelectedForPublication: {
 			type: Boolean,

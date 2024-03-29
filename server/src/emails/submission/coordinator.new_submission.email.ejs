@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Submission Notification</title>
+    <style>
+        /* Reset styles */
+        body, h1, h2, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .content {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .submission-details {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .submission-details p {
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .footer a {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://dropovercl.s3.amazonaws.com/e3133c65-fddd-4a2b-999b-adbd5249fb6c/d409415b-90f4-4be8-8e6b-d726fc437a2e/8a7243d4-5d15-4107-965f-ba59dd2f034e.png" alt="Logo">
+        </div>
+        <div class="content">
+            <h2>New Submission Notification</h2>
+            <p>Hello <%= marketingCoordinatorName %>,</p>
+            <p>A new submission has been received from a student. Below are the details:</p>
+            <div class="submission-details">
+                <p><strong>Student Name:</strong> <%= studentName %></p>
+                <p><strong>Email:</strong> <%= studentEmail %></p>
+                <p><strong>Date Submitted:</strong> <%= submissionDate %></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="<%= linkToViewSubmission %>" class="btn">View Submission</a>
+            <p>&copy; 2024 E Magazine System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

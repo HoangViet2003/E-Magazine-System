@@ -12,12 +12,6 @@ router.post(
 	authenticateStudent,
 	SubmissionController.createSubmission
 )
-router.put(
-	"/submission/:submissionId",
-	authenticateToken,
-	authenticateMarketingCoordinator,
-	SubmissionController.addCommentSubmission
-)
 router.get(
 	"/submissions",
 	authenticateToken,
@@ -37,16 +31,10 @@ router.get(
 	SubmissionController.getSubmissionByStudentId
 )
 router.patch(
-	"/submission/publication",
+	"/submission/:submissionId/publication",
 	authenticateToken,
 	authenticateMarketingCoordinator,
 	SubmissionController.updateForPublication
-)
-router.patch(
-	"/submission/favourite",
-	authenticateToken,
-	authenticateMarketingCoordinator,
-	SubmissionController.updateFavorite
 )
 
 module.exports = router

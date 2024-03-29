@@ -39,13 +39,6 @@ router.put(
 	ArticleController.updateArticle
 )
 
-router.patch(
-	"/article/publication",
-	authenticateToken,
-	authenticateMarketingCoordinator,
-	ArticleController.updateArticlesForPublication
-)
-
 router.post(
 	"/article/create-doc",
 	authenticateToken,

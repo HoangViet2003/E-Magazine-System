@@ -7,7 +7,6 @@ const {
 	Article,
 	Contribution,
 	History,
-	User,
 	Faculty,
 	Comment,
 	Submission,
@@ -391,48 +390,6 @@ const deleteArticle = async (req, res) => {
 	}
 }
 
-const updateArticlesForPublication = async (req, res) => {
-	try {
-		const { articleIds } = req.body
-
-		//check if articleIds is empty
-		if (!articleIds) {
-			return res.status(400).json({
-				status: "error",
-				message: "Article IDs are required",
-			})
-		}
-
-		// Check if the finalClosure date of the contribution has passed
-		const article = await Article.findById(articleIds[0])
-
-		const contribution = await Contribution.findById(article.contributionId)
-
-		if (!contribution) {
-			return res.status(404).json({ error: "Contribution not found" })
-		}
-
-		if (contribution.finalClosureDate < new Date()) {
-			return res.status(403).json({
-				error:
-					"The final closure date of the contribution has passed. You cannot select the articles",
-			})
-		}
-
-		// Update articles with the given IDs to set isSelectedForPublication to true
-		await Article.updateMany(
-			{ _id: { $in: articleIds } },
-			{ $set: { status: "selected" } }
-		)
-
-		return res.status(200).json({
-			message: "Articles have been selected for publication",
-		})
-	} catch (error) {
-		return res.status(500).json({ error: error.message })
-	}
-}
-
 const updateArticleFavorite = async (req, res) => {
 	try {
 		const { articleIds } = req.body
@@ -649,7 +606,6 @@ module.exports = {
 	getAllArticlesByStudentId,
 	getArticleById,
 	getAllArticlesByFacultyId,
-	updateArticlesForPublication,
 	updateArticleFavorite,
 	getSuggestionArticles,
 	filterArticle,
