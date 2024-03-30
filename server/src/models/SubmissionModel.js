@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const submissionSchema = new mongoose.Schema(
 	{
-		user: {
+		student: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
@@ -34,7 +34,7 @@ const submissionSchema = new mongoose.Schema(
 //populate user
 submissionSchema.pre(/^find/, function (next) {
 	this.populate({
-		path: "user",
+		path: "student",
 		select: "name email",
 	})
 

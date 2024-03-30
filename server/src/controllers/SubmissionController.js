@@ -1,4 +1,10 @@
-const { Submission, Contribution } = require("../models")
+const {
+	Submission,
+	Contribution,
+	Faculty,
+	User,
+	Notification,
+} = require("../models")
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
@@ -12,6 +18,7 @@ const createSubmission = async (req, res) => {
 		// Get the contribution with the given ID
 		const contribution = await Contribution.findOne({
 			academicYear: currentYear,
+			facultyId: req.user.facultyId,
 		})
 
 		if (!contribution) {
@@ -20,7 +27,7 @@ const createSubmission = async (req, res) => {
 
 		// Check if the student has already created submission for this contribution
 		const existingSubmission = await Submission.findOne({
-			user: req.user._id,
+			student: req.user._id,
 			contributionId: contribution._id,
 		})
 
@@ -32,7 +39,7 @@ const createSubmission = async (req, res) => {
 
 		// Check if the closure date has passed
 		const currentDate = new Date()
-		if (currentDate > contribution.finalClosureDate) {
+		if (currentDate > contribution.closureDate) {
 			return res.status(400).json({
 				message: "The closure date has passed",
 			})
@@ -40,7 +47,7 @@ const createSubmission = async (req, res) => {
 
 		// Create a new submission
 		const newSubmission = await Submission.create({
-			user: req.user._id,
+			student: req.user._id,
 			contributionId: contribution._id,
 		})
 
@@ -54,23 +61,43 @@ const createSubmission = async (req, res) => {
 			html: studentEmailHtml,
 		})
 
+		// Find the marketing coordinator of the faculty
+		const faculty = await Faculty.findById(req.user.facultyId)
+		const marketingCoordinator = await User.findById(
+			faculty.marketingCoordinatorId
+		)
+
 		// send email to the marketing coordinator
 		const marketingCoordinatorEmailHtml = await ejs.renderFile(
-			"./src/emails/submission/coordinator.new_submissison.email.ejs",
+			"./src/emails/submission/coordinator.newsubmission.email.ejs",
 			{
-				marketingCoordinatorName: "Tuan Anh",
+				marketingCoordinatorName: marketingCoordinator.name,
 				studentName: req.user.name,
 				studentEmail: req.user.email,
-				dateSubmited: new Date(),
-				linkToViewSubmission: "https://www.google.com",
+				submissionDate: new Date(),
+				linkToViewSubmission: `${process.env.FRONTEND_URL}/submissions/contribution/${newSubmission._id}`,
 			}
 		)
 
 		await handleSendEmail({
-			to: "anhntgch220570@fpt.edu.vn",
+			to: marketingCoordinator.email,
 			subject: "New Submission",
 			html: marketingCoordinatorEmailHtml,
 		})
+
+		// create notification for the marketing coordinator
+		const newNotification = {
+			title: "New Submission",
+			message: `New submission from ${req.user.name}`,
+			actionUrl: `/submissions/contribution/${contribution._id}`,
+			receiver: marketingCoordinator._id,
+			doer: req.user._id,
+		}
+
+		await Notification.create(newNotification)
+
+		emitNotification(marketingCoordinator._id, newNotification)
+
 		return res.status(201).json({ newSubmission })
 	} catch (error) {
 		return res.status(400).json({ error })

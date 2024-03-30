@@ -8,13 +8,10 @@ const initSocket = (io) => {
 	ioInstance.on("connection", (socket) => {
 		socket.on("join", (id) => {
 			socket.join(id)
-			console.log("User has joined: ", id)
 			socket.emit("joined", `You has joined ${id}`)
 		})
 
-		socket.on("disconnect", () => {
-			console.log("User has left: ", socket.id)
-		})
+		socket.on("disconnect", () => {})
 	})
 }
 
