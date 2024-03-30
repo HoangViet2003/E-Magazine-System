@@ -8,6 +8,7 @@ import {
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Article } from "../slices/ArticleSlice.js";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -86,10 +87,10 @@ export const useSubmission = () => {
 
     try {
       const { data, status } = await axios.get(
-        GET_API(contributionId).GET_SUBMISSION_BY_STUDENT_ID,
+        GET_API(contributionId).GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT,
       );
       if (status !== 200) {
-        throw new Error("Error fetching submissions");
+        throw new Error("Error fetching submission");
       }
 
       dispatch(setSubmission(data?.submission));
@@ -127,6 +128,87 @@ export const useSubmission = () => {
     }
   };
 
+  const createSubmissionForStudent = async (contributionId: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      const { data, status } = await axios.post(POST_API("").CREATE_SUBMISSION);
+
+      if (status !== 200 && status !== 201) {
+        throw new Error("Error creating submissions");
+      }
+
+      dispatch(setLoadingSubmission(data));
+      navigate(`${data?.newSubmission._id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      searchParams.set("contributionId", contributionId);
+      setSearchParams(searchParams);
+
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const getSubmissionByContributionStudent = async (contributionId: string) => {
+    dispatch(setLoadingSubmission(false));
+
+    try {
+      if (!contributionId) {
+        throw new Error("Contribution ID is required.");
+      }
+
+      const { data, status } = await axios.get(
+        GET_API(contributionId).GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+      dispatch(setSubmission(data));
+    } catch (error) {
+      // console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const addSelectedArticlesToSubmission = async (
+    submissionId: string,
+    articles: Article[],
+  ) => {
+    dispatch(setLoadingSubmission(false));
+
+    const articlesId: string[] = articles.map((article) => article._id);
+
+    console.log(articlesId);
+
+    try {
+      if (!articlesId || articlesId.length === 0)
+        throw new Error("Articles Id is required.");
+
+      const { data, status } = await axios.put(
+        PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
+        {
+          newArticleIds: articlesId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (status !== 200) {
+        throw new Error("Error adding articles to submission");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
   return {
     isLoading,
     submission,
@@ -136,5 +218,8 @@ export const useSubmission = () => {
     getSubmissionByStudentToNavigate,
     getSubmissionByStudent,
     getSubmissionById,
+    createSubmissionForStudent,
+    getSubmissionByContributionStudent,
+    addSelectedArticlesToSubmission,
   };
 };

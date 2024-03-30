@@ -32,8 +32,6 @@ export default function MyFacultyTable({
     keyword,
   } = useArticle();
 
-  console.log(articleLength);
-
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 

@@ -1,6 +1,6 @@
 import LockIcon from "../../../assets/icons/submission-pages/Lock_fill.svg";
 import EmptyIcon from "../../../assets/icons/submission-pages/Empty Icon 203873 1.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SubmissionTosModal from "./modal/SubmissionTosModal";
 import Button from "../../../ui/Button";
@@ -8,17 +8,27 @@ import CreateSubmissionModal from "./modal/CreateSubmissionModal";
 import { useSubmission } from "../../../redux/hooks";
 
 import ArticleSelectModal from "./modal/ArticleSelectModal";
+import Spinner from "../../../ui/Spinner";
 
 export default function SubmissionEmpty({
   isSubmissionOpen,
+  hasSubmission = false,
 }: {
   isSubmissionOpen: boolean;
+  hasSubmission?: boolean;
 }) {
+  const [searchParams] = useSearchParams();
+  const contributionId = searchParams.get("contributionId") || "";
+
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
-  const { submission, getSubmissionByStudent } = useSubmission();
+  const {
+    submission,
+    getSubmissionByContributionStudent,
+    isLoading: loadingSubmission,
+  } = useSubmission();
 
-  useEffect(() => {}, []);
+  if (loadingSubmission) return <Spinner />;
 
   return (
     <>
@@ -26,7 +36,13 @@ export default function SubmissionEmpty({
         <img src={isSubmissionOpen ? EmptyIcon : LockIcon} alt="Lock Icon" />
 
         {isSubmissionOpen ? (
-          <p>You currently do not have any submission for this contribution</p>
+          !hasSubmission ? (
+            <p>
+              You currently do not have any submission for this contribution
+            </p>
+          ) : (
+            <p>You currently do not have any articles for this contribution</p>
+          )
         ) : (
           <p>
             The contribution submission is closed, you cannot submit after the
@@ -36,7 +52,7 @@ export default function SubmissionEmpty({
 
         {!isSubmissionOpen ? (
           <Button onClick={() => navigate("/student")}>RETURN HOME</Button>
-        ) : (
+        ) : !hasSubmission ? (
           <Button
             onClick={() => {
               setIsAccepted(false);
@@ -52,6 +68,25 @@ export default function SubmissionEmpty({
           >
             CREATE CONTRIBUTION
           </Button>
+        ) : (
+          <div>
+            <Button type="light">Upload files</Button>
+            <Button
+              onClick={() => {
+                setIsAccepted(false);
+                const modal = document.getElementById(
+                  "select articles",
+                ) as HTMLDialogElement | null;
+                if (modal) {
+                  modal.showModal();
+                } else {
+                  console.error("Modal not found");
+                }
+              }}
+            >
+              ADD YOUR FILES
+            </Button>
+          </div>
         )}
       </div>
 
@@ -62,8 +97,6 @@ export default function SubmissionEmpty({
 
       <CreateSubmissionModal />
       <ArticleSelectModal />
-
-
     </>
   );
 }

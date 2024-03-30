@@ -86,8 +86,6 @@ export const useArticle = () => {
           throw new Error("Error fetching articles");
         }
 
-        console.log(data);
-
         dispatch(setSubmissionArticles(data));
       }
     } catch (error) {

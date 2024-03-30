@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useArticle } from "../../../../redux/hooks";
+import { useArticle, useSubmission } from "../../../../redux/hooks";
 
 import SubmissionModalOperation from "./SubmissionModalOperation";
 import SubmissionModalRow from "./SubmissionModalRow";
@@ -7,19 +7,22 @@ import SubmissionModalRow from "./SubmissionModalRow";
 import Button from "../../../../ui/Button";
 import Table from "../../../../ui/Table";
 import Spinner from "../../../../ui/Spinner";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { Article } from "../../../../redux/slices/ArticleSlice";
 
 export default function ArticleSelectModal() {
+  const { submissionId } = useParams();
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
 
   const [searchInput, setSearchInput] = useState("");
-  const { articles, getArticleByStudentId, isLoading } = useArticle();
   const [filterArticles, setFilterArticle] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article[]>([]);
+
+  const { articles, getArticleByStudentId, isLoading } = useArticle();
+  const { addSelectedArticlesToSubmission } = useSubmission();
 
   // FILTER
   useEffect(() => {
@@ -97,6 +100,10 @@ export default function ArticleSelectModal() {
           <Button
             className="px-10"
             disabled={!(selectedArticle && selectedArticle.length > 0)}
+            onClick={() => {
+              if (submissionId)
+                addSelectedArticlesToSubmission(submissionId, selectedArticle);
+            }}
           >
             Select
           </Button>

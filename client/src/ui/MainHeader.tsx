@@ -49,7 +49,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
             {isUnsubmittable && (
               <button className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
                 <img src={UnsubmitIcon} />
-                Share
+                Unsubmit
               </button>
             )}
 

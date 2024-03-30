@@ -1,8 +1,14 @@
+import { useSearchParams } from "react-router-dom";
 import { useSidebarContext } from "../../../../layout/sidebar/SidebarContext";
+import { useSubmission } from "../../../../redux/hooks";
 import Button from "../../../../ui/Button";
 
 export default function CreateSubmissionModal() {
   const { setOpenDocUpload } = useSidebarContext();
+  const { createSubmissionForStudent } = useSubmission();
+  const [searchParams] = useSearchParams();
+  const contributionId = searchParams.get("contributionId") || "";
+
   return (
     <dialog id="create_submission" className="modal">
       <div className="modal-box flex flex-col gap-5 rounded-md p-14">
@@ -14,7 +20,15 @@ export default function CreateSubmissionModal() {
           method="dialog"
           className="modal-backdrop flex flex-col gap-[10px] p-[10px]"
         >
-          <Button>CREATE A BLANK SUBMISSION</Button>
+          <Button
+            onClick={() => {
+              if (contributionId) {
+                createSubmissionForStudent(contributionId);
+              }
+            }}
+          >
+            CREATE A BLANK SUBMISSION
+          </Button>
           <Button
             onClick={() => {
               const element = document.getElementById(

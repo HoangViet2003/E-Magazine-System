@@ -5,7 +5,7 @@ import SpinnerMini from "../../ui/SpinnerMini";
 import LoginBackground from "../../assets/natural-4821583_1920.png";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("student2@gmail.com");
+  const [email, setEmail] = useState("tuananhngo2513@gmail.com");
   const [password, setPassword] = useState("student123");
   const [emailError, setEmailError] = useState("");
   const { login, isLoading, setUserFromToken } = useAuth();

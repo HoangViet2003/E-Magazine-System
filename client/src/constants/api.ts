@@ -20,7 +20,9 @@ const GET_API = (id: string, page = 1) => {
     // submissions
     GET_ALL_SUBMISSIONS: `/submissions`,
     GET_SUBMISSION_BY_CONTRIBUTION_ID: `/submissions/contribution/${id}`,
+    GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT: `/submission/contribution/${id}`,
     GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
+    GET_UNSELECTED_ARTICLES_OF_STUDENTS: `/submission/${id}/unselectedArticles`,
   };
 };
 
@@ -62,11 +64,14 @@ const PUT_API = (id: string) => {
     ADD_COMMENT_SUBMISSION: `/submission/${id}`,
     UPDATE_FOR_PUBLICATION: `/submission/publication`,
     UPDATE_SUBMISSION_FAVORITE: `/submission/favourite`,
+    ADD_ARTICLES_TO_SUBMISSION: `/submission/${id}/addArticle`,
   };
 };
 
 const DELETE_API = (id: string) => {
   return {
+    // articles
+    DELETE_ARTICLE: `/article/${id}`,
     // comments
     DELETE_COMMENT: `/comment/${id}`,
     // contributions
@@ -78,4 +83,12 @@ const DELETE_API = (id: string) => {
   };
 };
 
-export { GET_API, POST_API, PUT_API, DELETE_API };
+const PATCH_API = (id: string) => {
+  return {
+    // submissions
+    TOGGLE_PUBLICATION: `/submission/${id}/publication`,
+    TOGGLE_SUBMIT: `/submission/${id}/submit`,
+  };
+};
+
+export { GET_API, POST_API, PUT_API, DELETE_API, PATCH_API };

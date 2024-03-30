@@ -18,20 +18,19 @@ export default function SubmissionTable() {
     totalLength,
   } = useArticle();
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
   const { submissionId } = useParams();
   const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    if (submissionId) getArticlesBySubmissionId(submissionId, page);
+  // useEffect(() => {
+  //   if (submissionId) getArticlesBySubmissionId(submissionId, page);
 
-    return () => resetSubmissionArticlesState();
-  }, [page, submissionId]);
+  //   return () => resetSubmissionArticlesState();
+  // }, [page, submissionId]);
 
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page") || "1");
-    setPage(page);
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const page = parseInt(searchParams.get("page") || "1");
+  //   setPage(page);
+  // }, [searchParams]);
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
