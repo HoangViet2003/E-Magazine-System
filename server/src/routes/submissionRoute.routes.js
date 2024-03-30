@@ -28,6 +28,13 @@ router.get(
 )
 
 router.get(
+	"/submission/:submissionId/unselectedArticles",
+	authenticateToken,
+	authenticateStudent,
+	SubmissionController.getUnselectedArticlesOfStudentsBySubmissionId
+)
+
+router.get(
 	"/submission/contribution/:contributionId",
 	authenticateToken,
 	SubmissionController.getSubmissionByContributionId

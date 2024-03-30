@@ -4,11 +4,40 @@ const {
 	Faculty,
 	User,
 	Notification,
+	Article,
 } = require("../models")
 
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
+
+const getUnselectedArticlesOfStudentsBySubmissionId = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+
+		const submission = await Submission.findById(submissionId)
+
+		if (!submission) {
+			return res.status(404).json({ message: "Submission not found" })
+		}
+
+		// Check if the submission belongs to the student
+		if (submission.student.toString() !== req.user._id.toString()) {
+			return res
+				.status(403)
+				.json({ message: "You are not authorized to perform this action" })
+		}
+
+		const articles = await Article.find({
+			studentId: submission.student,
+			_id: { $nin: submission.articles },
+		})
+
+		return res.status(200).json({ articles })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
 
 const createSubmission = async (req, res) => {
 	try {
@@ -348,4 +377,5 @@ module.exports = {
 	addArticlesToSubmission,
 	removeArticlesFromSubmission,
 	removeSubmission,
+	getUnselectedArticlesOfStudentsBySubmissionId,
 }
