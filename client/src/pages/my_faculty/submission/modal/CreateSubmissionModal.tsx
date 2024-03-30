@@ -13,7 +13,18 @@ export default function CreateSubmissionModal() {
           className="modal-backdrop flex flex-col gap-[10px] p-[10px]"
         >
           <Button>CREATE A BLANK SUBMISSION</Button>
-          <Button>CHOOSE FROM YOUR FILES</Button>
+          <Button
+            onClick={() => {
+              const element = document.getElementById(
+                "select articles",
+              ) as HTMLDialogElement;
+              if (element) {
+                element.showModal();
+              }
+            }}
+          >
+            CHOOSE FROM YOUR FILES
+          </Button>
           <Button>UPLOAD FILE</Button>
         </form>
       </div>

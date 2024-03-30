@@ -7,6 +7,8 @@ import Button from "../../../ui/Button";
 import CreateSubmissionModal from "./modal/CreateSubmissionModal";
 import { useSubmission } from "../../../redux/hooks";
 
+import ArticleSelectModal from "./modal/ArticleSelectModal";
+
 export default function SubmissionEmpty({
   isSubmissionOpen,
 }: {
@@ -15,8 +17,6 @@ export default function SubmissionEmpty({
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
   const { submission, getSubmissionByStudent } = useSubmission();
-
-  console.log(submission);
 
   useEffect(() => {}, []);
 
@@ -61,6 +61,9 @@ export default function SubmissionEmpty({
       />
 
       <CreateSubmissionModal />
+      <ArticleSelectModal />
+
+
     </>
   );
 }
