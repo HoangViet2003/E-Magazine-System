@@ -67,7 +67,6 @@ const getCommentsByAr = async (req, res) => {
 			totalPages,
 		})
 	} catch (error) {
-		console.error(error)
 		return res.status(500).json({ error: "Internal Server Error" })
 	}
 }
@@ -103,7 +102,7 @@ const addComment = async (req, res) => {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			} else {
-				if (req.user._id.toString() !== article.studentId.toString()) {
+				if (req.user._id.toString() !== article.student.toString()) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			}
@@ -136,7 +135,6 @@ const addComment = async (req, res) => {
 			.status(201)
 			.json({ newComment, message: "Comment added successfully" })
 	} catch (error) {
-		console.error(error)
 		return res.status(500).json({ error: "Internal Server Error" })
 	}
 }
@@ -152,7 +150,6 @@ const replyComment = async (req, res) => {
 			req.user.role !== "marketing coordinator" &&
 			req.user.role !== "student"
 		) {
-			console.log("req.user.role", req.user.role)
 			return res.status(403).json({ error: "Forbidden" })
 		} else {
 			comment = await Comment.findById(id)
@@ -174,7 +171,7 @@ const replyComment = async (req, res) => {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			} else {
-				if (req.user._id.toString() !== article.studentId.toString()) {
+				if (req.user._id.toString() !== article.student.toString()) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			}
@@ -219,7 +216,6 @@ const replyComment = async (req, res) => {
 			.status(201)
 			.json({ newComment, message: "Comment added successfully" })
 	} catch (error) {
-		console.error(error)
 		return res.status(500).json({ error: "Internal Server Error" })
 	}
 }
@@ -256,7 +252,7 @@ const deleteComment = async (req, res) => {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			} else {
-				if (req.user._id.toString() !== article.studentId.toString()) {
+				if (req.user._id.toString() !== article.student.toString()) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			}
@@ -275,7 +271,6 @@ const deleteComment = async (req, res) => {
 
 		return res.status(200).json({ message: "Comment deleted successfully" })
 	} catch (error) {
-		console.error(error)
 		return res.status(500).json({ error: "Internal Server Error" })
 	}
 }

@@ -126,7 +126,7 @@ const createSubmission = async (req, res) => {
 
 		await Notification.create(newNotification)
 
-		emitNotification(marketingCoordinator._id, newNotification)
+		emitNotification(marketingCoordinator._id.toString(), newNotification)
 
 		return res.status(201).json({ newSubmission })
 	} catch (error) {
@@ -315,7 +315,7 @@ const toggleSubmissionStatus = async (req, res) => {
 
 		await Notification.create(newNotification)
 
-		emitNotification(marketingCoordinator._id, newNotification)
+		emitNotification(marketingCoordinator._id.toString(), newNotification)
 
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
