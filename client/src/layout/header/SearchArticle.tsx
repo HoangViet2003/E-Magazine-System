@@ -8,20 +8,19 @@ import { useSidebarContext } from "../sidebar/SidebarContext";
 import { useArticle } from "../../redux/hooks/useArticle";
 
 export default function SearchArticle() {
-  const [keyword, setKeyword] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
   const { setOpenSidebar, openSidebar } = useSidebarContext();
-  const { searchArticleQuery } = useArticle();
+  const { searchArticleQuery, handleSetKeyword, keyword } = useArticle();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!keyword) return;
 
-    searchArticleQuery(keyword);
-    navigate(`myFaculty`);
-    setKeyword("");
+    // searchArticleQuery(keyword);
+    // handleSetKeyword(keyword);
+    navigate(`/myFaculty`); // Pass keyword as URL param
   }
 
   return (
@@ -40,7 +39,7 @@ export default function SearchArticle() {
           type="text"
           placeholder="Search articles"
           onChange={(e) => {
-            setKeyword(e.target.value);
+            handleSetKeyword(e.target.value);
           }}
           className="w-full bg-searchBackground px-4 py-2 outline-none placeholder:text-defaultTextColor"
         />

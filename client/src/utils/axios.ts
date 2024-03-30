@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 
 const ENDPOINT = "https://e-magazine.onrender.com/api/v1";
+// const ENDPOINT = "http://localhost:8080/api/v1";
 
 
 const axiosInstance: AxiosInstance = axios.create({

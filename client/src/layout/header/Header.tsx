@@ -23,7 +23,7 @@ const Header = () => {
     const socket = io("https://e-magazine.onrender.com");
 
     socket.on("connect", () => {
-      console.log("Connected to server");
+      // console.log("Connected to server");
       socket.emit("join", user._id);
 
       setTimeout(() => {

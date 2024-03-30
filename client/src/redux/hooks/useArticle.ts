@@ -6,6 +6,8 @@ import {
   setLoadingArticle,
   setArticle,
   addNewArticle,
+  setKeyword,
+  setIsFilterMode,
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -15,9 +17,8 @@ import "react-toastify/dist/ReactToastify.css";
 export const useArticle = () => {
   const dispatch = useDispatch();
 
-  const { isLoading, articles, totalLength, article } = useSelector(
-    (state: RootState) => state.article,
-  );
+  const { isLoading, articles, totalLength, article, keyword, isFilterMode } =
+    useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
 
@@ -85,18 +86,26 @@ export const useArticle = () => {
     }
   };
 
-  const searchArticleQuery = async (query: string, page = 1) => {
+  const searchArticleQuery = async (
+    query?: string,
+    type?: string,
+    page = 1,
+  ) => {
     dispatch(setLoadingArticle(true));
+    console.log(query);
     try {
+      if (type) {
+        dispatch(setIsFilterMode(true));
+      }
       const { data, status } = await axios.get(
-        `${GET_API("", page).GET_FACULTY_BY_ID}&title=${query}`,
+        `${GET_API("", page).GET_FILTERED_ARTICLES}?keyword=${query}`,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching Articles");
       }
 
-      dispatch(setAllArticles(data?.articles));
+      dispatch(setAllArticles(data));
     } catch (error) {
       console.log(error);
     }
@@ -111,8 +120,7 @@ export const useArticle = () => {
       if (status !== 200) {
         throw new Error("Error fetching article");
       }
-
-      console.log(data);
+      console.log(data)
 
       dispatch(setArticle(data?.article));
     } catch (error) {
@@ -190,6 +198,30 @@ export const useArticle = () => {
     }
   };
 
+  const getSuggestion = async () => {
+    try {
+      const { data, status } = await axios.get(
+        GET_API("").GET_SUGGESTION_ARTICLES,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error fetching suggestions");
+      }
+
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSetKeyword = (keyword: string) => {
+    dispatch(setKeyword(keyword));
+  };
+
+  const handleSetIsFilterMode = (isFilterMode: boolean) => {
+    dispatch(setIsFilterMode(isFilterMode));
+  };
+
   return {
     totalLength,
     isLoading,
@@ -203,5 +235,10 @@ export const useArticle = () => {
     updateArticle,
     uploadArticle,
     createNewDocument,
+    getSuggestion,
+    handleSetKeyword,
+    keyword,
+    isFilterMode,
+    handleSetIsFilterMode,
   };
 };
