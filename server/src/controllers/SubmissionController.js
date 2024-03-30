@@ -257,6 +257,66 @@ const toggleSubmissionStatus = async (req, res) => {
 		submission.unsubmitted = !submission.unsubmitted
 		const updatedSubmission = await submission.save()
 
+		const emailCoordinatorParams = {
+			studentName: req.user.name,
+			studentEmail: req.user.email,
+			submissionDate: new Date(),
+			linkToViewSubmission: `${process.env.FRONTEND_URL}/submissions/contribution/${submission._id}`,
+		}
+
+		let emailCoordinatorHtml
+
+		if (submission.unsubmitted) {
+			emailCoordinatorHtml = await ejs.renderFile(
+				"./src/emails/submission/coordinator.unsubmitted.email.ejs",
+				emailCoordinatorParams
+			)
+		} else {
+			emailCoordinatorHtml = await ejs.renderFile(
+				"./src/emails/submission/coordinator.newsubmission.email.ejs",
+				emailCoordinatorParams
+			)
+		}
+
+		// find the marketing coordinator of the faculty
+		const faculty = await Faculty.findById(req.user.facultyId)
+		const marketingCoordinator = await User.findById(
+			faculty.marketingCoordinatorId
+		)
+
+		// send email to the marketing coordinator
+		await handleSendEmail({
+			to: marketingCoordinator.email,
+			subject: "Submission Status",
+			html: emailCoordinatorHtml,
+		})
+
+		// send email to student if the submission is submitted
+		if (!submission.unsubmitted) {
+			const emailStudentHtml = await ejs.renderFile(
+				"./src/emails/submission/student.submitted.email.ejs"
+			)
+
+			await handleSendEmail({
+				to: req.user.email,
+				subject: "Submission Submitted",
+				html: emailStudentHtml,
+			})
+		}
+
+		// create notification for the marketing coordinator
+		const newNotification = {
+			title: "Submission Status",
+			message: `Submission status has been updated by ${req.user.name}`,
+			actionUrl: `/submissions/contribution/${submission.contributionId}`,
+			receiver: marketingCoordinator._id,
+			doer: req.user._id,
+		}
+
+		await Notification.create(newNotification)
+
+		emitNotification(marketingCoordinator._id, newNotification)
+
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
