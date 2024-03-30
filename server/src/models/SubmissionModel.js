@@ -25,6 +25,11 @@ const submissionSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		articles: {
+			type: [mongoose.Schema.Types.ObjectId],
+			ref: "Article",
+			default: [],
+		},
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt

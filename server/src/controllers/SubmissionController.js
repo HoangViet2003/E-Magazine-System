@@ -105,16 +105,6 @@ const createSubmission = async (req, res) => {
 	}
 }
 
-//get all submissions
-const getAllSubmissions = async (req, res) => {
-	try {
-		const submissions = await Submission.find()
-		res.status(200).json({ submissions })
-	} catch (error) {
-		res.status(400).json({ error })
-	}
-}
-
 const getAllSubmissionByContributionId = async (req, res) => {
 	try {
 		const { contributionId } = req.params
@@ -248,11 +238,114 @@ const getSubmissionByContributionId = async (req, res) => {
 	}
 }
 
+// update the submission with the given ID
+const addArticlesToSubmission = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+
+		const { newArticleIds } = req.body
+
+		//check if articleIds is empty
+		if (!newArticleIds) {
+			return res.status(400).json({ error: "Article Ids are required" })
+		}
+
+		// Check if the submission exists
+		const submission = await Submission.findById(submissionId)
+
+		if (!submission) {
+			return res.status(404).json({ error: "Submission not found" })
+		}
+
+		// Check if the submission belongs to the student
+		if (submission.student.toString() !== req.user._id.toString()) {
+			return res
+				.status(403)
+				.json({ error: "You are not authorized to perform this action" })
+		}
+
+		// Check if the final closure date is passed
+		if (new Date() > submission.contributionId.finalClosureDate) {
+			return res
+				.status(400)
+				.json({ error: "The final closure date has passed" })
+		}
+
+		// Update the submission articles array
+		const updatedSubmission = await Submission.findByIdAndUpdate(
+			submissionId,
+			{
+				$addToSet: { articles: newArticleIds },
+			},
+			{ new: true }
+		)
+
+		return res.status(200).json({ updatedSubmission })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
+// remove aritcles from submission
+const removeArticlesFromSubmission = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+		const { articleIds } = req.body
+		//check if articleIds is empty
+		if (!articleIds) {
+			return res.status(400).json({ error: "Article Ids are required" })
+		}
+		// Check if the submission exists
+		const submission = await Submission.findById(submissionId)
+		if (!submission) {
+			return res.status(404).json({ error: "Submission not found" })
+		}
+		// Check if the submission belongs to the student
+		if (submission.student.toString() !== req.user._id.toString()) {
+			return res
+				.status(403)
+				.json({ error: "You are not authorized to perform this action" })
+		}
+		// Check if the final closure date is passed
+		if (new Date() > submission.contributionId.finalClosureDate) {
+			return res
+				.status(400)
+				.json({ error: "The final closure date has passed" })
+		}
+		// Update the submission articles array
+		const updatedSubmission = await Submission.findByIdAndUpdate(
+			submissionId,
+			{
+				$pullAll: { articles: articleIds },
+			},
+			{ new: true }
+		)
+		return res.status(200).json({ updatedSubmission })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
+// remove submission by id
+const removeSubmission = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+
+		await Submission.findByIdAndDelete(submissionId)
+
+		return res.status(200).json({ message: "Submission deleted successfully" })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 module.exports = {
 	createSubmission,
-	getAllSubmissions,
 	getAllSubmissionByContributionId,
 	getSubmissionByContributionId,
 	getSubmissionByStudentId,
 	updateForPublication,
+	addArticlesToSubmission,
+	removeArticlesFromSubmission,
+	removeSubmission,
 }
