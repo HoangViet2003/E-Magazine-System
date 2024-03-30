@@ -167,29 +167,6 @@ const getAllSubmissionByContributionId = async (req, res) => {
 	}
 }
 
-//get submission by student id
-const getSubmissionByStudentId = async (req, res) => {
-	try {
-		const { contributionId } = req.query
-		const student = req.user
-
-		const submission = await Submission.findOne({
-			user: student._id,
-			contributionId,
-		})
-
-		if (!submission) {
-			return res
-				.status(404)
-				.json({ message: "No submission found for the student" })
-		}
-
-		res.status(200).json({ submission })
-	} catch (error) {
-		res.status(400).json({ error })
-	}
-}
-
 const updateForPublication = async (req, res) => {
 	try {
 		const { submissionId } = req.params
@@ -248,6 +225,39 @@ const updateForPublication = async (req, res) => {
 		return res.status(200).json({
 			updatedSubmission,
 		})
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
+const toggleSubmissionStatus = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+		const submission = await Submission.findById(submissionId)
+
+		if (!submission) {
+			return res.status(404).json({ message: "Submission not found" })
+		}
+
+		// Check if the submission belongs to the student
+		if (submission.student.toString() !== req.user._id.toString()) {
+			return res
+				.status(403)
+				.json({ message: "You are not authorized to perform this action" })
+		}
+
+		// Check if the final closure date is passed
+		if (new Date() > submission.contributionId.finalClosureDate) {
+			return res
+				.status(400)
+				.json({ message: "The final closure date has passed" })
+		}
+
+		// update the unsubmitted field
+		submission.unsubmitted = !submission.unsubmitted
+		const updatedSubmission = await submission.save()
+
+		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
 	}
@@ -377,10 +387,10 @@ module.exports = {
 	createSubmission,
 	getAllSubmissionByContributionId,
 	getSubmissionByContributionId,
-	getSubmissionByStudentId,
 	updateForPublication,
 	addArticlesToSubmission,
 	removeArticlesFromSubmission,
 	removeSubmission,
 	getUnselectedArticlesOfStudentsBySubmissionId,
+	toggleSubmissionStatus,
 }

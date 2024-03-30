@@ -21,13 +21,6 @@ router.get(
 )
 
 router.get(
-	"/submission/student",
-	authenticateToken,
-	authenticateStudent,
-	SubmissionController.getSubmissionByStudentId
-)
-
-router.get(
 	"/submission/:submissionId/unselectedArticles",
 	authenticateToken,
 	authenticateStudent,
@@ -59,6 +52,13 @@ router.patch(
 	authenticateToken,
 	authenticateMarketingCoordinator,
 	SubmissionController.updateForPublication
+)
+
+router.patch(
+	"/submission/:submissionId/submit",
+	authenticateToken,
+	authenticateStudent,
+	SubmissionController.toggleSubmissionStatus
 )
 
 router.delete(
