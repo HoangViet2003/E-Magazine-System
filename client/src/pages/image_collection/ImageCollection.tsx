@@ -21,6 +21,8 @@ const SubmissionImage = () => {
     fetchArticle();
   }, [id]);
 
+  console.log("article in sb",article)
+
   function getImgSize(
     imgSrc: string,
   ): Promise<{ width: number; height: number }> {

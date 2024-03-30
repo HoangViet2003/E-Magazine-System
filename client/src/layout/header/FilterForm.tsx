@@ -1,6 +1,8 @@
 import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
 import CloseIcon from "../../assets/icons/cross-svgrepo-com.svg";
 import Select from "../../ui/Select";
+import { useState } from "react";
+import { useArticle } from "../../redux/hooks";
 
 const labelClassName = "whitespace-nowrap font-bold text-gray-600 my-auto";
 const inputClassName =
@@ -15,16 +17,26 @@ const FilterForm: React.FC<FilterFormProps> = ({
   openFilter,
   setOpenFilter,
 }) => {
+
+  const [type, setType] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const { handleSetIsFilterMode,searchArticleQuery } = useArticle();
   const ref = useOutsideClick(
     () => setOpenFilter(false),
     false,
   ) as React.RefObject<HTMLDivElement>;
 
-  function handleChangeType(e: MouseEvent) {
+  function handleChangeType(e: any) {
     console.log(e);
   }
 
   if (!openFilter) return null;
+
+  const handleFilterSubmit = () => {
+    handleSetIsFilterMode(true)
+    searchArticleQuery(keyword,type)
+    
+  }
 
   return (
     <div
@@ -43,29 +55,30 @@ const FilterForm: React.FC<FilterFormProps> = ({
         <Select
           options={[
             { label: "Any", value: "any" },
-            { label: "Documents", value: "docs" },
-            { label: "Photos & images", value: "img" },
+            { label: "Documents", value: "word" },
+            { label: "Photos & images", value: "image" },
           ]}
           value="type"
-          onChange={handleChangeType}
+          onChange={(e) => setType(e.target.value)}
         />
 
-        <label className={labelClassName}>Owner</label>
+        {/* <label className={labelClassName}>Owner</label>
         <Select
           options={[
             { label: "Anyone", value: "anyone" },
             { label: "Owned by me", value: "byMe" },
             { label: "Not owned by me", value: "notByMe" },
           ]}
-          value="type"
+          value="owner"
           onChange={handleChangeType}
-        />
+        /> */}
 
         <label className={labelClassName}>Includes the words</label>
         <input
           className={inputClassName}
           type="text"
           placeholder="Enter words found in the file"
+          onChange={(e) => setKeyword(e.target.value)}
         />
 
         <label className={labelClassName}>Date modified</label>
@@ -82,7 +95,7 @@ const FilterForm: React.FC<FilterFormProps> = ({
         />
       </div>
 
-      <button className="float-end me-4 mt-4 rounded bg-blue-500 px-6 py-4 text-white">
+      <button className="float-end me-4 mt-4 rounded bg-blue-500 px-6 py-4 text-white" onClick={() => handleFilterSubmit()}>
         Search
       </button>
       <button className="float-end mt-4 rounded bg-transparent px-6 py-4">

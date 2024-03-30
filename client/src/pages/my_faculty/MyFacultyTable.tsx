@@ -7,7 +7,7 @@ import MyFacultyOperation from "./MyFacultyOperation";
 import { URL } from "../../utils/constant";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../../ui/Pagination";
 
 export default function MyFacultyTable({
@@ -28,29 +28,51 @@ export default function MyFacultyTable({
     totalLength: articleLength,
     getArticleByStudentId,
     fetchAllArticle,
+    searchArticleQuery,
+    keyword
   } = useArticle();
+
+
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
-    if (role === "student") {
-      getArticleByStudentId(page);
-    } else {
-      fetchAllArticle(page);
-    }
-  }, [searchParams]);
+    console.log(keyword, "keyword");
 
-  // FILTER
+
+    if (keyword === "") {
+      if (role === "student") {
+        getArticleByStudentId(page);
+      } else {
+        fetchAllArticle(page);
+
+      }
+    } else {
+      searchArticleQuery(keyword as string);
+    }
+
+  }, [keyword]);
+
+
+
+
+
   let filteredArticles = articles;
 
   if (contributeId) {
-    filteredArticles = articles.filter(
+    filteredArticles = articles?.filter(
       (article) => new Date(article.createdAt).getFullYear() === contributeId,
     );
   }
 
+
+
+
+
+
+
   // SORT
-  const sortedData = filteredArticles.slice().sort((a, b) => {
+  const sortedData = filteredArticles?.slice().sort((a, b) => {
     if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
     if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
     return 0;

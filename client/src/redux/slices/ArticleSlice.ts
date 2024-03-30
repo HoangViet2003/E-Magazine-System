@@ -68,6 +68,8 @@ interface ArticleState {
   articles: Article[];
   article: Article;
   submissionArticles: Article[];
+  keyword?: string;
+  isFilterMode: boolean;
 }
 
 const initialState: ArticleState = {
@@ -92,6 +94,8 @@ const initialState: ArticleState = {
   currentPage: 1,
   totalPages: 0,
   totalLength: 0,
+  keyword: "",
+  isFilterMode: false,
 };
 
 const ArticleSlice = createSlice({
@@ -130,6 +134,14 @@ const ArticleSlice = createSlice({
       state.totalLength = 0;
       state.totalPages = 0;
     },
+    setKeyword(state, action: PayloadAction<string>) {
+      state.keyword = action.payload;
+    
+    },
+    setIsFilterMode(state, action: PayloadAction<boolean>) {
+      state.isFilterMode = action.payload;
+    
+    }
   },
 });
 
@@ -139,7 +151,7 @@ export const {
   setLoadingArticle,
   setAllArticles,
   setArticle,
-  addNewArticle,
+  addNewArticle,setKeyword,setIsFilterMode,
   setSubmissionArticles,
   resetSubmissionArticles,
 } = actions;

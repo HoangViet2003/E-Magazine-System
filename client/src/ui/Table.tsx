@@ -58,7 +58,7 @@ function Row({ children }: { children: ReactNode }) {
 }
 
 function Body({ data, render }: BodyProps) {
-  if (!data.length) return <div>No data to show at the moment</div>;
+  if (!data?.length) return <div>No data to show at the moment</div>;
 
   return <div>{data.map(render)}</div>;
 }
