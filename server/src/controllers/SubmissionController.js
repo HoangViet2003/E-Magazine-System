@@ -203,11 +203,9 @@ const updateForPublication = async (req, res) => {
 		}
 
 		// check marketing coordinator is the marketing coordinator of the faculty
-		const submission = await Submission.findById(submissionId).populate(
-			"contributionId",
-			"facultyId"
-		)
+		const submission = await Submission.findById(submissionId)
 
+		// Check if the submission exists
 		if (!submission) {
 			return res.status(404).json({ message: "Submission not found" })
 		}
@@ -225,13 +223,6 @@ const updateForPublication = async (req, res) => {
 				.json({ message: "You are not authorized to perform this action" })
 		}
 
-		// Check if the submission is already selected for publication
-		if (submission.isSelectedForPublication) {
-			return res.status(400).json({
-				message: "Submission is already selected for publication",
-			})
-		}
-
 		// Check if the closure date has passed
 		const currentDate = new Date()
 		if (currentDate > contribution.finalClosureDate) {
@@ -240,21 +231,19 @@ const updateForPublication = async (req, res) => {
 			})
 		}
 
-		// Check if the submission has any comment
+		// Check if the submission has any comments
 		if (submission.comments.length === 0) {
 			return res.status(400).json({
 				message: "Submission has no comments",
 			})
 		}
 
-		// Update article with the given ID to set isSelectedForPublication to true
-		const updatedSubmission = await Submission.findByIdAndUpdate(
-			submissionId,
-			{
-				$set: { isSelectedForPublication: true },
-			},
-			{ new: true } // To get the updated document back
-		)
+		// Update article with the given ID to set isSelectedForPublication
+		submission.isSelectedForPublication = submission.isSelectedForPublication
+			? false
+			: true
+
+		const updatedSubmission = await submission.save()
 
 		return res.status(200).json({
 			updatedSubmission,
