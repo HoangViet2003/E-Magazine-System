@@ -49,6 +49,7 @@ const uploadArticle = async (req, res) => {
 					title: file.originalname,
 					content: html,
 					type: type,
+					facultyId: student.facultyId,
 				}
 			})
 
