@@ -32,6 +32,8 @@ export default function MyFacultyTable({
     keyword,
   } = useArticle();
 
+  console.log(articleLength);
+
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
@@ -44,7 +46,6 @@ export default function MyFacultyTable({
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
-    console.log(keyword, "keyword");
 
     if (keyword === "") {
       getArticleByStudentId(page);

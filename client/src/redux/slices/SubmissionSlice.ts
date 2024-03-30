@@ -40,7 +40,7 @@ import { Contribution } from "./ContributionSlice";
 export interface Submission {
   _id: string;
   title: string;
-  user: User;
+  student: User;
   contributionId: Contribution;
   isCommented: boolean;
   isSelectedForPublication: boolean;
@@ -65,7 +65,7 @@ const initialState: SubmissionState = {
   submission: {
     _id: "",
     title: "",
-    user: {
+    student: {
       _id: "",
       name: "",
       email: "",

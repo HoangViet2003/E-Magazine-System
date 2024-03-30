@@ -16,6 +16,8 @@ export default function ContributionTable() {
   const { contributionId } = useParams();
   const role = localStorage.getItem("role");
 
+  console.log(submissions);
+
   useEffect(() => {
     if (contributionId) getSubmissionsByContributionId(contributionId);
   }, [contributionId]);

@@ -85,7 +85,7 @@ export default function Submission() {
   return (
     <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
-        <MainHeader isUnsubmittable={isUnsubmittable} isEditable={isEditable  }>
+        <MainHeader isUnsubmittable={isUnsubmittable} isEditable={isEditable}>
           <div className="relative flex items-center">
             {role === "student" ? (
               <h1
@@ -129,7 +129,7 @@ export default function Submission() {
                     <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
                       {role === "student"
                         ? `${contribution.academicYear} Contributions`
-                        : `${submission.user.name}`}
+                        : `${submission.student.name}`}
                     </h1>
                     <img src={DropdownIcon} alt="" />
                   </span>
