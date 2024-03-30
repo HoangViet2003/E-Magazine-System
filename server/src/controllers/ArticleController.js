@@ -15,9 +15,6 @@ const {
 
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
-const EmitterSingleton = require("../configs/eventEmitter")
-const emitterInstance = EmitterSingleton.getInstance()
-const emitter = emitterInstance.getEmitter()
 
 const uploadArticle = async (req, res) => {
 	try {
@@ -449,7 +446,6 @@ const filterArticle = async (req, res) => {
 
 		let matchQuery = {
 			title: { $regex: new RegExp(keyword, "i") },
-			content: { $regex: new RegExp(keyword, "i") },
 		}
 
 		// Adjusted condition to check if the user is not a marketing manager AND not an admin
