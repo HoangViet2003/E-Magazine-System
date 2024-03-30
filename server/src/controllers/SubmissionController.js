@@ -137,15 +137,31 @@ const createSubmission = async (req, res) => {
 const getAllSubmissionByContributionId = async (req, res) => {
 	try {
 		const { contributionId } = req.params
-		const submissions = await Submission.find({ contributionId })
+		const { page } = req.query
 
-		if (!submissions && !contributionId) {
-			return res
-				.status(404)
-				.json({ message: "No submissions found for the contribution" })
+		const limit = 5
+		const skip = (page - 1) * limit
+
+		const submissions = await Submission.find({
+			contributionId,
+			unsubmitted: false,
+		})
+			.populate("student", "name email")
+			.limit(limit)
+			.skip(skip)
+
+		if (!submissions) {
+			return res.status(404).json({ message: "No submissions found" })
 		}
 
-		res.status(200).json({ submissions })
+		const totalLength = await Submission.countDocuments({
+			contributionId,
+			unsubmitted: false,
+		})
+
+		const totalPage = Math.ceil(totalLength / limit)
+
+		return res.status(200).json({ submissions, totalPage, totalLength })
 	} catch (error) {
 		res.status(400).json({ error })
 	}
@@ -220,7 +236,7 @@ const updateForPublication = async (req, res) => {
 		const currentDate = new Date()
 		if (currentDate > contribution.finalClosureDate) {
 			return res.status(400).json({
-				message: "The closure date has passed",
+				message: "The final closure date has passed",
 			})
 		}
 
