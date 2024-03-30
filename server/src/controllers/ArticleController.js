@@ -314,6 +314,8 @@ const getArticleById = async (req, res) => {
 	}
 }
 
+// get submission info by contributionId
+
 //get All article by facultyId
 const getAllArticlesByFacultyId = async (req, res) => {
 	try {

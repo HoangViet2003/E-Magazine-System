@@ -30,6 +30,13 @@ router.get(
 	authenticateStudent,
 	SubmissionController.getSubmissionByStudentId
 )
+
+router.get(
+	"/submission/contribution/:contributionId",
+	authenticateToken,
+	SubmissionController.getSubmissionByContributionId
+)
+
 router.patch(
 	"/submission/:submissionId/publication",
 	authenticateToken,

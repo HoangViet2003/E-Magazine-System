@@ -5,6 +5,7 @@ const {
 	User,
 	Notification,
 } = require("../models")
+
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
@@ -228,10 +229,30 @@ const updateForPublication = async (req, res) => {
 	}
 }
 
+const getSubmissionByContributionId = async (req, res) => {
+	try {
+		const { contributionId } = req.params
+
+		const submission = await Submission.findOne({
+			contributionId,
+			student: req.user._id,
+		})
+
+		if (!submission) {
+			return res.status(404).json({ error: "No submission found!" })
+		}
+
+		return res.status(200).json({ submission })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 module.exports = {
 	createSubmission,
 	getAllSubmissions,
 	getAllSubmissionByContributionId,
+	getSubmissionByContributionId,
 	getSubmissionByStudentId,
 	updateForPublication,
 }
