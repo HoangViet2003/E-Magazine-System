@@ -1,6 +1,8 @@
+import { useSidebarContext } from "../../../../layout/sidebar/SidebarContext";
 import Button from "../../../../ui/Button";
 
 export default function CreateSubmissionModal() {
+  const { setOpenDocUpload } = useSidebarContext();
   return (
     <dialog id="create_submission" className="modal">
       <div className="modal-box flex flex-col gap-5 rounded-md p-14">
@@ -25,7 +27,13 @@ export default function CreateSubmissionModal() {
           >
             CHOOSE FROM YOUR FILES
           </Button>
-          <Button>UPLOAD FILE</Button>
+          <Button
+            onClick={() => {
+              setOpenDocUpload(true);
+            }}
+          >
+            UPLOAD FILE
+          </Button>
         </form>
       </div>
       <form method="dialog" className="modal-backdrop">

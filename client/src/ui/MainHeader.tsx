@@ -1,15 +1,27 @@
 import { ReactNode, useState } from "react";
 import { useParams } from "react-router-dom";
+import Comment from "./Comment";
 
 import UlListIcon from "../assets/icons/list-ul.svg";
 import InfoLineIcon from "../assets/icons/Icon-info-circle-line.svg";
 import CheckIcon from "../assets/icons/check_ring_round_light.svg";
 import CommentIcon from "../assets/icons/comment_duotone.svg";
-import ShareIcon from "../assets/icons/Out.svg";
-import Comment from "./Comment";
+import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
+// import ShareIcon from "../assets/icons/Out.svg";
 
-const MainHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface MainHeaderProps {
+  children: ReactNode;
+  isUnsubmittable?: boolean;
+  isEditable?: boolean;
+}
+
+const MainHeader: React.FC<MainHeaderProps> = ({
+  children,
+  isUnsubmittable,
+  isEditable,
+}) => {
   const params = useParams();
+  const role = localStorage.getItem("role");
   const [openComment, setOpenComment] = useState(false);
 
   return (
@@ -17,12 +29,15 @@ const MainHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
       {children}
 
       <div className="relative hidden lg:inline-block">
-        {params.submissionId && (
+        {params.submissionId && role === "student" && (
           <div className="flex">
-            <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
-              <img src={CheckIcon} />
-              Select
-            </button>
+            {isEditable && (
+              <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
+                <img src={CheckIcon} />
+                Edit
+              </button>
+            )}
+
             <button
               className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
               onClick={() => setOpenComment(!openComment)}
@@ -30,10 +45,19 @@ const MainHeader: React.FC<{ children: ReactNode }> = ({ children }) => {
               <img src={CommentIcon} />
               Comments
             </button>
-            <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
+
+            {isUnsubmittable && (
+              <button className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
+                <img src={UnsubmitIcon} />
+                Share
+              </button>
+            )}
+
+            {/* <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
               <img src={ShareIcon} />
               Share
-            </button>
+            </button> */}
+
             {openComment && <Comment setOpenComment={setOpenComment} />}
           </div>
         )}

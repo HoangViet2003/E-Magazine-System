@@ -34,6 +34,18 @@ export default function Submission() {
   const contributionId = searchParams.get("contributionId") || "";
   const today = new Date();
 
+  const isUnsubmittable =
+    contribution.closureDate &&
+    today.getTime() < new Date(contribution.closureDate).getTime()
+      ? true
+      : false;
+
+  const isEditable =
+    contribution.finalClosureDate &&
+    today.getTime() < new Date(contribution.finalClosureDate).getTime()
+      ? true
+      : false;
+
   // Get contribution and set in state
   useEffect(() => {
     const fetchContributions = async () => {
@@ -73,7 +85,7 @@ export default function Submission() {
   return (
     <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
-        <MainHeader>
+        <MainHeader isUnsubmittable={isUnsubmittable} isEditable={isEditable  }>
           <div className="relative flex items-center">
             {role === "student" ? (
               <h1
@@ -92,20 +104,47 @@ export default function Submission() {
             )}
             <img src={BreadcrumbPointer} />
 
-            <h1
-              className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
-              onClick={() =>
-                role === "student"
-                  ? navigate(`/student/contributions/${contributionId}`)
-                  : navigate(
+            {role !== "student" && (
+              <>
+                <h1
+                  className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
+                  onClick={() =>
+                    navigate(
                       `/myFaculty/contributions/${submission.contributionId._id}`,
                     )
-              }
-            >
-              {role === "student"
-                ? `${contribution.academicYear} Contributions`
-                : `${submission.contributionId.academicYear} Contributions`}
-            </h1>
+                  }
+                >
+                  {role === "student"
+                    ? `${contribution.academicYear} Contributions`
+                    : `${submission.contributionId.academicYear} Contributions`}
+                </h1>
+                <img src={BreadcrumbPointer} />
+              </>
+            )}
+
+            <Dropdowns>
+              <Dropdowns.Dropdown>
+                <Dropdowns.Toggle id={submission._id}>
+                  <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
+                    <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
+                      {role === "student"
+                        ? `${contribution.academicYear} Contributions`
+                        : `${submission.user.name}`}
+                    </h1>
+                    <img src={DropdownIcon} alt="" />
+                  </span>
+                </Dropdowns.Toggle>
+
+                <Dropdowns.List id={submission._id}>
+                  <Dropdowns.Button icon={DropdownIcon}>
+                    Download
+                  </Dropdowns.Button>
+                  <Dropdowns.Button icon={DropdownIcon}>
+                    Delete
+                  </Dropdowns.Button>
+                </Dropdowns.List>
+              </Dropdowns.Dropdown>
+            </Dropdowns>
 
             {role === "student" && contribution.closureDate && (
               <p
@@ -116,33 +155,6 @@ export default function Submission() {
 
                 ${today.getTime() < new Date(contribution.closureDate).getTime() ? "" : "(closed)"}`}
               </p>
-            )}
-
-            {submissionId && role !== "student" && (
-              <>
-                <img src={BreadcrumbPointer} />
-                <Dropdowns>
-                  <Dropdowns.Dropdown>
-                    <Dropdowns.Toggle id={submissionId}>
-                      <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                        <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                          {submission.user.name}
-                        </h1>
-                        <img src={DropdownIcon} alt="" />
-                      </span>
-                    </Dropdowns.Toggle>
-
-                    <Dropdowns.List id={submissionId}>
-                      <Dropdowns.Button icon={DropdownIcon}>
-                        Download
-                      </Dropdowns.Button>
-                      <Dropdowns.Button icon={DropdownIcon}>
-                        Delete
-                      </Dropdowns.Button>
-                    </Dropdowns.List>
-                  </Dropdowns.Dropdown>
-                </Dropdowns>
-              </>
             )}
           </div>
         </MainHeader>
