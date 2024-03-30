@@ -19,9 +19,15 @@ import "react-toastify/dist/ReactToastify.css";
 export const useArticle = () => {
   const dispatch = useDispatch();
 
-  const { isLoading, articles, totalLength, article, keyword, isFilterMode, submissionArticles } =
-    useSelector((state: RootState) => state.article);
-
+  const {
+    isLoading,
+    articles,
+    totalLength,
+    article,
+    keyword,
+    isFilterMode,
+    submissionArticles,
+  } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
 
@@ -123,7 +129,7 @@ export const useArticle = () => {
       if (status !== 200) {
         throw new Error("Error fetching article");
       }
-      console.log(data)
+      console.log(data);
 
       dispatch(setArticle(data?.article));
     } catch (error) {
@@ -149,7 +155,7 @@ export const useArticle = () => {
       if (status !== 200 && status !== 201) {
         throw new Error("Error upload article");
       }
-
+      console.log(data);
       dispatch(addNewArticle({ article: data?.article, user }));
       console.log("success");
     } catch (error) {
@@ -184,15 +190,22 @@ export const useArticle = () => {
     dispatch(setLoadingArticle(true));
 
     try {
-      const { status } = await axios.put(PUT_API(id).UPDATE_ARTICLE, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const { status, data } = await axios.put(
+        PUT_API(id).UPDATE_ARTICLE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       if (status !== 200) {
         throw new Error("Error updating article");
       }
+
+      console.log(data);
+
       dispatch(setLoadingArticle(false));
       toast.success("Article updated successfully");
     } catch (error) {

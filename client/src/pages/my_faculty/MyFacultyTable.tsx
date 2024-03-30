@@ -29,33 +29,29 @@ export default function MyFacultyTable({
     getArticleByStudentId,
     fetchAllArticle,
     searchArticleQuery,
-    keyword
+    keyword,
   } = useArticle();
-
-
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
+    if (role === "student") {
+      getArticleByStudentId(page);
+    } else {
+      fetchAllArticle(page);
+    }
+  }, [role, searchParams]);
+
+  useEffect(() => {
+    const page = parseInt(searchParams.get("page") || "1");
     console.log(keyword, "keyword");
 
-
     if (keyword === "") {
-      if (role === "student") {
-        getArticleByStudentId(page);
-      } else {
-        fetchAllArticle(page);
-
-      }
+      getArticleByStudentId(page);
     } else {
       searchArticleQuery(keyword as string);
     }
-
   }, [keyword]);
-
-
-
-
 
   let filteredArticles = articles;
 
@@ -64,12 +60,6 @@ export default function MyFacultyTable({
       (article) => new Date(article.createdAt).getFullYear() === contributeId,
     );
   }
-
-
-
-
-
-
 
   // SORT
   const sortedData = filteredArticles?.slice().sort((a, b) => {
