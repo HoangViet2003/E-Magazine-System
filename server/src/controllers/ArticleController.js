@@ -86,6 +86,7 @@ const uploadArticle = async (req, res) => {
 				title,
 				type,
 				content: images,
+				facultyId: student.facultyId,
 			})
 		} else {
 			return res.status(400).send({
