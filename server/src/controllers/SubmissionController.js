@@ -257,7 +257,14 @@ const toggleSubmissionStatus = async (req, res) => {
 		submission.unsubmitted = !submission.unsubmitted
 		const updatedSubmission = await submission.save()
 
+		// find the marketing coordinator of the faculty
+		const faculty = await Faculty.findById(req.user.facultyId)
+		const marketingCoordinator = await User.findById(
+			faculty.marketingCoordinatorId
+		)
+
 		const emailCoordinatorParams = {
+			marketingCoordinatorName: marketingCoordinator.name,
 			studentName: req.user.name,
 			studentEmail: req.user.email,
 			submissionDate: new Date(),
@@ -278,12 +285,6 @@ const toggleSubmissionStatus = async (req, res) => {
 			)
 		}
 
-		// find the marketing coordinator of the faculty
-		const faculty = await Faculty.findById(req.user.facultyId)
-		const marketingCoordinator = await User.findById(
-			faculty.marketingCoordinatorId
-		)
-
 		// send email to the marketing coordinator
 		await handleSendEmail({
 			to: marketingCoordinator.email,
@@ -294,7 +295,7 @@ const toggleSubmissionStatus = async (req, res) => {
 		// send email to student if the submission is submitted
 		if (!submission.unsubmitted) {
 			const emailStudentHtml = await ejs.renderFile(
-				"./src/emails/submission/student.submitted.email.ejs"
+				"./src/emails/submission/student.received.email.ejs"
 			)
 
 			await handleSendEmail({
