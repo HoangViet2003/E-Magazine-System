@@ -38,6 +38,7 @@ export default function Submission() {
     getSubmissionById,
   } = useSubmission();
   const {
+    articles,
     submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
@@ -48,7 +49,6 @@ export default function Submission() {
     today.getTime() < new Date(contribution.closureDate).getTime()
       ? true
       : false;
-
   const isEditable =
     contribution.finalClosureDate &&
     today.getTime() < new Date(contribution.finalClosureDate).getTime()
@@ -98,7 +98,7 @@ export default function Submission() {
     if (submissionId) getArticlesBySubmissionId(submissionId, page);
 
     return () => resetSubmissionArticlesState();
-  }, [page, submissionId]);
+  }, [page, submissionId, articles]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
@@ -192,19 +192,23 @@ export default function Submission() {
       ) : (
         <div className="my-5 flex flex-col gap-5 xl:ps-6">
           {submissionId &&
+            ((submissionArticles && submissionArticles.length !== 0) ||
+              role !== "student") && <SubmissionTable />}
+
+          {submissionId &&
+            role === "student" &&
+            contribution.closureDate &&
             submissionArticles &&
-            submissionArticles.length > 0 && <SubmissionTable />}
+            submissionArticles.length === 0 && (
+              <SubmissionEmpty
+                hasSubmission={true}
+                isSubmissionOpen={
+                  today.getTime() < new Date(contribution.closureDate).getTime()
+                }
+              />
+            )}
 
-          {submissionId && contribution.closureDate && (
-            <SubmissionEmpty
-              hasSubmission={true}
-              isSubmissionOpen={
-                today.getTime() < new Date(contribution.closureDate).getTime()
-              }
-            />
-          )}
-
-          {!submissionId && contribution.closureDate && (
+          {!submissionId && contribution.closureDate && role === "student" && (
             <SubmissionEmpty
               isSubmissionOpen={
                 today.getTime() < new Date(contribution.closureDate).getTime()

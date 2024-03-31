@@ -21,8 +21,12 @@ export default function ArticleSelectModal() {
   const [filterArticles, setFilterArticle] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article[]>([]);
 
-  const { articles, getArticleByStudentId, isLoading } = useArticle();
+  const { articles, getUnselectedArticleStudent, isLoading } = useArticle();
   const { addSelectedArticlesToSubmission } = useSubmission();
+
+  useEffect(() => {
+    if (submissionId) getUnselectedArticleStudent(submissionId);
+  }, []);
 
   // FILTER
   useEffect(() => {
@@ -39,10 +43,6 @@ export default function ArticleSelectModal() {
     if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
     return 0;
   });
-
-  useEffect(() => {
-    getArticleByStudentId(1);
-  }, []);
 
   return (
     <dialog id="select articles" className="modal ">

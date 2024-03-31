@@ -9,6 +9,7 @@ import { useSubmission } from "../../../redux/hooks";
 
 import ArticleSelectModal from "./modal/ArticleSelectModal";
 import Spinner from "../../../ui/Spinner";
+import UploadImage from "../../../ui/UploadFile";
 
 export default function SubmissionEmpty({
   isSubmissionOpen,
@@ -19,6 +20,7 @@ export default function SubmissionEmpty({
 }) {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
+  const [openFileUpload, setOpenFileUpload] = useState();
 
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
@@ -97,6 +99,8 @@ export default function SubmissionEmpty({
 
       <CreateSubmissionModal />
       <ArticleSelectModal />
+
+      <UploadImage />
     </>
   );
 }

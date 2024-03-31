@@ -151,7 +151,7 @@ export const useSubmission = () => {
   };
 
   const getSubmissionByContributionStudent = async (contributionId: string) => {
-    dispatch(setLoadingSubmission(false));
+    dispatch(setLoadingSubmission(true));
 
     try {
       if (!contributionId) {
@@ -177,11 +177,9 @@ export const useSubmission = () => {
     submissionId: string,
     articles: Article[],
   ) => {
-    dispatch(setLoadingSubmission(false));
+    dispatch(setLoadingSubmission(true));
 
     const articlesId: string[] = articles.map((article) => article._id);
-
-    console.log(articlesId);
 
     try {
       if (!articlesId || articlesId.length === 0)
@@ -198,6 +196,8 @@ export const useSubmission = () => {
           },
         },
       );
+
+      console.log(data);
 
       if (status !== 200) {
         throw new Error("Error adding articles to submission");

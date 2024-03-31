@@ -6,7 +6,7 @@ import { useSidebarContext } from "../layout/sidebar/SidebarContext";
 import DropComponent from "./DropComponent";
 import SpinnerMini from "./SpinnerMini";
 
-export default function UploadImage({ type }: { type: string }) {
+export default function UploadImage({ type, isAddSubmission }: { type: string }) {
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
 
   const { uploadArticle, isLoading: loadingArticle } = useArticle();

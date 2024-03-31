@@ -21,6 +21,8 @@ export default function SubmissionTable() {
   const { submissionId } = useParams();
   const [searchParams] = useSearchParams();
 
+  console.log(submissionArticles);
+
   // useEffect(() => {
   //   if (submissionId) getArticlesBySubmissionId(submissionId, page);
 

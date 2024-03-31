@@ -82,6 +82,8 @@ export const useArticle = () => {
           GET_API(submissionId, page).GET_ARTICLES_BY_SUBMISSION_ID,
         );
 
+        console.log(data);
+
         if (status !== 200) {
           throw new Error("Error fetching articles");
         }
@@ -244,6 +246,28 @@ export const useArticle = () => {
     dispatch(setIsFilterMode(isFilterMode));
   };
 
+  const getUnselectedArticleStudent = async (submissionId: string) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      if (!submissionId) throw new Error("Submission Id is required.");
+
+      const { data, status } = await axios.get(
+        GET_API(submissionId).GET_UNSELECTED_ARTICLES_OF_STUDENTS,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+
+      dispatch(setAllArticles(data));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
   return {
     totalLength,
     isLoading,
@@ -264,5 +288,6 @@ export const useArticle = () => {
     keyword,
     isFilterMode,
     handleSetIsFilterMode,
+    getUnselectedArticleStudent,
   };
 };
