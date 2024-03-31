@@ -202,6 +202,7 @@ const createBlankWordFile = async (req, res) => {
 			type: "word",
 			student: user._id,
 			contributionId,
+			facultyId: user.facultyId,
 		})
 
 		res.status(201).json({ article })

@@ -22,7 +22,7 @@ const getUnselectedArticlesOfStudentsBySubmissionId = async (req, res) => {
 		}
 
 		// Check if the submission belongs to the student
-		if (submission.student.toString() !== req.user._id.toString()) {
+		if (submission.student._id.toString() !== req.user._id.toString()) {
 			return res
 				.status(403)
 				.json({ message: "You are not authorized to perform this action" })
@@ -240,7 +240,7 @@ const toggleSubmissionStatus = async (req, res) => {
 		}
 
 		// Check if the submission belongs to the student
-		if (submission.student.toString() !== req.user._id.toString()) {
+		if (submission.student._id.toString() !== req.user._id.toString()) {
 			return res
 				.status(403)
 				.json({ message: "You are not authorized to perform this action" })
@@ -362,7 +362,7 @@ const addArticlesToSubmission = async (req, res) => {
 		}
 
 		// Check if the submission belongs to the student
-		if (submission.student.toString() !== req.user._id.toString()) {
+		if (submission.student._id.toString() !== req.user._id.toString()) {
 			return res
 				.status(403)
 				.json({ error: "You are not authorized to perform this action" })
@@ -405,7 +405,7 @@ const removeArticlesFromSubmission = async (req, res) => {
 			return res.status(404).json({ error: "Submission not found" })
 		}
 		// Check if the submission belongs to the student
-		if (submission.student.toString() !== req.user._id.toString()) {
+		if (submission.student._id.toString() !== req.user._id.toString()) {
 			return res
 				.status(403)
 				.json({ error: "You are not authorized to perform this action" })
