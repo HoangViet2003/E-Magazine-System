@@ -249,7 +249,9 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 		const limit = 5
 		const skip = (page - 1) * limit
 
-		const articles = await Article.find({ submissionId })
+		const submission = await Submission.findById(submissionId)
+
+		const articles = await Article.find({  $in: submission.articles})
 			.skip(skip)
 			.limit(limit)
 
