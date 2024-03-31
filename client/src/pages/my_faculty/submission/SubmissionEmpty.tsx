@@ -100,7 +100,7 @@ export default function SubmissionEmpty({
       <CreateSubmissionModal />
       <ArticleSelectModal />
 
-      <UploadImage />
+      {/* <UploadImage /> */}
     </>
   );
 }

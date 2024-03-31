@@ -167,6 +167,45 @@ export const useArticle = () => {
     }
   };
 
+  const uploadArticleThenAddToSubmission = async (formData: FormData) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      const { data, status } = await axios.post(
+        POST_API("").UPLOAD_ARTICLE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      if (status !== 200 && status !== 201) {
+        throw new Error("Error upload article");
+      }
+      const { data, status } = await axios.put(
+        PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
+        {
+          newArticleIds: articlesId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      
+      console.log(data);
+      dispatch(addNewArticle({ article: data?.article, user }));
+      console.log("success");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
   const createNewDocument = async () => {
     dispatch(setLoadingArticle(true));
 
