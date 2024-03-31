@@ -251,7 +251,9 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 
 		const submission = await Submission.findById(submissionId)
 
-		const articles = await Article.find({  $in: submission.articles})
+		const articles = await Article.find({
+			submissionId: { $in: submission.articles },
+		})
 			.skip(skip)
 			.limit(limit)
 
