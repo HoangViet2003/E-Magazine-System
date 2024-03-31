@@ -29,7 +29,7 @@ const getUnselectedArticlesOfStudentsBySubmissionId = async (req, res) => {
 		}
 
 		const articles = await Article.find({
-			studentId: submission.student,
+			student: submission.student,
 			_id: { $nin: submission.articles },
 		})
 
