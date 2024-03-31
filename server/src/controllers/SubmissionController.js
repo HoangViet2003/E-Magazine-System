@@ -31,7 +31,7 @@ const getUnselectedArticlesOfStudentsBySubmissionId = async (req, res) => {
 		const articles = await Article.find({
 			student: submission.student,
 			_id: { $nin: submission.articles },
-		})
+		}).select("_id title type updatedAt")
 
 		return res.status(200).json({ articles })
 	} catch (error) {
