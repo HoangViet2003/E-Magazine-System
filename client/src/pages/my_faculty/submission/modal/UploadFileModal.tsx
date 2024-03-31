@@ -1,37 +1,14 @@
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useArticle, useSubmission } from "../redux/hooks";
+import React, { useCallback, useState } from "react";
+import SpinnerMini from "../../../../ui/SpinnerMini";
+import { useArticle } from "../../../../redux/hooks";
+import DropComponent from "../../../../ui/DropComponent";
 
-import { useSidebarContext } from "../layout/sidebar/SidebarContext";
-import DropComponent from "./DropComponent";
-import SpinnerMini from "./SpinnerMini";
-import { useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
-
-export default function UploadImage({
-  type,
-  isAddSubmission,
-  setOpenFileUpload,
-}: {
-  type: string;
-  isAddSubmission: boolean;
-  setOpenFileUpload?: (value: boolean) => void;
-}) {
-  const [searchParams] = useSearchParams();
-  const contributionId = searchParams.get("contributionId") || "";
-  const { submissionId } = useParams();
-  const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
-
+export default function UploadFileModal({ type }) {
   const {
     uploadArticle,
     isLoading: loadingArticle,
     uploadArticleThenAddToSubmission,
   } = useArticle();
-  const {
-    createSubmissionForStudent,
-    submission,
-    createSubmissionForStudentThenAddUploadedFiles,
-  } = useSubmission();
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
 
@@ -97,12 +74,6 @@ export default function UploadImage({
     if (isAddSubmission) {
       if (submissionId)
         uploadArticleThenAddToSubmission(formData, submissionId);
-      else {
-        createSubmissionForStudentThenAddUploadedFiles(
-          contributionId,
-          formData,
-        );
-      }
     } else {
       await uploadArticle(formData);
       setOpenDocUpload(false);
@@ -186,12 +157,7 @@ export default function UploadImage({
       <div
         className="fixed left-0 top-0 h-screen w-screen bg-black opacity-30"
         onClick={() => {
-          setOpenImageUpload(false);
-          setOpenDocUpload(false);
           setPreviews([]);
-          if (setOpenFileUpload) {
-            setOpenFileUpload(false);
-          }
         }}
       ></div>
     </>

@@ -16,25 +16,38 @@ export default function ArticleSelectModal() {
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
+  const contributionId = searchParams.get("contributionId") || "";
 
   const [searchInput, setSearchInput] = useState("");
   const [filterArticles, setFilterArticle] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article[]>([]);
 
-  const { articles, getUnselectedArticleStudent, isLoading } = useArticle();
-  const { addSelectedArticlesToSubmission } = useSubmission();
+  const {
+    articles,
+    isLoading,
+    getUnselectedArticleStudent,
+    addSubmissionArticle,
+  } = useArticle();
+  const {
+    addSelectedArticlesToSubmission,
+    createSubmissionForStudent,
+    createSubmissionForStudentThenAddSelectedArticles,
+  } = useSubmission();
 
   useEffect(() => {
     if (submissionId) getUnselectedArticleStudent(submissionId);
   }, []);
 
   // FILTER
+
   useEffect(() => {
-    setFilterArticle(
-      articles.filter((article) =>
-        article.title.toLowerCase().includes(searchInput.toLowerCase()),
-      ),
-    );
+    if (articles && articles.length > 0) {
+      setFilterArticle(
+        articles?.filter((article) =>
+          article.title.toLowerCase().includes(searchInput.toLowerCase()),
+        ),
+      );
+    }
   }, [articles, searchInput]);
 
   // SORT
@@ -101,8 +114,15 @@ export default function ArticleSelectModal() {
             className="px-10"
             disabled={!(selectedArticle && selectedArticle.length > 0)}
             onClick={() => {
-              if (submissionId)
+              if (submissionId) {
                 addSelectedArticlesToSubmission(submissionId, selectedArticle);
+              } else {
+                createSubmissionForStudentThenAddSelectedArticles(
+                  contributionId,
+                  selectedArticle,
+                );
+              }
+              addSubmissionArticle(selectedArticle);
             }}
           >
             Select

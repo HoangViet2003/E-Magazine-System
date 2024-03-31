@@ -1,10 +1,9 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Table from "../../../ui/Table";
 
 import { URL } from "../../../utils/constant";
 import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
-import { useEffect, useState } from "react";
 import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
 import FacultyRow from "../FacultyRow";
@@ -12,27 +11,10 @@ import FacultyRow from "../FacultyRow";
 export default function SubmissionTable() {
   const {
     submissionArticles,
-    getArticlesBySubmissionId,
-    resetSubmissionArticlesState,
     isLoading: loadingArticle,
     totalLength,
   } = useArticle();
   const navigate = useNavigate();
-  const { submissionId } = useParams();
-  const [searchParams] = useSearchParams();
-
-  console.log(submissionArticles);
-
-  // useEffect(() => {
-  //   if (submissionId) getArticlesBySubmissionId(submissionId, page);
-
-  //   return () => resetSubmissionArticlesState();
-  // }, [page, submissionId]);
-
-  // useEffect(() => {
-  //   const page = parseInt(searchParams.get("page") || "1");
-  //   setPage(page);
-  // }, [searchParams]);
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");

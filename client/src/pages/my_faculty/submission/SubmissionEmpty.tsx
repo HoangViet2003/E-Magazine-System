@@ -20,7 +20,7 @@ export default function SubmissionEmpty({
 }) {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
-  const [openFileUpload, setOpenFileUpload] = useState();
+  const [openFileUpload, setOpenFileUpload] = useState(false);
 
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
@@ -72,7 +72,9 @@ export default function SubmissionEmpty({
           </Button>
         ) : (
           <div>
-            <Button type="light">Upload files</Button>
+            <Button type="light" onClick={() => setOpenFileUpload(true)}>
+              Upload files
+            </Button>
             <Button
               onClick={() => {
                 setIsAccepted(false);
@@ -97,10 +99,16 @@ export default function SubmissionEmpty({
         setIsAccepted={setIsAccepted}
       />
 
-      <CreateSubmissionModal />
+      <CreateSubmissionModal setOpenFileUpload={setOpenFileUpload} />
       <ArticleSelectModal />
 
-      {/* <UploadImage /> */}
+      {openFileUpload && (
+        <UploadImage
+          isAddSubmission={true}
+          type="word"
+          setOpenFileUpload={setOpenFileUpload}
+        />
+      )}
     </>
   );
 }

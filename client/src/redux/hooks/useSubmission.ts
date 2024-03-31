@@ -8,7 +8,7 @@ import {
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Article } from "../slices/ArticleSlice.js";
+import { Article, addNewSubmissionArticle } from "../slices/ArticleSlice.js";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -138,7 +138,7 @@ export const useSubmission = () => {
         throw new Error("Error creating submissions");
       }
 
-      dispatch(setLoadingSubmission(data));
+      dispatch(setSubmission(data));
       navigate(`${data?.newSubmission._id}`);
     } catch (error) {
       console.log(error);
@@ -185,7 +185,7 @@ export const useSubmission = () => {
       if (!articlesId || articlesId.length === 0)
         throw new Error("Articles Id is required.");
 
-      const { data, status } = await axios.put(
+      const { status } = await axios.put(
         PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
         {
           newArticleIds: articlesId,
@@ -197,8 +197,6 @@ export const useSubmission = () => {
         },
       );
 
-      console.log(data);
-
       if (status !== 200) {
         throw new Error("Error adding articles to submission");
       }
@@ -209,6 +207,114 @@ export const useSubmission = () => {
     }
   };
 
+  const createSubmissionForStudentThenAddSelectedArticles = async (
+    contributionId: string,
+    articles: Article[],
+  ) => {
+    dispatch(setLoadingSubmission(true));
+
+    const articlesId: string[] = articles.map((article) => article._id);
+
+    try {
+      if (!articlesId || articlesId.length === 0)
+        throw new Error("Articles Id is required.");
+
+      const { data: createData, status: createSubmissionStatus } =
+        await axios.post(POST_API("").CREATE_SUBMISSION);
+
+      if (createSubmissionStatus !== 200 && createSubmissionStatus !== 201) {
+        throw new Error("Error creating submissions");
+      }
+
+      dispatch(setSubmission(data));
+
+      const { status: addArticleStatus } = await axios.put(
+        PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
+        {
+          newArticleIds: articlesId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (addArticleStatus !== 200) {
+        throw new Error("Error adding articles to submission");
+      }
+
+      navigate(`${data?.newSubmission._id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      searchParams.set("contributionId", contributionId);
+      setSearchParams(searchParams);
+
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const createSubmissionForStudentThenAddUploadedFiles = async (
+    contributionId: string,
+    formData: FormData,
+  ) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      const { data: createData, status: createSubmissionStatus } =
+        await axios.post(POST_API("").CREATE_SUBMISSION);
+
+      if (createSubmissionStatus !== 200 && createSubmissionStatus !== 201) {
+        throw new Error("Error creating submissions");
+      }
+
+      dispatch(setSubmission(createData));
+
+      const { data: uploadData, status: uploadStatus } = await axios.post(
+        POST_API("").UPLOAD_ARTICLE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      if (uploadStatus !== 200 && uploadStatus !== 201) {
+        throw new Error("Error upload article");
+      }
+
+      const articlesId: string[] = uploadData.article.map(
+        (article: Article) => article._id,
+      );
+
+      const { status: addArticleStatus } = await axios.put(
+        PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
+        {
+          newArticleIds: articlesId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (addArticleStatus !== 200) {
+        throw new Error("Error adding articles to submission");
+      }
+
+      navigate(`${createData?.newSubmission._id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      searchParams.set("contributionId", contributionId);
+      setSearchParams(searchParams);
+
+      dispatch(setLoadingSubmission(false));
+    }
+  };
 
   return {
     isLoading,
@@ -222,5 +328,7 @@ export const useSubmission = () => {
     createSubmissionForStudent,
     getSubmissionByContributionStudent,
     addSelectedArticlesToSubmission,
+    createSubmissionForStudentThenAddSelectedArticles,
+    createSubmissionForStudentThenAddUploadedFiles,
   };
 };

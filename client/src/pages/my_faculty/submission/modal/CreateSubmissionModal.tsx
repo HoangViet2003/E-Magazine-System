@@ -1,13 +1,18 @@
-import { useSearchParams } from "react-router-dom";
-import { useSidebarContext } from "../../../../layout/sidebar/SidebarContext";
-import { useSubmission } from "../../../../redux/hooks";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useArticle, useSubmission } from "../../../../redux/hooks";
+import { useEffect } from "react";
 import Button from "../../../../ui/Button";
 
-export default function CreateSubmissionModal() {
-  const { setOpenDocUpload } = useSidebarContext();
-  const { createSubmissionForStudent } = useSubmission();
+export default function CreateSubmissionModal({ setOpenFileUpload }) {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
+
+  const { createSubmissionForStudent } = useSubmission();
+  const { getArticleByStudentId } = useArticle();
+
+  useEffect(() => {
+    getArticleByStudentId(1);
+  }, []);
 
   return (
     <dialog id="create_submission" className="modal">
@@ -43,7 +48,7 @@ export default function CreateSubmissionModal() {
           </Button>
           <Button
             onClick={() => {
-              setOpenDocUpload(true);
+              setOpenFileUpload(true);
             }}
           >
             UPLOAD FILE

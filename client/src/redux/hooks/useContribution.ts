@@ -34,8 +34,6 @@ export const useContribution = () => {
   };
 
   const getContributionById = async (contributionId: string) => {
-    dispatch(setLoadingContribution(true));
-
     try {
       if (contributionId) {
         const selectedContribution =
@@ -51,7 +49,6 @@ export const useContribution = () => {
     } catch (error) {
       console.log(error);
     }
-    dispatch(setLoadingContribution(false));
   };
 
   return {

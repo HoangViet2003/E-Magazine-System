@@ -10,6 +10,8 @@ import {
   resetSubmissionArticles,
   setKeyword,
   setIsFilterMode,
+  addNewSubmissionArticle,
+  Article,
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -81,8 +83,6 @@ export const useArticle = () => {
         const { data, status } = await axios.get(
           GET_API(submissionId, page).GET_ARTICLES_BY_SUBMISSION_ID,
         );
-
-        console.log(data);
 
         if (status !== 200) {
           throw new Error("Error fetching articles");
@@ -157,9 +157,7 @@ export const useArticle = () => {
       if (status !== 200 && status !== 201) {
         throw new Error("Error upload article");
       }
-      console.log(data);
       dispatch(addNewArticle({ article: data?.article, user }));
-      console.log("success");
     } catch (error) {
       console.log(error);
     } finally {
@@ -167,11 +165,14 @@ export const useArticle = () => {
     }
   };
 
-  const uploadArticleThenAddToSubmission = async (formData: FormData) => {
+  const uploadArticleThenAddToSubmission = async (
+    formData: FormData,
+    submissionId: string,
+  ) => {
     dispatch(setLoadingArticle(true));
 
     try {
-      const { data, status } = await axios.post(
+      const { data: uploadData, status: uploadStatus } = await axios.post(
         POST_API("").UPLOAD_ARTICLE,
         formData,
         {
@@ -181,13 +182,20 @@ export const useArticle = () => {
         },
       );
 
-      if (status !== 200 && status !== 201) {
+      if (uploadStatus !== 200 && uploadStatus !== 201) {
         throw new Error("Error upload article");
       }
-      const { data, status } = await axios.put(
+
+      const articlesIds: string[] = uploadData?.article.map(
+        (article: Article) => article._id,
+      );
+
+      // dispatch(addNewArticle({ article: uploadData?.article, user }));
+
+      const { data, status: submissionStatus } = await axios.put(
         PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
         {
-          newArticleIds: articlesId,
+          newArticleIds: articlesIds,
         },
         {
           headers: {
@@ -195,9 +203,19 @@ export const useArticle = () => {
           },
         },
       );
-      
+
       console.log(data);
-      dispatch(addNewArticle({ article: data?.article, user }));
+
+      if (submissionStatus !== 200) {
+        throw new Error("Error adding articles to submission");
+      }
+
+      if (uploadData?.article && uploadData?.article.length > 0) {
+        uploadData?.article.forEach((article: Article) => {
+          dispatch(addNewSubmissionArticle(article));
+        });
+      }
+
       console.log("success");
     } catch (error) {
       console.log(error);
@@ -255,10 +273,7 @@ export const useArticle = () => {
     }
   };
   const resetSubmissionArticlesState = () => {
-    dispatch(setLoadingArticle(true));
     dispatch(resetSubmissionArticles());
-
-    dispatch(setLoadingArticle(false));
   };
 
   const getSuggestion = async () => {
@@ -307,6 +322,14 @@ export const useArticle = () => {
     }
   };
 
+  const addSubmissionArticle = (articles: Article[]) => {
+    if (articles && articles.length > 0) {
+      articles.forEach((article) => {
+        dispatch(addNewSubmissionArticle(article));
+      });
+    }
+  };
+
   return {
     totalLength,
     isLoading,
@@ -328,5 +351,7 @@ export const useArticle = () => {
     isFilterMode,
     handleSetIsFilterMode,
     getUnselectedArticleStudent,
+    uploadArticleThenAddToSubmission,
+    addSubmissionArticle,
   };
 };

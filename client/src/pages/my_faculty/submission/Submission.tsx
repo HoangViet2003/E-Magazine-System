@@ -17,11 +17,11 @@ export default function Submission() {
   const windowWidth = useWindowWidth();
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
-  const { submissionId } = useParams();
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
-  const today = new Date();
+  const { submissionId } = useParams();
   const [page, setPage] = useState(1);
+  const today = new Date();
 
   const {
     contribution,
@@ -38,7 +38,7 @@ export default function Submission() {
     getSubmissionById,
   } = useSubmission();
   const {
-    articles,
+    // isLoading: loadingArticle,
     submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
@@ -55,7 +55,12 @@ export default function Submission() {
       ? true
       : false;
 
-  // Get contribution and set in state
+  function formattedDate(date: string) {
+    return format(date, "HH:mm dd/MM/yyyy");
+  }
+
+  // Get contribution and set in state (optimize by running create get
+  // contribution by Id api)
   useEffect(() => {
     const fetchContributions = async () => {
       await fetchAllContribution();
@@ -71,34 +76,33 @@ export default function Submission() {
 
   // fetchAllSubmission for marketer coordinator
   useEffect(() => {
-    if (role !== "student") {
-      fetchAllSubmission();
-    }
-  }, []);
+    const fetchData = async () => {
+      if (role !== "student") {
+        fetchAllSubmission();
+      }
+
+      if (role === "student" && contributionId) {
+        getSubmissionByContributionStudent(contributionId);
+      } else if (submissionId) {
+        getSubmissionById(submissionId);
+      }
+
+      if (submissionId) getArticlesBySubmissionId(submissionId, page);
+    };
+    fetchData();
+  }, [submissions, role, submissionId, page]);
 
   useEffect(() => {
-    const getSubmission = async () => {
-      if (role === "student") {
-        if (contributionId) {
-          getSubmissionByContributionStudent(contributionId);
-        }
-      } else {
-        if (submissionId) getSubmissionById(submissionId);
-      }
-    };
-    getSubmission();
-  }, [contributionId, submissions]);
-
-  function formattedDate(date: string) {
-    return format(date, "HH:mm dd/MM/yyyy");
-  }
+    const page = parseInt(searchParams.get("page") || "1");
+    setPage(page);
+  }, [searchParams]);
 
   // Get submitted article to check if submission is empty
   useEffect(() => {
     if (submissionId) getArticlesBySubmissionId(submissionId, page);
 
     return () => resetSubmissionArticlesState();
-  }, [page, submissionId, articles]);
+  }, []);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");

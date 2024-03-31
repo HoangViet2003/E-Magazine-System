@@ -17,8 +17,8 @@ interface ArticleState {
   currentPage: number;
   totalPages: number;
   totalLength: number;
-  articles: Article[];
   article: Article;
+  articles: Article[];
   submissionArticles: Article[];
   keyword?: string;
   isFilterMode: boolean;
@@ -81,6 +81,9 @@ const ArticleSlice = createSlice({
       state.totalLength = action.payload.totalLength;
       state.totalPages = action.payload.totalPages;
     },
+    addNewSubmissionArticle(state, action: PayloadAction<Article>) {
+      state.submissionArticles.push(action.payload);
+    },
     resetSubmissionArticles(state) {
       state.submissionArticles = [];
       state.totalLength = 0;
@@ -102,6 +105,7 @@ export const {
   setAllArticles,
   setArticle,
   addNewArticle,
+  addNewSubmissionArticle,
   setKeyword,
   setIsFilterMode,
   setSubmissionArticles,
