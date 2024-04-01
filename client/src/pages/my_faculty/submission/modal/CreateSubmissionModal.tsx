@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { useArticle, useSubmission } from "../../../../redux/hooks";
+import {  useSubmission } from "../../../../redux/hooks";
 import { useEffect } from "react";
 import Button from "../../../../ui/Button";
 
@@ -8,11 +8,6 @@ export default function CreateSubmissionModal({ setOpenFileUpload }) {
   const contributionId = searchParams.get("contributionId") || "";
 
   const { createSubmissionForStudent } = useSubmission();
-  const { getArticleByStudentId } = useArticle();
-
-  useEffect(() => {
-    getArticleByStudentId(1);
-  }, []);
 
   return (
     <dialog id="create_submission" className="modal">

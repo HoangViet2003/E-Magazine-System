@@ -122,7 +122,7 @@ function Button({
   onClick,
 }: {
   children: ReactNode;
-  icon: ReactNode | string;
+  icon?: ReactNode | string;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { close } = useContext(DropdownsContext) as DropdownsContextValue;

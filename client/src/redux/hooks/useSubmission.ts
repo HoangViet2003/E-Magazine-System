@@ -14,7 +14,7 @@ import {
 } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Article } from "../slices/ArticleSlice.js";
+import { Article, addNewSubmissionArticle } from "../slices/ArticleSlice.js";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -191,7 +191,7 @@ export const useSubmission = () => {
       if (!articlesId || articlesId.length === 0)
         throw new Error("Articles Id is required.");
 
-      const { status } = await axios.put(
+      const { data, status } = await axios.put(
         PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
         {
           newArticleIds: articlesId,
@@ -206,6 +206,11 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error adding articles to submission");
       }
+
+      articles.map((article) => {
+        dispatch(addNewSubmissionArticle(article));
+      });
+      dispatch(setSubmission(data?.updatedSubmission));
     } catch (error) {
       console.log(error);
     } finally {

@@ -53,7 +53,7 @@ export default function SubmissionTable() {
               )}
             />
           </Table>
-          <Pagination count={totalLength} />
+          <Pagination count={12} />
         </>
       )}
     </>

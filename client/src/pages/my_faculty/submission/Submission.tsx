@@ -37,11 +37,8 @@ export default function Submission() {
     fetchAllSubmission,
     getSubmissionById,
   } = useSubmission();
-  const {
-    // isLoading: loadingArticle,
-    getArticlesBySubmissionId,
-    resetSubmissionArticlesState,
-  } = useArticle();
+  const { getArticlesBySubmissionId, resetSubmissionArticlesState } =
+    useArticle();
 
   const isUnsubmittable =
     contribution.closureDate &&
@@ -57,8 +54,6 @@ export default function Submission() {
   function formattedDate(date: string) {
     return format(date, "HH:mm dd/MM/yyyy");
   }
-
-  console.log(contribution);
 
   // Get contribution and set in state (optimize by running create get
   // contribution by Id api)

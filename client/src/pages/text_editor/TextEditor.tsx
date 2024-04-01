@@ -13,7 +13,6 @@ import Spinner from "../../ui/Spinner";
 import Sekeleton from "../../components/sekeleton/Sekeleton";
 import ReactDOM from "react-dom";
 
-
 const SAVE_INTERVAL_MS = 2000;
 
 const TOOLBAR_OPTION = [
@@ -110,38 +109,39 @@ export default function TextEditor() {
   //   };
   // }, [socket, quill]);
 
-  const wrapperRef = useCallback((wrapper: HTMLDivElement | null) => {
-    if (wrapper === null) return;
+  const wrapperRef = useCallback(
+    (wrapper: HTMLDivElement | null) => {
+      if (wrapper === null) return;
 
-    wrapper.innerHTML = "";
-    const editor = document.createElement("div");
-    wrapper.append(editor);
+      wrapper.innerHTML = "";
+      const editor = document.createElement("div");
+      wrapper.append(editor);
 
-    const q = new Quill(editor, {
-      theme: "snow",
-      modules: { toolbar: TOOLBAR_OPTION },
-    });
+      const q = new Quill(editor, {
+        theme: "snow",
+        modules: { toolbar: TOOLBAR_OPTION },
+      });
 
-
-    if (article?.content && Array.isArray(article.content) && article.content.length > 0) {
-      // Take the first element of article.content
-      const content = article.content[0];
-      // Set the content of the Quill editor
-      q.root.innerHTML = content;
-    } else {
-      q.setText("Loading..."); // Show loading text if no content yet
-
-      //show skeleton
-
-
-      // <Sekeleton />;
- 
-
-    }
-    // q.disable();
-    // q.setText("Loading...");
-    setQuill(q);
-  }, [article.content]);
+      if (
+        article?.content &&
+        Array.isArray(article.content) &&
+        article.content.length > 0
+      ) {
+        // Take the first element of article.content
+        const content = article.content[0];
+        // Set the content of the Quill editor
+        q.root.innerHTML = content;
+      } else {
+        // q.setText("Loading..."); // Show loading text if no content yet
+        //show skeleton
+        // <Sekeleton />;
+      }
+      // q.disable();
+      // q.setText("Loading...");
+      setQuill(q);
+    },
+    [article.content],
+  );
 
   const handleUpdateDocument = () => {
     if (!quill || !quill.root) {
@@ -155,8 +155,7 @@ export default function TextEditor() {
     formData.append("type", String(article.type));
     formData.append("title", String(article.title));
 
-    updateArticle(article._id, formData)
-
+    updateArticle(article._id, formData);
   };
 
   return (
@@ -174,9 +173,12 @@ export default function TextEditor() {
         theme="light"
         limit={1}
       />
-      <TextEditorHeader title={article?.title || ''} handleUpdateDocument={handleUpdateDocument} isLoading={isLoading}/>
-      {isLoading ? <Spinner /> : <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>} 
-      
+      <TextEditorHeader
+        title={article?.title || ""}
+        handleUpdateDocument={handleUpdateDocument}
+        isLoading={isLoading}
+      />
+      <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>
     </div>
   );
 }

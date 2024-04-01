@@ -10,6 +10,7 @@ import { useSubmission } from "../../../redux/hooks";
 import ArticleSelectModal from "./modal/ArticleSelectModal";
 import Spinner from "../../../ui/Spinner";
 import UploadImage from "../../../ui/UploadFile";
+import Dropdowns from "../../../ui/Dropdowns";
 
 export default function SubmissionEmpty({
   isSubmissionOpen,
@@ -24,11 +25,8 @@ export default function SubmissionEmpty({
 
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
-  const {
-    submission,
-    getSubmissionByContributionStudent,
-    isLoading: loadingSubmission,
-  } = useSubmission();
+  const { createSubmissionForStudent, isLoading: loadingSubmission } =
+    useSubmission();
 
   if (loadingSubmission) return <Spinner />;
 
@@ -55,26 +53,32 @@ export default function SubmissionEmpty({
         {!isSubmissionOpen ? (
           <Button onClick={() => navigate("/student")}>RETURN HOME</Button>
         ) : !hasSubmission ? (
-          <Button
-            onClick={() => {
-              setIsAccepted(false);
-              const modal = document.getElementById(
-                "terms_and_conditions",
-              ) as HTMLDialogElement | null;
-              if (modal) {
-                modal.showModal();
-              } else {
-                console.error("Modal not found");
-              }
-            }}
-          >
-            CREATE CONTRIBUTION
+          <Button onClick={() => createSubmissionForStudent(contributionId)}>
+            CREATE SUBMISSION
           </Button>
         ) : (
-          <div>
-            <Button type="light" onClick={() => setOpenFileUpload(true)}>
-              Upload files
-            </Button>
+          <div className="flex">
+            <Dropdowns>
+              <Dropdowns.Dropdown>
+                <Dropdowns.Toggle id="upload_submission">
+                  <Button type="light">Upload files</Button>
+                </Dropdowns.Toggle>
+
+                <Dropdowns.List id="upload_submission">
+                  <Dropdowns.Button onClick={() => setOpenFileUpload(true)}>
+                    <span className="font-bold" style={{ color: "#004AD7" }}>
+                      Documents
+                    </span>
+                  </Dropdowns.Button>
+                  <Dropdowns.Button onClick={() => setOpenFileUpload(true)}>
+                    <span className="font-bold" style={{ color: "#CA3636" }}>
+                      Images
+                    </span>
+                  </Dropdowns.Button>
+                </Dropdowns.List>
+              </Dropdowns.Dropdown>
+            </Dropdowns>
+
             <Button
               onClick={() => {
                 setIsAccepted(false);
@@ -94,10 +98,10 @@ export default function SubmissionEmpty({
         )}
       </div>
 
-      <SubmissionTosModal
+      {/* <SubmissionTosModal
         isAccepted={isAccepted}
         setIsAccepted={setIsAccepted}
-      />
+      /> */}
 
       <CreateSubmissionModal setOpenFileUpload={setOpenFileUpload} />
       <ArticleSelectModal />

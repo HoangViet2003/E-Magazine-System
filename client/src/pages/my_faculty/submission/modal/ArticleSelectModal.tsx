@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useArticle, useSubmission } from "../../../../redux/hooks";
+import { useParams, useSearchParams } from "react-router-dom";
+import { Article } from "../../../../redux/slices/ArticleSlice";
 
 import SubmissionModalOperation from "./SubmissionModalOperation";
 import SubmissionModalRow from "./SubmissionModalRow";
@@ -7,8 +9,6 @@ import SubmissionModalRow from "./SubmissionModalRow";
 import Button from "../../../../ui/Button";
 import Table from "../../../../ui/Table";
 import Spinner from "../../../../ui/Spinner";
-import { useParams, useSearchParams } from "react-router-dom";
-import { Article } from "../../../../redux/slices/ArticleSlice";
 
 export default function ArticleSelectModal() {
   const { submissionId } = useParams();
@@ -27,10 +27,10 @@ export default function ArticleSelectModal() {
     isLoading,
     getUnselectedArticleStudent,
     addSubmissionArticle,
+    submissionArticles,
   } = useArticle();
   const {
     addSelectedArticlesToSubmission,
-    createSubmissionForStudent,
     createSubmissionForStudentThenAddSelectedArticles,
   } = useSubmission();
 
@@ -86,7 +86,7 @@ export default function ArticleSelectModal() {
         {isLoading ? (
           <Spinner />
         ) : (
-          <div className="max-h-74 w-full overflow-scroll overflow-y-auto overflow-x-hidden">
+          <div className=" max-h-80 w-full overflow-scroll overflow-y-auto overflow-x-hidden">
             <Table columns="0.2fr 3fr 0.5fr">
               <Table.Header>
                 <SubmissionModalOperation />
@@ -116,13 +116,7 @@ export default function ArticleSelectModal() {
             onClick={() => {
               if (submissionId) {
                 addSelectedArticlesToSubmission(submissionId, selectedArticle);
-              } else {
-                createSubmissionForStudentThenAddSelectedArticles(
-                  contributionId,
-                  selectedArticle,
-                );
               }
-              addSubmissionArticle(selectedArticle);
             }}
           >
             Select

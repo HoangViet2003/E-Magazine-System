@@ -12,7 +12,6 @@ import {
   setIsFilterMode,
   addNewSubmissionArticle,
   Article,
-  setSuggestionArticles,
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -30,7 +29,6 @@ export const useArticle = () => {
     keyword,
     isFilterMode,
     submissionArticles,
-    suggestionArticles,
   } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
@@ -105,6 +103,7 @@ export const useArticle = () => {
     page = 1,
   ) => {
     dispatch(setLoadingArticle(true));
+    console.log(query);
     try {
       if (type) {
         dispatch(setIsFilterMode(true));
@@ -112,6 +111,7 @@ export const useArticle = () => {
       const { data, status } = await axios.get(
         `${GET_API("", page).GET_FILTERED_ARTICLES}?keyword=${query}`,
       );
+
       if (status !== 200) {
         throw new Error("Error fetching Articles");
       }
@@ -247,12 +247,6 @@ export const useArticle = () => {
 
   const updateArticle = async (id: string, formData: FormData) => {
     dispatch(setLoadingArticle(true));
-    console.log(
-      formData.get("content"),
-      "content",
-      formData.get("title"),
-      "title",
-    );
 
     try {
       const { status, data } = await axios.put(
@@ -264,11 +258,12 @@ export const useArticle = () => {
           },
         },
       );
-      console.log(data.response);
 
       if (status !== 200) {
         throw new Error("Error updating article");
       }
+
+      console.log(data);
 
       dispatch(setLoadingArticle(false));
       toast.success("Article updated successfully");
@@ -279,28 +274,21 @@ export const useArticle = () => {
   };
   const resetSubmissionArticlesState = () => {
     dispatch(resetSubmissionArticles());
-
-    dispatch(setLoadingArticle(false));
   };
 
-
-
-  const handleGetSuggestion = async (query:string) => {
-    dispatch(setLoadingArticle(true));
-
+  const getSuggestion = async () => {
     try {
       const { data, status } = await axios.get(
-        `${GET_API("").GET_SUGGESTION_ARTICLES}?query=${query}`,
+        GET_API("").GET_SUGGESTION_ARTICLES,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching suggestions");
       }
-      console.log(data.articles, "suggestion");
-      dispatch(setSuggestionArticles(data.articles));
+
+      return data;
     } catch (error) {
       console.error(error);
-      dispatch(setLoadingArticle(false));
     }
   };
 
@@ -357,6 +345,7 @@ export const useArticle = () => {
     uploadArticle,
     createNewDocument,
     resetSubmissionArticlesState,
+    getSuggestion,
     handleSetKeyword,
     keyword,
     isFilterMode,
@@ -364,7 +353,5 @@ export const useArticle = () => {
     getUnselectedArticleStudent,
     uploadArticleThenAddToSubmission,
     addSubmissionArticle,
-    handleGetSuggestion,
-    suggestionArticles,
   };
 };
