@@ -10,6 +10,8 @@ import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
 import { Submission } from "../redux/slices/SubmissionSlice";
 import { useArticle, useSubmission } from "../redux/hooks";
 import Spinner from "./Spinner";
+import ArticleSelectModal from "../pages/my_faculty/submission/modal/ArticleSelectModal";
+import UploadImage from "./UploadFile";
 // import ShareIcon from "../assets/icons/Out.svg";
 
 interface MainHeaderProps {
@@ -41,100 +43,120 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   } = useSubmission();
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
+  const [openFileUpload, setOpenFileUpload] = useState("");
 
   return (
-    <div className="flex items-center justify-between border-b border-borderColor py-4">
-      {children}
+    <>
+      <div className="flex items-center justify-between border-b border-borderColor py-4">
+        {children}
 
-      <div className="relative hidden lg:inline-block">
-        {params.submissionId && role === "student" && (
-          <div className="flex">
-            {isEditable && (
-              <button
-                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                onClick={() =>
-                  setIsEditableOn && setIsEditableOn(!isEditableOn)
-                }
-              >
-                <img src={CheckIcon} />
-                {isEditableOn ? "Cancel" : "Edit"}
-              </button>
-            )}
-
-            {isEditableOn && (
-              <>
+        <div className="relative hidden lg:inline-block">
+          {params.submissionId && role === "student" && (
+            <div className="flex">
+              {isEditable && (
                 <button
                   className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                  onClick={() => {
-                    const modal = document.getElementById(
-                      "select articles",
-                    ) as HTMLDialogElement | null;
-                    if (modal) {
-                      modal.showModal();
-                    } else {
-                      console.error("Modal not found");
-                    }
-                  }}
+                  onClick={() =>
+                    setIsEditableOn && setIsEditableOn(!isEditableOn)
+                  }
                 >
-                  Add
+                  <img src={CheckIcon} />
+                  {isEditableOn ? "Cancel" : "Edit"}
                 </button>
-                {submissionId && (
+              )}
+
+              {isEditableOn && (
+                <>
                   <button
                     className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                    onClick={() =>
-                      removeArticlesFromSubmission(
-                        submissionId,
-                        selectedArticles,
-                      )
-                    }
+                    onClick={() => {
+                      const modal = document.getElementById(
+                        "select articles",
+                      ) as HTMLDialogElement | null;
+                      if (modal) {
+                        modal.showModal();
+                      } else {
+                        console.error("Modal not found");
+                      }
+                    }}
                   >
-                    Delete
+                    Add
                   </button>
-                )}
-              </>
-            )}
+                  {submissionId && (
+                    <button
+                      className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                      onClick={() =>
+                        removeArticlesFromSubmission(
+                          submissionId,
+                          selectedArticles,
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  )}
+                </>
+              )}
 
-            <button
-              className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-              onClick={() => setOpenComment(!openComment)}
-            >
-              <img src={CommentIcon} />
-              Comments
-            </button>
-
-            {isUnsubmittable && submissionId && (
               <button
-                className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
-                onClick={() => toggleForSubmit(submissionId)}
+                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                onClick={() => setOpenComment(!openComment)}
               >
-                <img src={UnsubmitIcon} />
-                {submission.unsubmitted ? "Submit" : "Unsubmit"}
+                <img src={CommentIcon} />
+                Comments
               </button>
-            )}
 
-            <button
-              className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-              onClick={() => deleteSubmission(submissionId)}
-            >
-              Remove
-            </button>
+              {isUnsubmittable && submissionId && (
+                <button
+                  className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
+                  onClick={() => toggleForSubmit(submissionId)}
+                >
+                  <img src={UnsubmitIcon} />
+                  {submission.unsubmitted ? "Submit" : "Unsubmit"}
+                </button>
+              )}
 
-            {openComment && <Comment setOpenComment={setOpenComment} />}
-          </div>
-        )}
+              <button
+                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                onClick={() => deleteSubmission(submissionId)}
+              >
+                Remove
+              </button>
 
-        {!params.submissionId && (
-          <>
-            <button className="rounded-full p-3 hover:bg-slate-100">
-              <img src={UlListIcon} />
-            </button>
-            <button className="rounded-full p-3 hover:bg-slate-100">
-              <img src={InfoLineIcon} />
-            </button>
-          </>
-        )}
+              {openComment && <Comment setOpenComment={setOpenComment} />}
+            </div>
+          )}
+
+          {!params.submissionId && (
+            <>
+              <button className="rounded-full p-3 hover:bg-slate-100">
+                <img src={UlListIcon} />
+              </button>
+              <button className="rounded-full p-3 hover:bg-slate-100">
+                <img src={InfoLineIcon} />
+              </button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+      <ArticleSelectModal />
+
+      {openFileUpload === "word" && (
+        <UploadImage
+          isAddSubmission={true}
+          type="word"
+          setOpenFileUpload={setOpenFileUpload}
+        />
+      )}
+
+      {openFileUpload === "image" && (
+        <UploadImage
+          isAddSubmission={true}
+          type="image"
+          setOpenFileUpload={setOpenFileUpload}
+        />
+      )}
+    </>
   );
 };
 
