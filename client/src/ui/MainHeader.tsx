@@ -27,7 +27,8 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const params = useParams();
   const role = localStorage.getItem("role");
   const [openComment, setOpenComment] = useState(false);
-  const { submission, isLoading, toggleForSubmit } = useSubmission();
+  const { submission, isLoading, toggleForSubmit, deleteSubmission } =
+    useSubmission();
   const { submissionId } = useParams();
 
   return (
@@ -62,10 +63,12 @@ const MainHeader: React.FC<MainHeaderProps> = ({
               </button>
             )}
 
-            {/* <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
-              <img src={ShareIcon} />
-              Share
-            </button> */}
+            <button
+              className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+              onClick={() => deleteSubmission(submissionId)}
+            >
+              Remove
+            </button>
 
             {openComment && <Comment setOpenComment={setOpenComment} />}
           </div>

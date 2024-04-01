@@ -21,7 +21,7 @@ export default function SubmissionEmpty({
 }) {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
-  const [openFileUpload, setOpenFileUpload] = useState(false);
+  const [openFileUpload, setOpenFileUpload] = useState("");
 
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
@@ -61,16 +61,18 @@ export default function SubmissionEmpty({
             <Dropdowns>
               <Dropdowns.Dropdown>
                 <Dropdowns.Toggle id="upload_submission">
-                  <Button type="light">Upload files</Button>
+                  <span className="rounded px-10 py-3 font-semibold text-[#004AD7]">
+                    Upload files
+                  </span>
                 </Dropdowns.Toggle>
 
                 <Dropdowns.List id="upload_submission">
-                  <Dropdowns.Button onClick={() => setOpenFileUpload(true)}>
+                  <Dropdowns.Button onClick={() => setOpenFileUpload("word")}>
                     <span className="font-bold" style={{ color: "#004AD7" }}>
                       Documents
                     </span>
                   </Dropdowns.Button>
-                  <Dropdowns.Button onClick={() => setOpenFileUpload(true)}>
+                  <Dropdowns.Button onClick={() => setOpenFileUpload("image")}>
                     <span className="font-bold" style={{ color: "#CA3636" }}>
                       Images
                     </span>
@@ -106,10 +108,18 @@ export default function SubmissionEmpty({
       <CreateSubmissionModal setOpenFileUpload={setOpenFileUpload} />
       <ArticleSelectModal />
 
-      {openFileUpload && (
+      {openFileUpload === "word" && (
         <UploadImage
           isAddSubmission={true}
           type="word"
+          setOpenFileUpload={setOpenFileUpload}
+        />
+      )}
+
+      {openFileUpload === "image" && (
+        <UploadImage
+          isAddSubmission={true}
+          type="image"
           setOpenFileUpload={setOpenFileUpload}
         />
       )}

@@ -105,12 +105,19 @@ const SubmissionSlice = createSlice({
     setSubmission(state, action: PayloadAction<Submission>) {
       state.submission = action.payload;
     },
+    resetSubmission(state) {
+      state.submission = initialState.submission;
+    },
   },
 });
 
 const { reducer, actions } = SubmissionSlice;
 
-export const { setLoadingSubmission, setAllSubmissions, setSubmission } =
-  actions;
+export const {
+  setLoadingSubmission,
+  setAllSubmissions,
+  setSubmission,
+  resetSubmission,
+} = actions;
 
 export default reducer;

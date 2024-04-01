@@ -1,6 +1,7 @@
 import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  resetSubmission,
   setAllSubmissions,
   setLoadingSubmission,
   setSubmission,
@@ -351,6 +352,31 @@ export const useSubmission = () => {
     }
   };
 
+  const deleteSubmission = async (submissionId?: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      if (!submissionId) {
+        throw new Error("Submission Id is required");
+      }
+
+      const { status } = await axios.delete(
+        DELETE_API(submissionId).DELETE_SUBMISSION,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error deleting submission");
+      }
+
+      dispatch(resetSubmission());
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
   return {
     isLoading,
     submission,
@@ -366,5 +392,6 @@ export const useSubmission = () => {
     createSubmissionForStudentThenAddSelectedArticles,
     createSubmissionForStudentThenAddUploadedFiles,
     toggleForSubmit,
+    deleteSubmission,
   };
 };

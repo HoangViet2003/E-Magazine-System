@@ -15,7 +15,7 @@ export default function UploadImage({
 }: {
   type: string;
   isAddSubmission: boolean;
-  setOpenFileUpload?: (value: boolean) => void;
+  setOpenFileUpload?: (value: string) => void;
 }) {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
@@ -190,7 +190,7 @@ export default function UploadImage({
           setOpenDocUpload(false);
           setPreviews([]);
           if (setOpenFileUpload) {
-            setOpenFileUpload(false);
+            setOpenFileUpload("");
           }
         }}
       ></div>
