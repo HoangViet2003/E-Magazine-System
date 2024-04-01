@@ -65,6 +65,7 @@ const PUT_API = (id: string) => {
     UPDATE_FOR_PUBLICATION: `/submission/publication`,
     UPDATE_SUBMISSION_FAVORITE: `/submission/favourite`,
     ADD_ARTICLES_TO_SUBMISSION: `/submission/${id}/addArticle`,
+    REMOVE_ARTICLES_FROM_SUBMISSION: `/submission/${id}/removeArticle`,
   };
 };
 

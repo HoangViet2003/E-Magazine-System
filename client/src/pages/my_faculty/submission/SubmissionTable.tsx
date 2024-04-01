@@ -6,15 +6,24 @@ import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
 import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
-import FacultyRow from "../FacultyRow";
+import { useEffect, useState } from "react";
+import SubmissionRow from "./SubmissionRow";
+import { Article } from "../../../redux/slices/ArticleSlice";
 
-export default function SubmissionTable() {
+interface SubmissionTableProps {
+  isEditableOn: boolean;
+}
+
+const SubmissionTable: React.FC<SubmissionTableProps> = ({ isEditableOn }) => {
   const {
+    selectedArticles,
     submissionArticles,
     isLoading: loadingArticle,
     totalLength,
+    setSelectedArticlesToState,
   } = useArticle();
   const navigate = useNavigate();
+  const [chooseArticle, setChooseArticle] = useState<Article[]>([]);
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
@@ -23,6 +32,15 @@ export default function SubmissionTable() {
   function openImageCollection(id: string) {
     navigate(`/images/${id}`);
   }
+
+  useEffect(() => {
+    setChooseArticle([]);
+    setSelectedArticlesToState([]);
+  }, [isEditableOn]);
+
+  useEffect(() => {
+    setSelectedArticlesToState(chooseArticle);
+  }, [chooseArticle, setSelectedArticlesToState]);
 
   return (
     <>
@@ -40,15 +58,22 @@ export default function SubmissionTable() {
               render={(data) => (
                 <div
                   onDoubleClick={() => {
-                    if (data.type === "word") {
-                      openNewDocument(data._id);
-                    } else {
-                      openImageCollection(data._id);
+                    if (!isEditableOn) {
+                      if (data.type === "word") {
+                        openNewDocument(data._id);
+                      } else {
+                        openImageCollection(data._id);
+                      }
                     }
                   }}
                   key={data._id}
                 >
-                  <FacultyRow data={data} />
+                  <SubmissionRow
+                    data={data}
+                    isEditableOn={isEditableOn}
+                    chooseArticle={chooseArticle}
+                    setChooseArticle={setChooseArticle}
+                  />
                 </div>
               )}
             />
@@ -58,4 +83,6 @@ export default function SubmissionTable() {
       )}
     </>
   );
-}
+};
+
+export default SubmissionTable;

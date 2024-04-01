@@ -15,7 +15,11 @@ import {
 } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Article, addNewSubmissionArticle } from "../slices/ArticleSlice.js";
+import {
+  Article,
+  addNewSubmissionArticle,
+  removeSubmissionArticle,
+} from "../slices/ArticleSlice.js";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -181,16 +185,18 @@ export const useSubmission = () => {
   };
 
   const addSelectedArticlesToSubmission = async (
-    submissionId: string,
-    articles: Article[],
+    submissionId?: string,
+    articles?: Article[],
   ) => {
     dispatch(setLoadingSubmission(true));
 
-    const articlesId: string[] = articles.map((article) => article._id);
+    const articlesId: string[] = articles?.map((article) => article._id) ?? [];
 
     try {
       if (!articlesId || articlesId.length === 0)
-        throw new Error("Articles Id is required.");
+        throw new Error("Article Ids are required.");
+
+      if (!submissionId) throw new Error("Submission Id is required!");
 
       const { data, status } = await axios.put(
         PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
@@ -208,7 +214,7 @@ export const useSubmission = () => {
         throw new Error("Error adding articles to submission");
       }
 
-      articles.map((article) => {
+      articles?.map((article) => {
         dispatch(addNewSubmissionArticle(article));
       });
       dispatch(setSubmission(data?.updatedSubmission));
@@ -377,6 +383,48 @@ export const useSubmission = () => {
     }
   };
 
+  const removeArticlesFromSubmission = async (
+    submissionId?: string,
+    selectedArticles?: Article[],
+  ) => {
+    dispatch(setLoadingSubmission(true));
+
+    const articlesId: string[] =
+      selectedArticles?.map((article) => article._id) ?? [];
+
+    try {
+      if (!submissionId) {
+        throw new Error("Submission Id is required");
+      }
+
+      if (!articlesId || articlesId.length === 0)
+        throw new Error("Articles Id is required.");
+
+      const { data, status } = await axios.put(
+        PUT_API(submissionId).REMOVE_ARTICLES_FROM_SUBMISSION,
+        {
+          articleIds: articlesId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (status !== 200) {
+        throw new Error("Error deleting submission");
+      }
+
+      dispatch(setSubmission(data?.updatedSubmission));
+      dispatch(removeSubmissionArticle(articlesId));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
   return {
     isLoading,
     submission,
@@ -393,5 +441,6 @@ export const useSubmission = () => {
     createSubmissionForStudentThenAddUploadedFiles,
     toggleForSubmit,
     deleteSubmission,
+    removeArticlesFromSubmission,
   };
 };

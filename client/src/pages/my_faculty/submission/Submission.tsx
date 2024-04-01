@@ -22,6 +22,7 @@ export default function Submission() {
   const { submissionId } = useParams();
   const [page, setPage] = useState(1);
   const today = new Date();
+  const [isEditableOn, setIsEditableOn] = useState(false);
 
   const {
     contribution,
@@ -37,8 +38,11 @@ export default function Submission() {
     fetchAllSubmission,
     getSubmissionById,
   } = useSubmission();
-  const { getArticlesBySubmissionId, resetSubmissionArticlesState } =
-    useArticle();
+  const {
+    getArticlesBySubmissionId,
+    resetSubmissionArticlesState,
+    setSelectedArticlesToState,
+  } = useArticle();
 
   const isUnsubmittable =
     contribution.closureDate &&
@@ -96,6 +100,10 @@ export default function Submission() {
     setPage(page);
   }, [searchParams]);
 
+  useEffect(() => {
+    setSelectedArticlesToState([]);
+  }, [isEditableOn, setSelectedArticlesToState]);
+
   return (
     <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
@@ -103,6 +111,8 @@ export default function Submission() {
           isUnsubmittable={isUnsubmittable}
           isEditable={isEditable}
           submission={submission}
+          setIsEditableOn={setIsEditableOn}
+          isEditableOn={isEditableOn}
         >
           <div className="relative flex items-center">
             {windowWidth > 1536 && (
@@ -184,7 +194,9 @@ export default function Submission() {
         <div className="my-5 flex flex-col gap-5 xl:ps-6">
           {submissionId &&
             ((submission?.articles?.length ?? 0) !== 0 ||
-              role !== "student") && <SubmissionTable />}
+              role !== "student") && (
+              <SubmissionTable isEditableOn={isEditableOn} />
+            )}
 
           {submissionId &&
             role === "student" &&

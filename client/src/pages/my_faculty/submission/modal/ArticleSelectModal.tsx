@@ -114,9 +114,7 @@ export default function ArticleSelectModal() {
             className="px-10"
             disabled={!(selectedArticle && selectedArticle.length > 0)}
             onClick={() => {
-              if (submissionId) {
-                addSelectedArticlesToSubmission(submissionId, selectedArticle);
-              }
+              addSelectedArticlesToSubmission(submissionId, selectedArticle);
             }}
           >
             Select

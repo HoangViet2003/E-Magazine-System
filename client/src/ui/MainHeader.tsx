@@ -8,27 +8,38 @@ import CheckIcon from "../assets/icons/check_ring_round_light.svg";
 import CommentIcon from "../assets/icons/comment_duotone.svg";
 import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
 import { Submission } from "../redux/slices/SubmissionSlice";
-import { useSubmission } from "../redux/hooks";
+import { useArticle, useSubmission } from "../redux/hooks";
 import Spinner from "./Spinner";
 // import ShareIcon from "../assets/icons/Out.svg";
 
 interface MainHeaderProps {
   children: ReactNode;
   isUnsubmittable?: boolean;
-  isEditable?: boolean;
   submission?: Submission;
+  isEditable?: boolean;
+  isEditableOn?: boolean;
+  setIsEditableOn?: (value: boolean) => void;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = ({
   children,
   isUnsubmittable,
   isEditable,
+  isEditableOn,
+  setIsEditableOn,
 }) => {
   const params = useParams();
   const role = localStorage.getItem("role");
   const [openComment, setOpenComment] = useState(false);
-  const { submission, isLoading, toggleForSubmit, deleteSubmission } =
-    useSubmission();
+  const {
+    submission,
+    isLoading,
+    toggleForSubmit,
+    deleteSubmission,
+    addSelectedArticlesToSubmission,
+    removeArticlesFromSubmission,
+  } = useSubmission();
+  const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
 
   return (
@@ -39,10 +50,48 @@ const MainHeader: React.FC<MainHeaderProps> = ({
         {params.submissionId && role === "student" && (
           <div className="flex">
             {isEditable && (
-              <button className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
+              <button
+                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                onClick={() =>
+                  setIsEditableOn && setIsEditableOn(!isEditableOn)
+                }
+              >
                 <img src={CheckIcon} />
-                Edit
+                {isEditableOn ? "Cancel" : "Edit"}
               </button>
+            )}
+
+            {isEditableOn && (
+              <>
+                <button
+                  className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "select articles",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.showModal();
+                    } else {
+                      console.error("Modal not found");
+                    }
+                  }}
+                >
+                  Add
+                </button>
+                {submissionId && (
+                  <button
+                    className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                    onClick={() =>
+                      removeArticlesFromSubmission(
+                        submissionId,
+                        selectedArticles,
+                      )
+                    }
+                  >
+                    Delete
+                  </button>
+                )}
+              </>
             )}
 
             <button

@@ -10,14 +10,13 @@ interface SubmissionModalRowProps {
   setSelectedArticle: (updater: (articles: Article[]) => Article[]) => void;
 }
 
-
 const SubmissionModalRow: React.FC<SubmissionModalRowProps> = ({
   data,
   selectedArticle,
   setSelectedArticle,
 }) => {
   const { title, updatedAt, type } = data;
-  
+
   const date = updatedAt ? new Date(updatedAt) : new Date();
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 

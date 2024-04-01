@@ -12,6 +12,7 @@ import {
   setIsFilterMode,
   addNewSubmissionArticle,
   Article,
+  setSelectedArticles,
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -29,6 +30,7 @@ export const useArticle = () => {
     keyword,
     isFilterMode,
     submissionArticles,
+    selectedArticles,
   } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
@@ -330,11 +332,18 @@ export const useArticle = () => {
     }
   };
 
+  const setSelectedArticlesToState = (articles: Article[]) => {
+    if (articles && articles.length > 0) {
+      dispatch(setSelectedArticles(articles));
+    }
+  };
+
   return {
     totalLength,
     isLoading,
     articles,
     submissionArticles,
+    selectedArticles,
     article,
     fetchAllArticle,
     getArticleById,
@@ -353,5 +362,6 @@ export const useArticle = () => {
     getUnselectedArticleStudent,
     uploadArticleThenAddToSubmission,
     addSubmissionArticle,
+    setSelectedArticlesToState,
   };
 };
