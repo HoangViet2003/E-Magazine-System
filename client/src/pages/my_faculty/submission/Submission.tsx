@@ -39,7 +39,6 @@ export default function Submission() {
   } = useSubmission();
   const {
     // isLoading: loadingArticle,
-    submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
   } = useArticle();
@@ -59,8 +58,11 @@ export default function Submission() {
     return format(date, "HH:mm dd/MM/yyyy");
   }
 
+  console.log(contribution);
+
   // Get contribution and set in state (optimize by running create get
   // contribution by Id api)
+
   useEffect(() => {
     const fetchContributions = async () => {
       await fetchAllContribution();
@@ -88,21 +90,11 @@ export default function Submission() {
       }
 
       if (submissionId) getArticlesBySubmissionId(submissionId, page);
+
+      return () => resetSubmissionArticlesState();
     };
     fetchData();
   }, [submissions, role, submissionId, page]);
-
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page") || "1");
-    setPage(page);
-  }, [searchParams]);
-
-  // Get submitted article to check if submission is empty
-  useEffect(() => {
-    if (submissionId) getArticlesBySubmissionId(submissionId, page);
-
-    return () => resetSubmissionArticlesState();
-  }, []);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
@@ -142,14 +134,10 @@ export default function Submission() {
                     <h1
                       className="cursor-pointer whitespace-nowrap rounded-3xl py-1 pe-6 text-xl font-normal hover:bg-slate-100 xl:ps-6"
                       onClick={() =>
-                        navigate(
-                          `/myFaculty/contributions/${submission.contributionId._id}`,
-                        )
+                        navigate(`/myFaculty/contributions/${contribution._id}`)
                       }
                     >
-                      {role === "student"
-                        ? `${contribution.academicYear} Contributions`
-                        : `${submission.contributionId.academicYear} Contributions`}
+                      {`${contribution.academicYear} Contributions`}
                     </h1>
                     <img src={BreadcrumbPointer} />
                   </>
@@ -200,14 +188,13 @@ export default function Submission() {
       ) : (
         <div className="my-5 flex flex-col gap-5 xl:ps-6">
           {submissionId &&
-            ((submissionArticles && submissionArticles.length !== 0) ||
+            ((submission?.articles?.length ?? 0) !== 0 ||
               role !== "student") && <SubmissionTable />}
 
           {submissionId &&
             role === "student" &&
             contribution.closureDate &&
-            submissionArticles &&
-            submissionArticles.length === 0 && (
+            (submission?.articles?.length ?? 0) === 0 && (
               <SubmissionEmpty
                 hasSubmission={true}
                 isSubmissionOpen={

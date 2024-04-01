@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "./UserSlice";
 import { Contribution } from "./ContributionSlice";
+import { Article } from "./ArticleSlice";
 
 // const fakeSubmission = [
 //   {
@@ -48,6 +49,7 @@ export interface Submission {
   unsubmitted: boolean;
   updatedAt: string;
   createdAt: string;
+  articles?: Article[];
 }
 
 interface SubmissionState {
@@ -71,12 +73,13 @@ const initialState: SubmissionState = {
       name: "",
       email: "",
       facultyId: "",
-      unsubmitted: false,
     },
     contributionId: {
       _id: "",
       academicYear: 0,
     },
+    unsubmitted: false,
+    articles: [] as Article[],
     isCommented: false,
     isSelectedForPublication: false,
     isFavorite: false,

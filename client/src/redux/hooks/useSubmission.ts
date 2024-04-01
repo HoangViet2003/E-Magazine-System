@@ -14,7 +14,7 @@ import {
 } from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Article, addNewSubmissionArticle } from "../slices/ArticleSlice.js";
+import { Article } from "../slices/ArticleSlice.js";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -171,7 +171,7 @@ export const useSubmission = () => {
       if (status !== 200) {
         throw new Error("Error fetching submissions");
       }
-      dispatch(setSubmission(data));
+      dispatch(setSubmission(data?.submission));
     } catch (error) {
       // console.log(error);
     } finally {

@@ -9,29 +9,23 @@ import { useSubmission } from "../../redux/hooks/useSubmission";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
-export default function MyFacultyContribution() {
+export default function ContributionFolder() {
   const navigate = useNavigate();
   const {
     contributions,
     isLoading: loadingContribution,
     fetchAllContribution,
-    getContributionById,
   } = useContribution();
-  const {
-    // getSubmissionByStudent,
-    // submission,
-    getSubmissionByStudentToNavigate,
-    isLoading: loadingSubmission,
-  } = useSubmission();
+  const { getSubmissionByStudentToNavigate, isLoading: loadingSubmission } =
+    useSubmission();
   const role = localStorage.getItem("role");
 
-  // const [searchParams, setSearchParams] = useSearchParams();
-
-  function calculateClosureDate(date: Date) {
+  function calculateClosureDate(date?: string) {
+    const closureDate = new Date(date || new Date().toISOString());
     const today = new Date();
 
     // Calculate the difference in milliseconds between the given date and today
-    const differenceInMilliseconds = date.getTime() - today.getTime();
+    const differenceInMilliseconds = closureDate.getTime() - today.getTime();
     const differenceInDays = Math.round(
       differenceInMilliseconds / (1000 * 3600 * 24),
     );
@@ -44,7 +38,6 @@ export default function MyFacultyContribution() {
   }, []);
 
   function handleSubmissionNavigate(contributionId: string) {
-    getContributionById(contributionId);
     navigate(`contributions/${contributionId}`);
   }
 
@@ -66,7 +59,6 @@ export default function MyFacultyContribution() {
             <button
               key={index}
               className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              // onClick={() => getSubmissionByStudent(contribution._id)}
               onDoubleClick={async () => {
                 if (role === "student") {
                   handleStudentSubmission(contribution._id);
@@ -88,11 +80,9 @@ export default function MyFacultyContribution() {
                       }
                       style={{ color: "#CA3636" }}
                     >
-                      {calculateClosureDate(
-                        new Date(contribution.closureDate),
-                      ) < 0
-                        ? "Closed"
-                        : `${calculateClosureDate(new Date(contribution.closureDate))} days until closure date`}
+                      {calculateClosureDate(contribution.closureDate) < 0
+                        ? ""
+                        : `${calculateClosureDate(contribution.closureDate)} days until closure date`}
                     </div>
                   )}
                 </span>

@@ -1,7 +1,7 @@
 import MainHeader from "../../ui/MainHeader";
 import Dropdowns from "../../ui/Dropdowns";
 import MyFacultyTable from "./MyFacultyTable";
-import MyFacultyContribution from "./MyFacultyContribution";
+import ContributionFolder from "./ContributionFolder";
 
 import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 
@@ -27,7 +27,7 @@ export default function MyFaculty() {
       </MainHeader>
 
       <div className="my-5 flex flex-col gap-5 xl:ps-6">
-        <MyFacultyContribution />
+        <ContributionFolder />
 
         <MyFacultyTable />
       </div>

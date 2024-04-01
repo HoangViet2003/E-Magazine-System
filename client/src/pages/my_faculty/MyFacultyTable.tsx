@@ -7,18 +7,14 @@ import MyFacultyOperation from "./MyFacultyOperation";
 import { URL } from "../../utils/constant";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Pagination from "../../ui/Pagination";
 
-export default function MyFacultyTable({
-  contributeId,
-}: {
-  contributeId?: number;
-}) {
+export default function MyFacultyTable() {
   const [searchParams] = useSearchParams();
-  const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
-  const [field, direction] = sortBy.split("-");
-  const modifier = direction === "asc" ? 1 : -1;
+  // const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
+  // const [field, direction] = sortBy.split("-");
+  // const modifier = direction === "asc" ? 1 : -1;
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
@@ -35,37 +31,32 @@ export default function MyFacultyTable({
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
-    if (role === "student") {
+    if (keyword !== "") {
+      // If there's a keyword, perform a search regardless of the role
+      searchArticleQuery(keyword as string);
+    } else if (role === "student") {
+      // If the role is "student", fetch articles by student ID
       getArticleByStudentId(page);
     } else {
+      // Otherwise, fetch all articles
       fetchAllArticle(page);
     }
-  }, [role, searchParams]);
+  }, [role, searchParams, keyword]);
 
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page") || "1");
+  // let filteredArticles = articles;
 
-    if (keyword === "") {
-      getArticleByStudentId(page);
-    } else {
-      searchArticleQuery(keyword as string);
-    }
-  }, [keyword]);
+  // if (contributeId) {
+  //   filteredArticles = articles?.filter(
+  //     (article) => new Date(article.createdAt).getFullYear() === contributeId,
+  //   );
+  // }
 
-  let filteredArticles = articles;
-
-  if (contributeId) {
-    filteredArticles = articles?.filter(
-      (article) => new Date(article.createdAt).getFullYear() === contributeId,
-    );
-  }
-
-  // SORT
-  const sortedData = filteredArticles?.slice().sort((a, b) => {
-    if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
-    if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
-    return 0;
-  });
+  // // SORT
+  // const sortedData = filteredArticles?.slice().sort((a, b) => {
+  //   if ((a as any)[field] < (b as any)[field]) return -1 * modifier;
+  //   if ((a as any)[field] > (b as any)[field]) return 1 * modifier;
+  //   return 0;
+  // });
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
@@ -85,7 +76,7 @@ export default function MyFacultyTable({
         </Table.Header>
 
         <Table.Body
-          data={sortedData}
+          data={articles}
           render={(data) => (
             <div
               onDoubleClick={() => {

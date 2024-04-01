@@ -22,7 +22,6 @@ export default function MyFaculty() {
   const role = localStorage.getItem("role");
   const { contributionId } = useParams();
 
-
   useEffect(() => {
     fetchAllContribution();
   }, []);
