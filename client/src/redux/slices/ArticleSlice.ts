@@ -19,6 +19,7 @@ interface ArticleState {
   totalLength: number;
   article: Article;
   articles: Article[];
+  suggestionArticles: Article[];
   submissionArticles: Article[];
   keyword?: string;
   isFilterMode: boolean;
@@ -26,6 +27,7 @@ interface ArticleState {
 
 const initialState: ArticleState = {
   articles: [],
+  suggestionArticles: [],
   submissionArticles: [],
   article: {
     _id: "",
@@ -95,6 +97,9 @@ const ArticleSlice = createSlice({
     setIsFilterMode(state, action: PayloadAction<boolean>) {
       state.isFilterMode = action.payload;
     },
+    setSuggestionArticles(state, action: PayloadAction<Article[]>) {
+      state.suggestionArticles = action.payload;
+    }
   },
 });
 
@@ -110,6 +115,7 @@ export const {
   setIsFilterMode,
   setSubmissionArticles,
   resetSubmissionArticles,
+  setSuggestionArticles
 } = actions;
 
 export default reducer;

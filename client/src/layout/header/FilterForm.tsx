@@ -54,24 +54,14 @@ const FilterForm: React.FC<FilterFormProps> = ({
         <label className={labelClassName}>Type</label>
         <Select
           options={[
-            { label: "Any", value: "any" },
+            { label: "Any", value: "" },
             { label: "Documents", value: "word" },
             { label: "Photos & images", value: "image" },
           ]}
-          value="type"
+          value={type}
           onChange={(e) => setType(e.target.value)}
         />
 
-        {/* <label className={labelClassName}>Owner</label>
-        <Select
-          options={[
-            { label: "Anyone", value: "anyone" },
-            { label: "Owned by me", value: "byMe" },
-            { label: "Not owned by me", value: "notByMe" },
-          ]}
-          value="owner"
-          onChange={handleChangeType}
-        /> */}
 
         <label className={labelClassName}>Includes the words</label>
         <input

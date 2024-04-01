@@ -17,13 +17,14 @@ const Header = () => {
   const { user } = useAuth();
   const { disconnectSocket } = useSocket();
   // const id = "65fff16b2efcd832390a8534"; // Replace with the coordinator ID
-
+  // const ENDPOINT = "http://localhost:8080";
+  const ENDPOINT = "https://e-magazine.onrender.com"
 
   useEffect(() => {
-    const socket = io("https://e-magazine.onrender.com");
+    const socket = io(ENDPOINT);
 
     socket.on("connect", () => {
-      // console.log("Connected to server");
+      console.log("Connected to server");
       socket.emit("join", user._id);
 
       setTimeout(() => {
@@ -31,8 +32,8 @@ const Header = () => {
           toast.info(data.message);
         });
       }, 3000);
-
     });
+
     return () => {
       disconnectSocket();
     };
