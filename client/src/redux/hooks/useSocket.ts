@@ -8,12 +8,12 @@ export default function useSocket() {
 
   const initiateSocket = (roomId: any) => {
     socket = io(ENDPOINT);
-    // console.log(`Connecting socket...`);
+    console.log(`Connecting socket...`);
     if (socket && roomId) socket.emit("join", roomId);
   };
 
   const disconnectSocket = () => {
-    // console.log("Disconnecting socket...");
+    console.log("Disconnecting socket...");
     if (socket) socket.disconnect();
   };
 
