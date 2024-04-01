@@ -112,7 +112,11 @@ export default function Submission() {
   return (
     <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
-        <MainHeader isUnsubmittable={isUnsubmittable} isEditable={isEditable}>
+        <MainHeader
+          isUnsubmittable={isUnsubmittable}
+          isEditable={isEditable}
+          submission={submission}
+        >
           <div className="relative flex items-center">
             {windowWidth > 1536 && (
               <>

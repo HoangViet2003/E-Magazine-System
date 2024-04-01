@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useArticle, useSubmission } from "../../../../redux/hooks";
 import { useEffect } from "react";
 import Button from "../../../../ui/Button";

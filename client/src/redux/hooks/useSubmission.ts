@@ -5,7 +5,13 @@ import {
   setLoadingSubmission,
   setSubmission,
 } from "../slices/SubmissionSlice";
-import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
+import {
+  GET_API,
+  PUT_API,
+  DELETE_API,
+  POST_API,
+  PATCH_API,
+} from "../../constants/api.js";
 import axios from "../../utils/axios.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Article, addNewSubmissionArticle } from "../slices/ArticleSlice.js";
@@ -226,7 +232,7 @@ export const useSubmission = () => {
         throw new Error("Error creating submissions");
       }
 
-      dispatch(setSubmission(data));
+      dispatch(setSubmission(createData));
 
       const { status: addArticleStatus } = await axios.put(
         PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
@@ -244,7 +250,7 @@ export const useSubmission = () => {
         throw new Error("Error adding articles to submission");
       }
 
-      navigate(`${data?.newSubmission._id}`);
+      navigate(`${createData?.newSubmission._id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -316,6 +322,30 @@ export const useSubmission = () => {
     }
   };
 
+  const toggleForSubmit = async (submissionId?: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      if (!submissionId) {
+        throw new Error("Submission Id is required!");
+      }
+
+      const { data, status } = await axios.patch(
+        PATCH_API(submissionId).TOGGLE_SUBMIT,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error toggling submission");
+      }
+
+      dispatch(setSubmission(data.updatedSubmission));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
   return {
     isLoading,
     submission,
@@ -330,5 +360,6 @@ export const useSubmission = () => {
     addSelectedArticlesToSubmission,
     createSubmissionForStudentThenAddSelectedArticles,
     createSubmissionForStudentThenAddUploadedFiles,
+    toggleForSubmit,
   };
 };

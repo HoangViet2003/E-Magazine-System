@@ -45,6 +45,7 @@ export interface Submission {
   isCommented: boolean;
   isSelectedForPublication: boolean;
   isFavorite: boolean;
+  unsubmitted: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -70,6 +71,7 @@ const initialState: SubmissionState = {
       name: "",
       email: "",
       facultyId: "",
+      unsubmitted: false,
     },
     contributionId: {
       _id: "",

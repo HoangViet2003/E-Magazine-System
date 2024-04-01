@@ -7,12 +7,16 @@ import InfoLineIcon from "../assets/icons/Icon-info-circle-line.svg";
 import CheckIcon from "../assets/icons/check_ring_round_light.svg";
 import CommentIcon from "../assets/icons/comment_duotone.svg";
 import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
+import { Submission } from "../redux/slices/SubmissionSlice";
+import { useSubmission } from "../redux/hooks";
+import Spinner from "./Spinner";
 // import ShareIcon from "../assets/icons/Out.svg";
 
 interface MainHeaderProps {
   children: ReactNode;
   isUnsubmittable?: boolean;
   isEditable?: boolean;
+  submission?: Submission;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = ({
@@ -23,6 +27,8 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const params = useParams();
   const role = localStorage.getItem("role");
   const [openComment, setOpenComment] = useState(false);
+  const { submission, isLoading, toggleForSubmit } = useSubmission();
+  const { submissionId } = useParams();
 
   return (
     <div className="flex items-center justify-between border-b border-borderColor py-4">
@@ -46,10 +52,13 @@ const MainHeader: React.FC<MainHeaderProps> = ({
               Comments
             </button>
 
-            {isUnsubmittable && (
-              <button className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
+            {isUnsubmittable && submissionId && (
+              <button
+                className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
+                onClick={() => toggleForSubmit(submissionId)}
+              >
                 <img src={UnsubmitIcon} />
-                Unsubmit
+                {submission.unsubmitted ? "Submit" : "Unsubmit"}
               </button>
             )}
 
