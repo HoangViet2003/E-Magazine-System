@@ -1,4 +1,4 @@
-const { Article, Comment } = require("../models")
+const { Article, Comment,Submission } = require("../models")
 const EmitterSingleton = require("../configs/eventEmitter")
 const { sendMail } = require("../utils")
 const path = require("path")
@@ -23,15 +23,16 @@ const getCommentsByAr = async (req, res) => {
 			return res.status(400).json({ error: "Invalid page number" })
 		}
 
-		const article = await Article.findById(id)
+		// const article = await Article.findById(id)
+		const submission = await Submission.findById(id)
 
 		// Check if article exists
-		if (!article) {
-			return res.status(404).json({ error: "Article does not exist" })
+		if (!submission) {
+			return res.status(404).json({ error: "Submission does not exist" })
 		}
 
 		let comments = await Comment.find({
-			articleId: id,
+			submissionId: id,
 			parentCommentId: { $exists: false },
 		})
 			.populate("userId", "name")
@@ -40,7 +41,7 @@ const getCommentsByAr = async (req, res) => {
 			.limit(10)
 
 		const replies = await Comment.find({
-			articleId: id,
+			submissionId: id,
 			parentCommentId: { $exists: true },
 		})
 
@@ -57,7 +58,7 @@ const getCommentsByAr = async (req, res) => {
 
 		// calculate the total pages
 		const totalComments = await Comment.countDocuments({
-			articleId: id,
+			submissionId: id,
 			parentCommentId: { $exists: false },
 		})
 		const totalPages = Math.ceil(totalComments / 10)
@@ -76,7 +77,8 @@ const addComment = async (req, res) => {
 		const { id } = req.params
 		const { content, taggedUserId } = req.body
 
-		let article
+		// let article
+		let submission
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
 		if (
@@ -86,9 +88,10 @@ const addComment = async (req, res) => {
 			return res.status(403).json({ error: "Forbidden" })
 		} else {
 			// Find the article that the comment belongs to
-			article = await Article.findById(id)
+			// article = await Article.findById(id)
+			submission = await Submission.findById(id)
 
-			if (!article) {
+			if (!submission) {
 				return res.status(404).json({ error: "Article does not exist" })
 			}
 
@@ -97,12 +100,12 @@ const addComment = async (req, res) => {
 			if (req.user.role === "marketing coordinator") {
 				if (
 					req.user.contributionId.toString() !==
-					article.contributionId.toString()
+					submission.contributionId.toString()
 				) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			} else {
-				if (req.user._id.toString() !== article.student.toString()) {
+				if (req.user._id.toString() !== submission.student._id.toString()) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			}
@@ -110,7 +113,7 @@ const addComment = async (req, res) => {
 
 		// Example of creating a new comment
 		const newComment = new Comment({
-			articleId: id,
+			submissionId: id,
 			userId: req.user._id, // Assuming user ID is stored in req.user
 			content,
 			taggedUserId,
@@ -143,7 +146,7 @@ const replyComment = async (req, res) => {
 	try {
 		const { id } = req.params
 		let comment
-		let article
+		let submission
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
 		if (
@@ -159,19 +162,20 @@ const replyComment = async (req, res) => {
 			}
 
 			// Find the article that the comment belongs to
-			article = await Article.findById(comment.articleId)
+			// article = await Article.findById(comment.articleId)
+			submission = await Submission.findById(comment.submissionId)
 
 			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
 			// if the role is student, check if the student is the author of the article, if not return 403
 			if (req.user.role === "marketing coordinator") {
 				if (
 					req.user.contributionId.toString() !==
-					article.contributionId.toString()
+					submission.contributionId.toString()
 				) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			} else {
-				if (req.user._id.toString() !== article.student.toString()) {
+				if (req.user._id.toString() !== submission.student._id.toString()) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
 			}
@@ -181,7 +185,7 @@ const replyComment = async (req, res) => {
 
 		// Creating a new comment
 		const newComment = new Comment({
-			articleId: article._id,
+			submissionIdId: submission._id,
 			userId: req.user._id,
 			content,
 			taggedUserId,

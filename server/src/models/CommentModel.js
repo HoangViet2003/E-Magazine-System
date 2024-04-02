@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const commentSchema = new mongoose.Schema(
 	{
-		articleId: {
+		submissionId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Article",
 			required: true,
