@@ -3,13 +3,13 @@ const { CommentController } = require("../controllers")
 const { authenticateToken } = require("../middlewares/authenticate")
 
 router.get(
-	"/article/:id/comments",
+	"/submission/:id/comments",
 	authenticateToken,
 	CommentController.getCommentsByAr
 )
 
 router.post(
-	"/article/:id/comment",
+	"/submission/:id/comment",
 	authenticateToken,
 	// upload.single("Word"),
 	CommentController.addComment
