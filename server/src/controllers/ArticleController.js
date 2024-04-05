@@ -108,7 +108,7 @@ const uploadArticle = async (req, res) => {
 
 		return res.status(201).send({
 			message: "Article uploaded successfully",
-			article,
+			article: type === "word" ? article : [article],
 			history,
 		})
 	} catch (error) {
@@ -251,13 +251,20 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 
 		const submission = await Submission.findById(submissionId)
 
+		if (!submission) {
+			return res.status(404).json({ error: "Submission not found" })
+		}
+
 		const articles = await Article.find({
 			_id: { $in: submission.articles },
 		})
 			.skip(skip)
 			.limit(limit)
+			.select("title type student status updatedAt")
 
-		const totalLength = await Article.find({ submissionId }).countDocuments()
+		const totalLength = await Article.find({
+			_id: { $in: submission.articles },
+		}).countDocuments()
 
 		res.status(200).json({
 			articles,
@@ -339,6 +346,7 @@ const getAllArticlesByFacultyId = async (req, res) => {
 		res.status(200).json({
 			articles,
 			totalPage: Math.ceil(totalLength / limit),
+			totalLength: totalLength,
 		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })
@@ -482,6 +490,7 @@ const filterArticle = async (req, res) => {
 		res.status(200).json({
 			articles,
 			totalPage: Math.ceil(totalLength / limit),
+			totalLength: totalLength,
 		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })

@@ -12,6 +12,21 @@ const EmitterSingleton = require("../configs/eventEmitter")
 const emitterInstance = EmitterSingleton.getInstance()
 const emitter = emitterInstance.getEmitter()
 
+const getContributionById = async (req, res) => {
+	try {
+		const { id } = req.params
+		const contribution = await Contribution.findById(id)
+		if (!contribution) {
+			return res.status(404).json({ error: "Contribution not found" })
+		}
+		res.status(200).json({
+			contribution,
+		})
+	} catch (error) {
+		res.status(500).json({ error: error.message })
+	}
+}
+
 const createContribution = async (req, res) => {
 	try {
 		const { facultyId, status, academicYear } = req.body
@@ -95,4 +110,5 @@ module.exports = {
 	createContribution,
 	getAllContributions,
 	getAllContributionByFaculty,
+	getContributionById,
 }

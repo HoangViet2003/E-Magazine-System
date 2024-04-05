@@ -5,6 +5,7 @@ const {
 	authenticateMarketingCoordinator,
 } = require("../middlewares/authenticate")
 
+router.get("/contribution/:id", ContributionController.getContributionById)
 router.post("/contribution", ContributionController.createContribution)
 router.get("/contributions", ContributionController.getAllContributions)
 router.get(

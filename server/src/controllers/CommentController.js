@@ -1,4 +1,4 @@
-const { Article, Comment,Submission } = require("../models")
+const { Article, Comment, Submission } = require("../models")
 const EmitterSingleton = require("../configs/eventEmitter")
 const { sendMail } = require("../utils")
 const path = require("path")
@@ -66,6 +66,7 @@ const getCommentsByAr = async (req, res) => {
 		return res.status(200).json({
 			comments,
 			totalPages,
+			totalLength: totalComments,
 		})
 	} catch (error) {
 		return res.status(500).json({ error: "Internal Server Error" })
