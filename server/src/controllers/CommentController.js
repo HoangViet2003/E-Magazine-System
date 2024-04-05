@@ -1,4 +1,4 @@
-const { Article, Comment, Submission } = require("../models")
+const { Article, Comment, Submission,Faculty,Contribution } = require("../models")
 const EmitterSingleton = require("../configs/eventEmitter")
 const { sendMail } = require("../utils")
 const path = require("path")
@@ -74,74 +74,78 @@ const getCommentsByAr = async (req, res) => {
 }
 
 const addComment = async (req, res) => {
-	try {
-		const { id } = req.params
-		const { content, taggedUserId } = req.body
+    try {
+        const { id } = req.params;
+        const { content, taggedUserId } = req.body;
 
-		// let article
-		let submission
+        let submission;
 
-		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
-		if (
-			req.user.role !== "marketing coordinator" &&
-			req.user.role !== "student"
-		) {
-			return res.status(403).json({ error: "Forbidden" })
-		} else {
-			// Find the article that the comment belongs to
-			// article = await Article.findById(id)
-			submission = await Submission.findById(id)
+        // Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
+        if (
+            req.user.role !== "marketing coordinator" &&
+            req.user.role !== "student"
+        ) {
+            return res.status(403).json({ error: "Forbidden" });
+        } else {
+            // Find the submission that the comment belongs to
+            submission = await Submission.findById(id);
 
-			if (!submission) {
-				return res.status(404).json({ error: "Article does not exist" })
-			}
+            if (!submission) {
+                return res.status(404).json({ error: "Submission does not exist" });
+            }
 
-			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
-			// if the role is student, check if the student is the author of the article, if not return 403
-			if (req.user.role === "marketing coordinator") {
-				if (
-					req.user.contributionId.toString() !==
-					submission.contributionId.toString()
-				) {
-					return res.status(403).json({ error: "Forbidden" })
-				}
-			} else {
-				if (req.user._id.toString() !== submission.student._id.toString()) {
-					return res.status(403).json({ error: "Forbidden" })
-				}
-			}
-		}
+			const contribution = await Contribution.findById(submission.contributionId)
 
-		// Example of creating a new comment
-		const newComment = new Comment({
-			submissionId: id,
-			userId: req.user._id, // Assuming user ID is stored in req.user
-			content,
-			taggedUserId,
-		})
 
-		await newComment.save()
+            // if the role is marketing coordinator, check if the facultyId matches the facultyId of the submission
+            // if the role is student, check if the student is the author of the submission, if not return 403
+            if (req.user.role === "marketing coordinator") {
+                if (
+                    req.user.facultyId.toString() !==
+                    contribution.facultyId.toString()
+                ) {
+                    return res.status(403).json({ error: "Forbidden" });
+                }
+            } else {
+                if (req.user._id.toString() !== submission.student._id.toString()) {
+                    return res.status(403).json({ error: "Forbidden" });
+                }
+            }
+        }
 
-		const html = await ejs.renderFile(
-			"./src/emails/comments/crudComments.email.ejs",
-			{
-				comment: newComment,
-			}
-		)
+        // Example of creating a new comment
+        const newComment = new Comment({
+            submissionId: id,
+            userId: req.user._id, // Assuming user ID is stored in req.user
+            content,
+            taggedUserId,
+        });
 
-		await sendMail({
-			to: "tuananhngo2513@gmail.com",
-			subject: `${req.user.name} has commented on the article`,
-			html,
-		})
+        await newComment.save();
 
-		return res
-			.status(201)
-			.json({ newComment, message: "Comment added successfully" })
-	} catch (error) {
-		return res.status(500).json({ error: "Internal Server Error" })
-	}
-}
+        const html = await ejs.renderFile(
+            "./src/emails/comments/crudComments.email.ejs",
+            {
+                comment: newComment,
+            }
+        );
+
+        await sendMail({
+            to: "tuananhngo2513@gmail.com",
+            subject: `${req.user.name} has commented on the submission`,
+            html,
+        });
+
+        return res
+            .status(201)
+            .json({ newComment, message: "Comment added successfully" });
+    } catch (error) {
+        console.error(error); // Log the error for debugging purposes
+        return res.status(500).json({ error: "Internal Server Error: " + error.message });
+    }
+};
+
+
 
 const replyComment = async (req, res) => {
 	try {
