@@ -10,7 +10,8 @@ const GET_API = (id: string, page = 1) => {
     GET_FILTERED_ARTICLES: `/article/filter`,
 
     // comments
-    GET_COMMENTS_BY_ARTICLE_ID: `/article/${id}/comments`,
+    // GET_COMMENTS_BY_ARTICLE_ID: `/article/${id}/comments`,
+    GET_COMMENTS_BY_SUBMISSION_ID: `/submission/${id}/comments?page=${page}`,
     // contributions
     GET_ALL_CONTRIBUTIONS: `/contributions`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
@@ -18,7 +19,6 @@ const GET_API = (id: string, page = 1) => {
     GET_ALL_FACULTIES: `/faculties`,
     GET_FACULTY_BY_ID: `/faculty/${id}`,
     // submissions
-    GET_ALL_SUBMISSIONS: `/submissions`,
     GET_SUBMISSION_BY_CONTRIBUTION_ID: `/submissions/contribution/${id}`,
     GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT: `/submission/contribution/${id}`,
     GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
@@ -37,7 +37,8 @@ const POST_API = (id: string) => {
     DOWNLOAD_ALL_SELECTED_ARTICLES: "/article/download",
 
     // comments
-    ADD_COMMENT: `/article/${id}/comment`,
+    // ADD_COMMENT: `/article/${id}/comment`,
+    CREATE_COMMENT: `/submission/${id}/comment`,
     REPLY_COMMENT: `/comment/${id}/reply`,
     // contributions
     CREATE_CONTRIBUTION: `/contribution`,

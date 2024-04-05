@@ -27,11 +27,11 @@ export default function UploadImage({
     isLoading: loadingArticle,
     uploadArticleThenAddToSubmission,
   } = useArticle();
-  const {
-    createSubmissionForStudent,
-    submission,
-    createSubmissionForStudentThenAddUploadedFiles,
-  } = useSubmission();
+  // const {
+  //   createSubmissionForStudent,
+  //   submission,
+  //   createSubmissionForStudentThenAddUploadedFiles,
+  // } = useSubmission();
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
 
@@ -100,7 +100,7 @@ export default function UploadImage({
     } else {
       await uploadArticle(formData);
     }
-    
+
     setOpenDocUpload(false);
     setOpenImageUpload(false);
     if (setOpenFileUpload) {

@@ -1,34 +1,63 @@
+import { useEffect, useRef } from "react";
 import UserIcon from "../assets/icons/User_cicrle_light.svg";
 import { useOutsideClick } from "../redux/hooks/useOutsideClick";
+import { useComment } from "../redux/hooks/useComment";
+import { useParams } from "react-router-dom";
+import Spinner from "./Spinner";
 
 interface CommentProps {
+  openComment: boolean;
   setOpenComment: (open: boolean) => void;
 }
 
-export default function Comment({ setOpenComment }: CommentProps) {
+export default function Comment({ openComment, setOpenComment }: CommentProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const ref = useOutsideClick(
     () => setOpenComment(false),
     false,
   ) as React.RefObject<HTMLDivElement>;
+  const { comments, isLoading, fetchAllComment } = useComment();
+  const { submissionId } = useParams();
+
+  useEffect(() => {
+    fetchAllComment(submissionId);
+  }, []);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const { scrollHeight, clientHeight } = scrollContainerRef.current;
+      scrollContainerRef.current.scrollTop = scrollHeight - clientHeight;
+    }
+  }, [comments]);
 
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-14 z-10 flex w-96 flex-col gap-5 bg-gray-100 p-5"
+      className={`fixed right-4 z-10 flex h-[500px] w-96 flex-col justify-between gap-5 bg-gray-100 p-5 duration-300 ${openComment ? "bottom-0 opacity-100" : "-bottom-[500px] opacity-0"}`}
     >
       <h4>Comments</h4>
 
-      <div className="flex  max-h-[600px] flex-col gap-5 overflow-scroll bg-white p-5 ">
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-        <CommentComponent />
-      </div>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div
+          className="flex max-h-[600px] flex-col gap-5 overflow-scroll overflow-x-hidden bg-white p-5"
+          ref={scrollContainerRef}
+        >
+          {comments
+            .slice()
+            .reverse()
+            .map((comment) => (
+              <CommentComponent comment={comment} />
+            ))}
+        </div>
+      )}
+
+      <input
+        type="text"
+        className="p-2"
+        placeholder="Type your comment here..."
+      />
 
       <button
         className="absolute right-5"
@@ -40,7 +69,8 @@ export default function Comment({ setOpenComment }: CommentProps) {
   );
 }
 
-function CommentComponent() {
+function CommentComponent({ comment }) {
+  const { _id, content, createdAt } = comment;
   const currentDate = new Date("2024-03-26T06:53:57.849Z");
 
   // Format the date as "Month Day, Year"
@@ -84,9 +114,7 @@ function CommentComponent() {
         </div>
       </div>
 
-      <p className="text-xs">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      </p>
+      <p className="text-xs">{content}</p>
     </div>
   );
 }

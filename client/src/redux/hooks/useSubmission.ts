@@ -29,23 +29,6 @@ export const useSubmission = () => {
     (state: RootState) => state.submission,
   );
 
-  const fetchAllSubmission = async () => {
-    dispatch(setLoadingSubmission(true));
-    try {
-      const { data, status } = await axios.get(GET_API("").GET_ALL_SUBMISSIONS);
-
-      if (status !== 200) {
-        throw new Error("Error fetching articles");
-      }
-
-      dispatch(setAllSubmissions(data?.submissions));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      dispatch(setLoadingSubmission(false));
-    }
-  };
-
   const getSubmissionsByContributionId = async (contributionId: string) => {
     dispatch(setLoadingSubmission(true));
 
@@ -429,7 +412,6 @@ export const useSubmission = () => {
     isLoading,
     submission,
     submissions,
-    fetchAllSubmission,
     getSubmissionsByContributionId,
     getSubmissionByStudentToNavigate,
     getSubmissionByStudent,

@@ -12,6 +12,8 @@ import SubmissionEmpty from "./SubmissionEmpty";
 import Spinner from "../../../ui/Spinner";
 import { format } from "date-fns";
 import useWindowWidth from "../../../redux/hooks/useWindowWidth";
+import CommentIcon from "../../../assets/icons/comment_duotone.svg";
+import Comment from "../../../ui/Comment";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -23,6 +25,7 @@ export default function Submission() {
   const [page, setPage] = useState(1);
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
 
   const {
     contribution,
@@ -32,14 +35,11 @@ export default function Submission() {
   } = useContribution();
   const {
     submission,
-    submissions,
     isLoading: loadingSubmission,
     getSubmissionByContributionStudent,
-    fetchAllSubmission,
     getSubmissionById,
   } = useSubmission();
   const {
-    submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
     setSelectedArticlesToState,
@@ -75,13 +75,8 @@ export default function Submission() {
     fetchContributionById();
   }, [contributionId, contributions]);
 
-  // fetchAllSubmission for marketer coordinator
   useEffect(() => {
     const fetchData = async () => {
-      if (role !== "student") {
-        fetchAllSubmission();
-      }
-
       if (role === "student" && contributionId) {
         getSubmissionByContributionStudent(contributionId);
       } else if (submissionId) {
@@ -217,6 +212,18 @@ export default function Submission() {
               }
             />
           )}
+
+          {!openComment && (
+            <button
+              className="fixed bottom-0 right-4 flex items-center gap-3 border border-borderColor px-2 py-1 shadow-[0_0px_12px_rgba(0,0,0,0.10)] hover:bg-slate-100"
+              onClick={() => setOpenComment(!openComment)}
+            >
+              <img src={CommentIcon} />
+              Comments
+            </button>
+          )}
+
+          <Comment openComment={openComment} setOpenComment={setOpenComment} />
         </div>
       )}
     </div>
