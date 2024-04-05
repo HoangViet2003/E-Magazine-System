@@ -11,7 +11,6 @@ router.get("/contributions", ContributionController.getAllContributions)
 router.get(
 	"/contributions/coordinator",
 	authenticateToken,
-	authenticateMarketingCoordinator,
 	ContributionController.getAllContributionByFaculty
 )
 
