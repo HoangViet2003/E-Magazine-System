@@ -1,7 +1,8 @@
 const { Article, Comment, Submission,Faculty,Contribution } = require("../models")
 const EmitterSingleton = require("../configs/eventEmitter")
-const { sendMail } = require("../utils")
+// const { sendMail,handleSendEmail } = require("../utils")
 const path = require("path")
+const { handleSendEmail,sendMail } = require("../utils/sendMail")
 
 const emitterInstance = EmitterSingleton.getInstance()
 const emitter = emitterInstance.getEmitter()
@@ -130,11 +131,17 @@ const addComment = async (req, res) => {
             }
         );
 
-        await sendMail({
-            to: "tuananhngo2513@gmail.com",
+        // await sendMail({
+        //     to: "tuananhngo2513@gmail.com",
+        //     subject: `${req.user.name} has commented on the submission`,
+        //     html,
+        // });
+
+		handleSendEmail({
+			     to: "tuananhngo2513@gmail.com",
             subject: `${req.user.name} has commented on the submission`,
             html,
-        });
+		})
 
         return res
             .status(201)
