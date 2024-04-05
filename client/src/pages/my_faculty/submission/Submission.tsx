@@ -39,7 +39,6 @@ export default function Submission() {
     getSubmissionById,
   } = useSubmission();
   const {
-    totalLength,
     submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
@@ -63,7 +62,6 @@ export default function Submission() {
 
   // Get contribution and set in state (optimize by running create get
   // contribution by Id api)
-
   useEffect(() => {
     const fetchContributions = async () => {
       await fetchAllContribution();
@@ -95,7 +93,7 @@ export default function Submission() {
       return () => resetSubmissionArticlesState();
     };
     fetchData();
-  }, [submissions, role, submissionId, page]);
+  }, [contributionId, page, role, submissionId]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");

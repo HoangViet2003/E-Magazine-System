@@ -195,8 +195,6 @@ export const useArticle = () => {
         (article: Article) => article._id,
       );
 
-      // dispatch(addNewArticle({ article: uploadData?.article, user }));
-
       const { data: submissionData, status: submissionStatus } =
         await axios.put(
           PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
@@ -209,8 +207,6 @@ export const useArticle = () => {
             },
           },
         );
-
-      console.log(uploadData);
 
       if (submissionStatus !== 200) {
         throw new Error("Error adding articles to submission");
