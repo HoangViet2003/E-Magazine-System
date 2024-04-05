@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import UserIcon from "../assets/icons/User_cicrle_light.svg";
 import { useOutsideClick } from "../redux/hooks/useOutsideClick";
 import { useComment } from "../redux/hooks/useComment";
 import { useParams } from "react-router-dom";
 import Spinner from "./Spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
+import SpinnerMini from "./SpinnerMini";
 
 interface CommentProps {
   openComment: boolean;
@@ -16,12 +18,36 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
     () => setOpenComment(false),
     false,
   ) as React.RefObject<HTMLDivElement>;
-  const { comments, isLoading, fetchAllComment } = useComment();
+  const {
+    comments,
+    isLoading,
+    fetchAllComment,
+    sendComment,
+    totalLength,
+    fetchMoreComment,
+  } = useComment();
   const { submissionId } = useParams();
+  const [content, setContent] = useState("");
+  const [page, setPage] = useState(2);
+
+  console.log("ccmt", comments.length);
+  console.log("totalLength", totalLength);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!content) return;
+    sendComment(content, submissionId);
+    setContent("");
+  }
 
   useEffect(() => {
     fetchAllComment(submissionId);
   }, []);
+
+  function fetchMoreData() {
+    fetchMoreComment(submissionId, page);
+    setPage(page + 1);
+  }
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -37,28 +63,46 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
     >
       <h4>Comments</h4>
 
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div
-          className="flex max-h-[600px] flex-col gap-5 overflow-scroll overflow-x-hidden bg-white p-5"
-          ref={scrollContainerRef}
+      <div
+        id="scrollableDiv"
+        style={{
+          overflow: "auto",
+          flexDirection: "column-reverse",
+        }}
+        className="flex max-h-[500px] flex-col overflow-scroll bg-white p-5"
+      >
+        <InfiniteScroll
+          dataLength={totalLength}
+          next={fetchMoreData}
+          style={{}} //To put endMessage and loader to the top.
+          className="flex flex-col-reverse gap-5"
+          inverse={true} //
+          hasMore={!(comments.length === totalLength)} // TODO: change to dynamic
+          loader={
+            <div className="overflow-hidden">
+              <SpinnerMini />
+            </div>
+          }
+          scrollableTarget="scrollableDiv"
         >
-          {comments
-            .slice()
-            .reverse()
-            .map((comment) => (
-              <CommentComponent comment={comment} />
-            ))}
+          {comments.map((comment, index) => (
+            <CommentComponent comment={comment} key={index} />
+          ))}
+        </InfiniteScroll>
+      </div>
+
+      <form onClick={handleSubmit}>
+        <div className="flex items-center">
+          <input
+            type="text"
+            className="w-full p-2"
+            placeholder="Type your comment here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <button type="submit">O</button>
         </div>
-      )}
-
-      <input
-        type="text"
-        className="p-2"
-        placeholder="Type your comment here..."
-      />
-
+      </form>
       <button
         className="absolute right-5"
         onClick={() => setOpenComment(false)}

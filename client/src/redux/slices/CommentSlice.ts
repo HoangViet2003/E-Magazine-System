@@ -4,11 +4,11 @@ import { User } from "./UserSlice";
 export interface Comment {
   _id: string;
   content: string;
-  replies: [];
-  userId: User;
+  replies?: string[];
+  userId?: User;
   submissionId: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 interface CommentState {
@@ -55,15 +55,23 @@ const CommentSlice = createSlice({
       state.comment = action.payload;
     },
     addNewComment(state, action: PayloadAction<Comment>) {
-      state.comments.push(action.payload);
+      state.comments.unshift(action.payload);
       state.totalLength++;
+    },
+    getMoreComment(state, action: PayloadAction<Comment>) {
+      state.comments.push(action.payload);
     },
   },
 });
 
 const { reducer, actions } = CommentSlice;
 
-export const { setLoadingComment, setAllComments, setComment, addNewComment } =
-  actions;
+export const {
+  setLoadingComment,
+  setAllComments,
+  setComment,
+  addNewComment,
+  getMoreComment,
+} = actions;
 
 export default reducer;
