@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import SpinnerMini from "../../../../ui/SpinnerMini";
 import { useArticle } from "../../../../redux/hooks";
 import DropComponent from "../../../../ui/DropComponent";
+import { useDropzone } from "react-dropzone";
 
 export default function UploadFileModal({ type }) {
   const {

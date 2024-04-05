@@ -20,8 +20,9 @@ interface ArticleState {
   article: Article;
   articles: Article[];
   suggestionArticles: Article[];
-  submissionArticles: Article[];
   selectedArticles: Article[];
+  submissionArticles: Article[];
+  unSubmissionArticles: Article[];
   keyword?: string;
   isFilterMode: boolean;
 }
@@ -31,6 +32,7 @@ const initialState: ArticleState = {
   suggestionArticles: [],
   submissionArticles: [],
   selectedArticles: [],
+  unSubmissionArticles: [],
   article: {
     _id: "",
     title: "",
@@ -85,8 +87,13 @@ const ArticleSlice = createSlice({
       state.totalLength = action.payload.totalLength;
       state.totalPages = action.payload.totalPages;
     },
+    setUnSubmissionArticles(state, action: PayloadAction<Article[]>) {
+      console.log(action.payload);
+      state.unSubmissionArticles = action.payload;
+    },
     addNewSubmissionArticle(state, action: PayloadAction<Article>) {
       state.submissionArticles.push(action.payload);
+      state.totalLength++;
     },
     resetSubmissionArticles(state) {
       state.submissionArticles = [];
@@ -128,6 +135,7 @@ export const {
   setSuggestionArticles,
   setSelectedArticles,
   removeSubmissionArticle,
+  setUnSubmissionArticles,
 } = actions;
 
 export default reducer;

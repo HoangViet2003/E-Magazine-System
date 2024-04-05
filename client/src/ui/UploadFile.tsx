@@ -96,17 +96,15 @@ export default function UploadImage({
 
     if (isAddSubmission) {
       if (submissionId)
-        uploadArticleThenAddToSubmission(formData, submissionId);
-      else {
-        createSubmissionForStudentThenAddUploadedFiles(
-          contributionId,
-          formData,
-        );
-      }
+        await uploadArticleThenAddToSubmission(formData, submissionId);
     } else {
       await uploadArticle(formData);
-      setOpenDocUpload(false);
-      setOpenImageUpload(false);
+    }
+    
+    setOpenDocUpload(false);
+    setOpenImageUpload(false);
+    if (setOpenFileUpload) {
+      setOpenFileUpload("");
     }
   }
 

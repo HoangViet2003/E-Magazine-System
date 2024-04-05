@@ -22,33 +22,24 @@ export default function ArticleSelectModal() {
   const [filterArticles, setFilterArticle] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article[]>([]);
 
-  const {
-    articles,
-    isLoading,
-    getUnselectedArticleStudent,
-    addSubmissionArticle,
-    submissionArticles,
-  } = useArticle();
-  const {
-    addSelectedArticlesToSubmission,
-    createSubmissionForStudentThenAddSelectedArticles,
-  } = useSubmission();
+  const { isLoading, getUnselectedArticleStudent, unSubmissionArticles } =
+    useArticle();
+  const { addSelectedArticlesToSubmission } = useSubmission();
 
   useEffect(() => {
     if (submissionId) getUnselectedArticleStudent(submissionId);
   }, []);
 
   // FILTER
-
   useEffect(() => {
-    if (articles && articles.length > 0) {
+    if (unSubmissionArticles && unSubmissionArticles.length > 0) {
       setFilterArticle(
-        articles?.filter((article) =>
+        unSubmissionArticles?.filter((article) =>
           article.title.toLowerCase().includes(searchInput.toLowerCase()),
         ),
       );
     }
-  }, [articles, searchInput]);
+  }, [unSubmissionArticles, searchInput]);
 
   // SORT
   const sortedData = filterArticles.slice().sort((a, b) => {

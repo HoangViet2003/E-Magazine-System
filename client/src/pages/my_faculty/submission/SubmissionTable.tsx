@@ -78,7 +78,7 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ isEditableOn }) => {
               )}
             />
           </Table>
-          <Pagination count={12} />
+          <Pagination count={totalLength} />
         </>
       )}
     </>

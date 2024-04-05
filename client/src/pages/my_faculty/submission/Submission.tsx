@@ -39,6 +39,8 @@ export default function Submission() {
     getSubmissionById,
   } = useSubmission();
   const {
+    totalLength,
+    submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
     setSelectedArticlesToState,
