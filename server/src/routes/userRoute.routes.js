@@ -1,10 +1,24 @@
 const router = require("express").Router()
 const { UserController } = require("../controllers")
-const { authenticateAdministrator } = require("../middlewares/authenticate")
+const {
+	authenticateToken,
+	authenticateAdministrator,
+} = require("../middlewares/authenticate")
 // const middlewareController = require("../controllers/middlewareController")
 
-router.get("/users", authenticateAdministrator, UserController.getAllUsers)
-router.patch("/user/:id", authenticateAdministrator, UserController.editUser)
+router.get(
+	"/users",
+	authenticateToken,
+	authenticateAdministrator,
+	UserController.getAllUsers
+)
+router.post(
+	"/user",
+	authenticateToken,
+	authenticateAdministrator,
+	UserController.createUser
+)
+// router.patch("/user/:id", authenticateAdministrator, UserController.editUser)
 router.delete("/user/:id", authenticateAdministrator, UserController.deleteUser)
 
 module.exports = router

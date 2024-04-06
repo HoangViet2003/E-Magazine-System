@@ -6,6 +6,12 @@ const {
 	authenticateStudent,
 } = require("../middlewares/authenticate")
 
+router.get(
+	"/submission/:submissionId",
+	authenticateToken,
+	SubmissionController.getSubmissionById
+)
+
 router.post(
 	"/submission",
 	authenticateToken,

@@ -12,6 +12,22 @@ const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
 
+const getSubmissionById = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+
+		const submission = await Submission.findById(submissionId)
+
+		if (!submission) {
+			return res.status(404).json({ error: "Submission does not exist" })
+		}
+
+		return res.status(200).json({ submission })
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 const getUnselectedArticlesOfStudentsBySubmissionId = async (req, res) => {
 	try {
 		const { submissionId } = req.params
@@ -450,6 +466,7 @@ const removeSubmission = async (req, res) => {
 }
 
 module.exports = {
+	getSubmissionById,
 	createSubmission,
 	getAllSubmissionByContributionId,
 	getSubmissionByContributionId,
