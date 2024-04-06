@@ -79,7 +79,6 @@ const register = catchAsync(async (req, res) => {
 		)
 
 		res.status(201).send({
-			status: "success",
 			message: "User created successfully",
 			user: newUser,
 			token: {
@@ -151,6 +150,19 @@ const login = catchAsync(async (req, res) => {
 		return res.send({
 			status: "error",
 			message: err.message,
+		})
+	}
+})
+
+const forgotPassword = catchAsync(async (req, res) => {
+	try {
+		const { email } = req.body
+
+		// send email with password reset link
+	} catch (error) {
+		console.error(error)
+		return res.status(500).send({
+			message: "Internal server error",
 		})
 	}
 })

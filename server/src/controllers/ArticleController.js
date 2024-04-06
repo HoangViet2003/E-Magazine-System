@@ -10,11 +10,7 @@ const {
 	Faculty,
 	Comment,
 	Submission,
-	Notification,
 } = require("../models")
-
-const { handleSendEmail } = require("../utils/sendMail")
-const { emitNotification } = require("../utils/initSocket")
 
 const uploadArticle = async (req, res) => {
 	try {

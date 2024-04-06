@@ -267,7 +267,7 @@ const replyComment = async (req, res) => {
 		const { content, taggedUserId } = req.body
 
 		// Creating a new comment
-		const newComment = new Comment({
+		let newComment = new Comment({
 			submissionId: comment.submissionId,
 			userId: req.user._id,
 			content,
@@ -276,7 +276,10 @@ const replyComment = async (req, res) => {
 		})
 
 		// Saving the new comment
-		await newComment.save()
+		await newComment
+			.save()
+			.then((comment) => comment.populate("userId", "name"))
+			.then((comment) => (newComment = comment))
 
 		//TODO: Emit an event to notify the author of the parent comment
 

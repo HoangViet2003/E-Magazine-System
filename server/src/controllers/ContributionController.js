@@ -88,9 +88,26 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	}
 })
 
+const updateContribution = catchAsync(async (req, res) => {
+	try {
+		const { id } = req.params
+
+		const contribution = await Contribution.findById(id)
+
+		if (!contribution) {
+			return res.status(400).json({
+				message: "Contribution does not exist",
+			})
+		}
+	} catch (error) {
+		res.status(500).json({ error: error.message })
+	}
+})
+
 module.exports = {
 	createContribution,
 	getAllContributions,
 	getAllContributionByFaculty,
 	getContributionById,
+	updateContribution,
 }

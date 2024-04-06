@@ -3,7 +3,12 @@ const { validateUser } = require("../validations/validation")
 
 const getAllUsers = async (req, res) => {
 	try {
+		const { page } = req.query
+
 		const users = await User.find()
+			.limit(5)
+			.skip((page - 1) * 5)
+
 		return res.status(200).json(users)
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
