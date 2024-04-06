@@ -21,7 +21,7 @@ export default function CommentComponent({
   const { _id, content, createdAt, replies, userId: user } = comment;
   const createdDate = new Date(createdAt);
   const [replyContent, setReplyContent] = useState("");
-  const { replyComment } = useComment();
+  const { isLoading, replyComment } = useComment();
   const { submissionId } = useParams();
 
   // Format the date as "Month Day, Year"
@@ -67,9 +67,11 @@ export default function CommentComponent({
       <div
         className="flex cursor-pointer flex-col gap-[20px] bg-[#EEEEEE] p-3 hover:bg-[#e2e2e2]"
         onClick={() => {
-          setOpenReply(_id);
-          setOpenCommentInput(false);
-          handleSelect(selectedRef);
+          if (!isLoading) {
+            setOpenReply(_id);
+            setOpenCommentInput(false);
+            handleSelect(selectedRef);
+          }
         }}
         ref={selectedRef}
       >

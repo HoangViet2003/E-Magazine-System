@@ -77,6 +77,20 @@ const CommentSlice = createSlice({
         return comment;
       });
     },
+    replaceTempId(
+      state,
+      action: PayloadAction<{ tempId: string; newId: string }>,
+    ) {
+      state.comments = state.comments.map((comment) => {
+        if (comment._id === action.payload.tempId) {
+          return {
+            ...comment,
+            _id: action.payload.newId,
+          };
+        }
+        return comment;
+      });
+    },
   },
 });
 
@@ -89,6 +103,7 @@ export const {
   addNewComment,
   getMoreComment,
   addNewReply,
+  replaceTempId,
 } = actions;
 
 export default reducer;

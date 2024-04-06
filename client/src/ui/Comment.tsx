@@ -19,6 +19,7 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
     sendComment,
     totalLength,
     fetchMoreComment,
+    isLoading,
   } = useComment();
   const { submissionId } = useParams();
   const [content, setContent] = useState("");
@@ -77,6 +78,9 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
         id="scrollableDiv"
         className="flex max-h-[800px] flex-col-reverse overflow-auto scroll-smooth bg-white p-5"
       >
+        <span className="flex justify-end text-xs">
+          {isLoading ? "Sending..." : "Sent"}
+        </span>
         <InfiniteScroll
           dataLength={comments.length}
           next={fetchMoreData}

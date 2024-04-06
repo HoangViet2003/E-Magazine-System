@@ -203,7 +203,7 @@ export default function Submission() {
             />
           )}
 
-          {!openComment && (
+          {!openComment && submissionId && (
             <button
               className="fixed bottom-0 right-4 flex items-center gap-3 border border-borderColor px-2 py-1 shadow-[0_0px_12px_rgba(0,0,0,0.10)] hover:bg-slate-100"
               onClick={() => setOpenComment(!openComment)}
@@ -213,7 +213,12 @@ export default function Submission() {
             </button>
           )}
 
-          <Comment openComment={openComment} setOpenComment={setOpenComment} />
+          {submissionId && (
+            <Comment
+              openComment={openComment}
+              setOpenComment={setOpenComment}
+            />
+          )}
         </div>
       )}
     </div>

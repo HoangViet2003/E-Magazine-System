@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Comment from "./Comment";
 
 import UlListIcon from "../assets/icons/list-ul.svg";
@@ -43,6 +43,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
   const [openFileUpload, setOpenFileUpload] = useState("");
+  const navigate = useNavigate();
 
   return (
     <>
@@ -109,7 +110,10 @@ const MainHeader: React.FC<MainHeaderProps> = ({
 
               <button
                 className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                onClick={() => deleteSubmission(submissionId)}
+                onClick={async () => {
+                  await deleteSubmission(submissionId);
+                  window.location.reload();
+                }}
               >
                 Remove
               </button>
