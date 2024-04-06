@@ -17,7 +17,6 @@ import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
-import SubmissionEmpty from "../pages/my_faculty/submission/SubmissionEmpty";
 
 const router = createBrowserRouter([
   {

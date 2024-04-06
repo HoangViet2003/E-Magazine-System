@@ -15,6 +15,7 @@ export default function AppLayOut() {
         <div className="container relative grid grid-cols-[1fr] xl:grid-cols-[300px_1fr]">
           {user.role === "student" && <SidebarStudent />}
           {user.role === "marketing coordinator" && <Sidebar />}
+          {user.role === "marketing manager" && <Sidebar />}
 
           <Outlet />
         </div>

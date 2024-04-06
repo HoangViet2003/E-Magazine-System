@@ -20,7 +20,7 @@ export const useComment = () => {
   const dispatch = useDispatch();
   const { _id, name } = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const { isLoading, comments, comment, totalLength } = useSelector(
+  const { isLoading, comments, totalLength } = useSelector(
     (state: RootState) => state.comment,
   );
 
@@ -113,8 +113,8 @@ export const useComment = () => {
 
   const replyComment = async (
     content: string,
-    submissionId?: string,
     parentCommentId: string,
+    submissionId?: string,
   ) => {
     dispatch(setLoadingComment(true));
 
@@ -133,7 +133,6 @@ export const useComment = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      console.log(content);
       dispatch(addNewReply({ comment: newComment, parentCommentId }));
 
       const { data, status } = await axios.post(
@@ -147,8 +146,6 @@ export const useComment = () => {
           },
         },
       );
-
-      console.log(data);
 
       if (status !== 201) throw new Error("Error sending comments");
     } catch (error) {

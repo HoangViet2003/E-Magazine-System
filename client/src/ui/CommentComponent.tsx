@@ -53,7 +53,7 @@ export default function CommentComponent({
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (content === "") return;
-    replyComment(replyContent, submissionId, _id);
+    replyComment(replyContent, _id, submissionId);
     setReplyContent("");
   }
 

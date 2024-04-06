@@ -408,6 +408,27 @@ export const useSubmission = () => {
     }
   };
 
+  const toggleSelectSubmission = async (submissionId?: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      if (!submissionId) throw new Error("SubmissionId is required!");
+
+      const { data, status } = await axios.patch(
+        PATCH_API(submissionId).TOGGLE_PUBLICATION,
+      );
+
+      if (status !== 200)
+        throw new Error("Error toggle submission for publication");
+
+      dispatch(setSubmission(data?.updatedSubmission));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
   return {
     isLoading,
     submission,
@@ -424,5 +445,6 @@ export const useSubmission = () => {
     toggleForSubmit,
     deleteSubmission,
     removeArticlesFromSubmission,
+    toggleSelectSubmission,
   };
 };
