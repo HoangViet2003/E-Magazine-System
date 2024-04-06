@@ -5,7 +5,7 @@ const { authenticateToken } = require("../middlewares/authenticate")
 router.get(
 	"/submission/:id/comments",
 	authenticateToken,
-	CommentController.getCommentsByAr
+	CommentController.getCommentsBySubmission
 )
 
 router.post(
@@ -16,7 +16,7 @@ router.post(
 )
 
 router.post(
-	"/comment/:id/reply",
+	"/comment/:commentId/reply",
 	authenticateToken,
 	CommentController.replyComment
 )

@@ -1,15 +1,22 @@
-const { Article, Comment, Submission,Faculty,Contribution } = require("../models")
+const {
+	Article,
+	Comment,
+	Submission,
+	Faculty,
+	Notification,
+	Contribution,
+	User,
+} = require("../models")
 const EmitterSingleton = require("../configs/eventEmitter")
-// const { sendMail,handleSendEmail } = require("../utils")
 const path = require("path")
-const { handleSendEmail,sendMail } = require("../utils/sendMail")
+const { handleSendEmail, sendMail } = require("../utils/sendMail")
 
 const emitterInstance = EmitterSingleton.getInstance()
 const emitter = emitterInstance.getEmitter()
 
 const ejs = require("ejs")
 
-const getCommentsByAr = async (req, res) => {
+const getCommentsBySubmission = async (req, res) => {
 	try {
 		const { id } = req.params
 		const { page } = req.query
@@ -75,89 +82,10 @@ const getCommentsByAr = async (req, res) => {
 }
 
 const addComment = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { content, taggedUserId } = req.body;
-
-        let submission;
-
-        // Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
-        if (
-            req.user.role !== "marketing coordinator" &&
-            req.user.role !== "student"
-        ) {
-            return res.status(403).json({ error: "Forbidden" });
-        } else {
-            // Find the submission that the comment belongs to
-            submission = await Submission.findById(id);
-
-            if (!submission) {
-                return res.status(404).json({ error: "Submission does not exist" });
-            }
-
-			const contribution = await Contribution.findById(submission.contributionId)
-
-
-            // if the role is marketing coordinator, check if the facultyId matches the facultyId of the submission
-            // if the role is student, check if the student is the author of the submission, if not return 403
-            if (req.user.role === "marketing coordinator") {
-                if (
-                    req.user.facultyId.toString() !==
-                    contribution.facultyId.toString()
-                ) {
-                    return res.status(403).json({ error: "Forbidden" });
-                }
-            } else {
-                if (req.user._id.toString() !== submission.student._id.toString()) {
-                    return res.status(403).json({ error: "Forbidden" });
-                }
-            }
-        }
-
-        // Example of creating a new comment
-        const newComment = new Comment({
-            submissionId: id,
-            userId: req.user._id, // Assuming user ID is stored in req.user
-            content,
-            taggedUserId,
-        });
-
-        await newComment.save();
-
-        const html = await ejs.renderFile(
-            "./src/emails/comments/crudComments.email.ejs",
-            {
-                comment: newComment,
-            }
-        );
-
-        // await sendMail({
-        //     to: "tuananhngo2513@gmail.com",
-        //     subject: `${req.user.name} has commented on the submission`,
-        //     html,
-        // });
-
-		handleSendEmail({
-			     to: "tuananhngo2513@gmail.com",
-            subject: `${req.user.name} has commented on the submission`,
-            html,
-		})
-
-        return res
-            .status(201)
-            .json({ newComment, message: "Comment added successfully" });
-    } catch (error) {
-        console.error(error); // Log the error for debugging purposes
-        return res.status(500).json({ error: "Internal Server Error: " + error.message });
-    }
-};
-
-
-
-const replyComment = async (req, res) => {
 	try {
 		const { id } = req.params
-		let comment
+		const { content, taggedUserId } = req.body
+
 		let submission
 
 		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
@@ -167,22 +95,165 @@ const replyComment = async (req, res) => {
 		) {
 			return res.status(403).json({ error: "Forbidden" })
 		} else {
-			comment = await Comment.findById(id)
+			// Find the submission that the comment belongs to
+			submission = await Submission.findById(id)
 
-			if (!comment) {
-				return res.status(404).json({ error: "Comment does not exist" })
+			if (!submission) {
+				return res.status(404).json({ error: "Submission does not exist" })
 			}
 
-			// Find the article that the comment belongs to
-			// article = await Article.findById(comment.articleId)
-			submission = await Submission.findById(comment.submissionId)
+			const contribution = await Contribution.findById(
+				submission.contributionId
+			)
 
-			// if the role is marketing coordination, check if the contributionId matches the contributionId of the article
-			// if the role is student, check if the student is the author of the article, if not return 403
+			// if the role is marketing coordinator, check if the facultyId matches the facultyId of the submission
+			// if the role is student, check if the student is the author of the submission, if not return 403
 			if (req.user.role === "marketing coordinator") {
 				if (
-					req.user.contributionId.toString() !==
-					submission.contributionId.toString()
+					req.user.facultyId.toString() !== contribution.facultyId.toString()
+				) {
+					return res.status(403).json({ error: "Forbidden" })
+				}
+			} else {
+				if (req.user._id.toString() !== submission.student._id.toString()) {
+					return res.status(403).json({ error: "Forbidden" })
+				}
+			}
+		}
+
+		submission = await Submission.findById(id)
+
+		// Example of creating a new comment
+		const newComment = new Comment({
+			submissionId: id,
+			userId: req.user._id, // Assuming user ID is stored in req.user
+			content,
+		})
+
+		let returnedNewComment = await newComment
+			.save()
+			.then((comment) => comment.populate("userId", "name"))
+			.then((comment) => comment)
+
+		// format the comment.createdAt to dd/mm/yyyy hh:mm; locale is +7 Vietnam timezone
+		const date = new Date(returnedNewComment.createdAt)
+		date.setHours(date.getHours() + 7)
+		// format the date to dd/mm/yyyy hh:mm
+		const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+
+		returnedNewComment.createdAt = formattedDate
+
+		const html = await ejs.renderFile(
+			"./src/emails/comments/crudComments.email.ejs",
+			{
+				comment: returnedNewComment,
+			}
+		)
+
+		// if the author comment, send email to marketing coordinator, else send email to the author of the parent comment
+		if (req.user.role === "marketing coordinator") {
+			// find the author of the submission
+			const submission = await Submission.findById(id)
+
+			// find the author of the submission
+			const studentEmail = submission.student.email
+
+			// Send email to the student
+			await sendMail({
+				to: studentEmail,
+				subject: `Marketing coordinator: ${req.user.name} has commented on your submission.`,
+				html,
+			})
+
+			// Create a new notification
+			const newNotification = new Notification({
+				title: "New Comment on Submission",
+				doer: req.user._id,
+				receiver: submission.student._id,
+				message: `Marketing coordinator: ${req.user.name} has commented on your submission.`,
+				actionUrl: `/submissions/${submission._id}`,
+			})
+
+			await newNotification.save()
+		} else if (req.user.role == "student") {
+			// Check if there are any comments that the marketing coordinator has made on the submission
+			const contribution = await Contribution.findById(
+				submission.contributionId
+			)
+			const faculty = await Faculty.findById(contribution.facultyId)
+			const marketingCoordinator = await User.findOne({
+				facultyId: faculty._id,
+				role: "marketing coordinator",
+			})
+
+			const comments = await Comment.find({
+				submissionId: id,
+				userId: marketingCoordinator._id,
+			})
+
+			if (comments.length > 0) {
+				// Send email to the marketing coordinator
+				await sendMail({
+					to: marketingCoordinator.email,
+					subject: `${req.user.name} has commented on the submission`,
+					html,
+				})
+
+				// Create a new notification
+				const newNotification = new Notification({
+					title: "New Comment on Submission",
+					doer: req.user._id,
+					receiver: marketingCoordinator._id,
+					message: `${req.user.name} has commented on the submission.`,
+					actionUrl: `/submissions/${submission._id}`,
+				})
+
+				await newNotification.save()
+			}
+		}
+
+		return res.status(201).json({ newComment })
+	} catch (error) {
+		console.error(error) // Log the error for debugging purposes
+		return res
+			.status(500)
+			.json({ error: "Internal Server Error: " + error.message })
+	}
+}
+
+const replyComment = async (req, res) => {
+	try {
+		const { commentId } = req.params
+		let submission
+
+		const comment = await Comment.findById(commentId).populate("userId", "name")
+		if (!comment) {
+			return res.status(404).json({ error: "Comment does not exist" })
+		}
+
+		// Check if the user's role is marketing coordinator of the article's contribution or the student who wrote the article
+		if (
+			req.user.role !== "marketing coordinator" &&
+			req.user.role !== "student"
+		) {
+			return res.status(403).json({ error: "Forbidden" })
+		} else {
+			// Find the submission that the comment belongs to
+			submission = await Submission.findById(comment.submissionId)
+
+			if (!submission) {
+				return res.status(404).json({ error: "Submission does not exist" })
+			}
+
+			const contribution = await Contribution.findById(
+				submission.contributionId
+			)
+
+			// if the role is marketing coordinator, check if the facultyId matches the facultyId of the submission
+			// if the role is student, check if the student is the author of the submission, if not return 403
+			if (req.user.role === "marketing coordinator") {
+				if (
+					req.user.facultyId.toString() !== contribution.facultyId.toString()
 				) {
 					return res.status(403).json({ error: "Forbidden" })
 				}
@@ -197,7 +268,7 @@ const replyComment = async (req, res) => {
 
 		// Creating a new comment
 		const newComment = new Comment({
-			submissionIdId: submission._id,
+			submissionId: comment.submissionId,
 			userId: req.user._id,
 			content,
 			taggedUserId,
@@ -207,32 +278,91 @@ const replyComment = async (req, res) => {
 		// Saving the new comment
 		await newComment.save()
 
-		// Emit an event to notify the author of the parent comment
-		emitter.emit("newReply", {
-			comment,
-			newComment,
-		})
+		//TODO: Emit an event to notify the author of the parent comment
 
-		// Send an email to the author of the parent comment
+		// get all replies of the parent comment
+		const replies = await Comment.find({
+			submissionId: comment.submissionId,
+			parentCommentId: comment._id,
+		}).populate("userId", "name")
+
+		comment["replies"] = replies
+
 		const html = await ejs.renderFile(
 			path.join(__dirname, "../emails/comments/crudComments.email.ejs"),
 			{
-				comment: newComment,
+				comment: comment,
 			}
 		)
 
-		// Send an email to the author of the parent comment
-		await sendMail({
-			to: "tuananhngo2513@gmail.com",
-			subject: `${req.user.name} has replied to your comment`,
-			html,
-		})
+		// if the author comment, send email to marketing coordinator, else send email to the author of the parent comment
+		if (req.user.role === "marketing coordinator") {
+			// find the author of the submission
+			const submission = await Submission.findById(comment.submissionId)
 
-		return res
-			.status(201)
-			.json({ newComment, message: "Comment added successfully" })
+			// find the author of the submission
+			const studentEmail = submission.student.email
+
+			// Send email to the student
+			await sendMail({
+				to: studentEmail,
+				subject: `Marketing coordinator: ${req.user.name} has replied to your comment`,
+				html,
+			})
+
+			// Create a new notification
+			const newNotification = new Notification({
+				title: "New Reply to your Comment",
+				doer: req.user._id,
+				receiver: submission.student._id,
+				message: `Marketing coordinator: ${req.user.name} has replied to your comment.`,
+				actionUrl: `/submissions/${submission._id}`,
+			})
+
+			await newNotification.save()
+		} else if (req.user.role == "student") {
+			// Check if there are any comments that the marketing coordinator has made on the submission
+			const contribution = await Contribution.findById(
+				submission.contributionId
+			)
+			const faculty = await Faculty.findById(contribution.facultyId)
+			const marketingCoordinator = await User.findOne({
+				facultyId: faculty._id,
+				role: "marketing coordinator",
+			})
+
+			const comments = await Comment.find({
+				submissionId: comment.submissionId,
+				userId: marketingCoordinator._id,
+			})
+
+			if (comments.length > 0) {
+				// Send email to the marketing coordinator
+				await sendMail({
+					to: marketingCoordinator.email,
+					subject: `${req.user.name} has replied to your comment.`,
+					html,
+				})
+
+				// Create a new notification
+				const newNotification = new Notification({
+					title: "New Reply to your Comment",
+					doer: req.user._id,
+					receiver: marketingCoordinator._id,
+					message: `${req.user.name} has replied to your comment.`,
+					actionUrl: `/submissions/${submission._id}`,
+				})
+
+				await newNotification.save()
+			}
+		}
+
+		return res.status(201).json({ newComment })
 	} catch (error) {
-		return res.status(500).json({ error: "Internal Server Error" })
+		console.error(error) // Log the error for debugging purposes
+		return res
+			.status(500)
+			.json({ error: "Internal Server Error", messsage: error.message })
 	}
 }
 
@@ -291,4 +421,9 @@ const deleteComment = async (req, res) => {
 	}
 }
 
-module.exports = { getCommentsByAr, addComment, replyComment, deleteComment }
+module.exports = {
+	getCommentsBySubmission,
+	addComment,
+	replyComment,
+	deleteComment,
+}

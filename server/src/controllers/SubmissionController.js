@@ -5,6 +5,7 @@ const {
 	User,
 	Notification,
 	Article,
+	Comment,
 } = require("../models")
 
 const ejs = require("ejs")
@@ -437,6 +438,9 @@ const removeSubmission = async (req, res) => {
 		const { submissionId } = req.params
 
 		await Submission.findByIdAndDelete(submissionId)
+
+		// Delete all comments of the submission
+		await Comment.deleteMany({ submissionId })
 
 		return res.status(200).json({ message: "Submission deleted successfully" })
 	} catch (error) {

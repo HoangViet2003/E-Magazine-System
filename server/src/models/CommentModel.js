@@ -19,10 +19,6 @@ const commentSchema = new mongoose.Schema(
 		highlighted: {
 			type: String,
 		},
-		taggedUserId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-		},
 		parentCommentId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Comment",
