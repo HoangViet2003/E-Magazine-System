@@ -159,10 +159,16 @@ const getAllSubmissionByContributionId = async (req, res) => {
 		const limit = 5
 		const skip = (page - 1) * limit
 
-		const submissions = await Submission.find({
+		let query = {
 			contributionId,
 			unsubmitted: false,
-		})
+		}
+
+		if (req.user.role == "marketing manager") {
+			query.isSelectedForPublication = true
+		}
+
+		const submissions = await Submission.find(query)
 			.populate("student", "name email")
 			.limit(limit)
 			.skip(skip)
