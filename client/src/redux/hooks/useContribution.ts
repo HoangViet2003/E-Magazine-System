@@ -19,36 +19,39 @@ export const useContribution = () => {
 
     try {
       const { data, status } = await axios.get(
-        GET_API("").GET_ALL_CONTRIBUTIONS,
+        GET_API("").GET_ALL_CONTRIBUTIONS_BY_COORDINATOR,
       );
 
       if (status !== 200) {
-        throw new Error("Error fetching articles");
+        throw new Error("Error fetching contributions");
       }
 
-      dispatch(setAllContribution(data?.data));
+      dispatch(setAllContribution(data?.contributions));
     } catch (error) {
       console.log(error);
     }
     dispatch(setLoadingContribution(false));
   };
 
-  const getContributionById = async (contributionId: string) => {
-    try {
-      if (contributionId) {
-        const selectedContribution =
-          contributions.length > 0
-            ? contributions.filter(
-                (contribution) => contribution._id === contributionId,
-              )[0]
-            : undefined;
+  const getContributionById = async (contributionId?: string) => {
+    dispatch(setLoadingContribution(true));
 
-        if (selectedContribution)
-          dispatch(setContribution(selectedContribution));
+    try {
+      if (!contributionId) throw new Error("ContributionId is required!");
+
+      const { data, status } = await axios.get(
+        GET_API(contributionId).GET_CONTRIBUTION_BY_ID,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error get contribution");
       }
+
+      dispatch(setContribution(data?.contribution));
     } catch (error) {
       console.log(error);
     }
+    dispatch(setLoadingContribution(false));
   };
 
   return {

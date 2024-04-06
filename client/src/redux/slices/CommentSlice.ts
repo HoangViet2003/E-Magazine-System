@@ -4,7 +4,7 @@ import { User } from "./UserSlice";
 export interface Comment {
   _id: string;
   content: string;
-  replies?: string[];
+  replies?: Comment[];
   userId?: User;
   submissionId: string;
   createdAt: string;
@@ -61,6 +61,22 @@ const CommentSlice = createSlice({
     getMoreComment(state, action: PayloadAction<Comment>) {
       state.comments.push(action.payload);
     },
+    addNewReply(
+      state,
+      action: PayloadAction<{ comment: Comment; parentCommentId: string }>,
+    ) {
+      const newReply = action.payload.comment;
+
+      state.comments = state.comments.map((comment) => {
+        if (comment._id === action.payload.parentCommentId) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), newReply],
+          };
+        }
+        return comment;
+      });
+    },
   },
 });
 
@@ -72,6 +88,7 @@ export const {
   setComment,
   addNewComment,
   getMoreComment,
+  addNewReply,
 } = actions;
 
 export default reducer;

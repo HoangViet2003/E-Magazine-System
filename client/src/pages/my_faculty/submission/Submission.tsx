@@ -27,12 +27,7 @@ export default function Submission() {
   const [isEditableOn, setIsEditableOn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
 
-  const {
-    contribution,
-    contributions,
-    getContributionById,
-    fetchAllContribution,
-  } = useContribution();
+  const { contribution, getContributionById } = useContribution();
   const {
     submission,
     isLoading: loadingSubmission,
@@ -40,6 +35,7 @@ export default function Submission() {
     getSubmissionById,
   } = useSubmission();
   const {
+    submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
     setSelectedArticlesToState,
@@ -60,20 +56,12 @@ export default function Submission() {
     return format(date, "HH:mm dd/MM/yyyy");
   }
 
-  // Get contribution and set in state (optimize by running create get
-  // contribution by Id api)
-  useEffect(() => {
-    const fetchContributions = async () => {
-      await fetchAllContribution();
-    };
-    fetchContributions();
-  }, [contributionId]);
   useEffect(() => {
     const fetchContributionById = async () => {
-      await getContributionById(contributionId);
+      getContributionById(contributionId);
     };
     fetchContributionById();
-  }, [contributionId, contributions]);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,11 +137,13 @@ export default function Submission() {
               <Dropdowns.Dropdown>
                 <Dropdowns.Toggle id={`current ${submission._id}`}>
                   <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                    <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                      {role === "student"
-                        ? `${contribution.academicYear} Contributions`
-                        : `${submission.student.name}`}
-                    </h1>
+                    {submissionArticles && submissionArticles.length > 0 && (
+                      <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
+                        {role === "student"
+                          ? `${contribution.academicYear} Contributions`
+                          : `${submissionArticles[0].student?.name}`}
+                      </h1>
+                    )}
                     <img src={DropdownIcon} alt="" />
                   </span>
                 </Dropdowns.Toggle>

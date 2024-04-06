@@ -12,25 +12,15 @@ import ContributionTable from "./ContributionTable";
 
 export default function MyFaculty() {
   const navigate = useNavigate();
-  const {
-    isLoading,
-    contribution,
-    contributions,
-    getContributionById,
-    fetchAllContribution,
-  } = useContribution();
+  const { isLoading, contribution, getContributionById } = useContribution();
   const role = localStorage.getItem("role");
   const { contributionId } = useParams();
-
-  useEffect(() => {
-    fetchAllContribution();
-  }, []);
 
   useEffect(() => {
     if (contributionId) {
       getContributionById(contributionId);
     }
-  }, [contributionId, contributions]);
+  }, []);
 
   return (
     <div>

@@ -13,6 +13,7 @@ const GET_API = (id: string, page = 1) => {
     // GET_COMMENTS_BY_ARTICLE_ID: `/article/${id}/comments`,
     GET_COMMENTS_BY_SUBMISSION_ID: `/submission/${id}/comments?page=${page}`,
     // contributions
+    GET_CONTRIBUTION_BY_ID: `/contribution/${id}`,
     GET_ALL_CONTRIBUTIONS: `/contributions`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
     // faculties

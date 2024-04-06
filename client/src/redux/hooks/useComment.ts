@@ -8,10 +8,12 @@ import {
   addNewComment,
   getMoreComment,
   Comment,
+  addNewReply,
 } from "../slices/CommentSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { v4 as uuidv4 } from "uuid";
 
 export const useComment = () => {
   const dispatch = useDispatch();
@@ -32,8 +34,6 @@ export const useComment = () => {
       );
 
       if (status !== 200) throw new Error("Error fetching comments");
-
-      console.log(data);
 
       dispatch(setAllComments(data));
     } catch (error) {
@@ -71,21 +71,19 @@ export const useComment = () => {
     try {
       if (!submissionId) throw new Error("SubmissionId is required");
 
-      const newComment = {
-        _id: "tempId",
-        submissionId,
-        userId: {
-          _id,
-          name,
-        },
-        content,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      // const newComment = {
+      //   _id: uuidv4(),
+      //   submissionId,
+      //   userId: {
+      //     _id,
+      //     name,
+      //   },
+      //   content,
+      //   createdAt: new Date().toISOString(),
+      //   updatedAt: new Date().toISOString(),
+      // };
 
-      dispatch(addNewComment(newComment));
-
-      const { status } = await axios.post(
+      const { data, status } = await axios.post(
         POST_API(submissionId).CREATE_COMMENT,
         {
           content: content,
@@ -96,6 +94,7 @@ export const useComment = () => {
           },
         },
       );
+      dispatch(addNewComment(data?.newComment));
 
       if (status !== 201) throw new Error("Error sending comments");
     } catch (error) {
@@ -104,12 +103,63 @@ export const useComment = () => {
       dispatch(setLoadingComment(false));
     }
   };
+
+  const replyComment = async (
+    content: string,
+    submissionId?: string,
+    parentCommentId?: string,
+  ) => {
+    dispatch(setLoadingComment(true));
+
+    try {
+      if (!submissionId) throw new Error("SubmissionId is required");
+
+      if (!parentCommentId) throw new Error("parentCommentId is required");
+
+      const newComment = {
+        _id: uuidv4(),
+        submissionId,
+        userId: {
+          _id,
+          name,
+        },
+        content,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      console.log(content);
+      dispatch(addNewReply({ comment: newComment, parentCommentId }));
+
+      const { data, status } = await axios.post(
+        POST_API(parentCommentId).REPLY_COMMENT,
+        {
+          content: content,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      console.log(data);
+
+      if (status !== 201) throw new Error("Error sending comments");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingComment(false));
+    }
+  };
+
   return {
     totalLength,
     isLoading,
     comments,
     fetchAllComment,
-    sendComment,
     fetchMoreComment,
+    sendComment,
+    replyComment,
   };
 };

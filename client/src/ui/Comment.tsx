@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import UserIcon from "../assets/icons/User_cicrle_light.svg";
+import { useEffect, useState } from "react";
 import { useOutsideClick } from "../redux/hooks/useOutsideClick";
 import { useComment } from "../redux/hooks/useComment";
 import { useParams } from "react-router-dom";
-import Spinner from "./Spinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SpinnerMini from "./SpinnerMini";
+import CommentComponent from "./CommentComponent";
 
 interface CommentProps {
   openComment: boolean;
@@ -13,14 +12,9 @@ interface CommentProps {
 }
 
 export default function Comment({ openComment, setOpenComment }: CommentProps) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const ref = useOutsideClick(
-    () => setOpenComment(false),
-    false,
-  ) as React.RefObject<HTMLDivElement>;
   const {
+    comment,
     comments,
-    isLoading,
     fetchAllComment,
     sendComment,
     totalLength,
@@ -29,15 +23,15 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
   const { submissionId } = useParams();
   const [content, setContent] = useState("");
   const [page, setPage] = useState(2);
+  const [openCommentInput, setOpenCommentInput] = useState(false);
+  const [openReply, setOpenReply] = useState("");
 
-  console.log("ccmt", comments.length);
-  console.log("totalLength", totalLength);
-
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!content) return;
     sendComment(content, submissionId);
     setContent("");
+    setOpenCommentInput(false);
   }
 
   useEffect(() => {
@@ -45,39 +39,51 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
   }, []);
 
   function fetchMoreData() {
-    fetchMoreComment(submissionId, page);
-    setPage(page + 1);
+    setTimeout(() => {
+      fetchMoreComment(submissionId, page);
+      setPage((prevPage) => {
+        return prevPage + 1;
+      });
+    }, 1500);
   }
 
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const { scrollHeight, clientHeight } = scrollContainerRef.current;
-      scrollContainerRef.current.scrollTop = scrollHeight - clientHeight;
-    }
-  }, [comments]);
+  const ref = useOutsideClick(() => {
+    setOpenCommentInput(false);
+    setOpenReply("");
+  }, false) as React.RefObject<HTMLDivElement>;
+
+  // console.log("cmt", comments.length);
+  // console.log("length", totalLength);
 
   return (
     <div
+      className={`fixed right-4 z-10 flex h-[800px] w-[600px] flex-col justify-between gap-5 bg-gray-100 p-5 duration-300 ${openComment ? "bottom-0 opacity-100" : "-bottom-[800px] opacity-0"}`}
       ref={ref}
-      className={`fixed right-4 z-10 flex h-[500px] w-96 flex-col justify-between gap-5 bg-gray-100 p-5 duration-300 ${openComment ? "bottom-0 opacity-100" : "-bottom-[500px] opacity-0"}`}
     >
-      <h4>Comments</h4>
+      <h4>
+        Comments
+        <button
+          className="btn btn-info ms-4"
+          onClick={() => {
+            setOpenCommentInput(true);
+            setOpenReply("");
+          }}
+        >
+          +
+        </button>
+      </h4>
 
       <div
         id="scrollableDiv"
-        style={{
-          overflow: "auto",
-          flexDirection: "column-reverse",
-        }}
-        className="flex max-h-[500px] flex-col overflow-scroll bg-white p-5"
+        className="flex max-h-[800px] flex-col-reverse overflow-auto scroll-smooth bg-white p-5"
       >
         <InfiniteScroll
-          dataLength={totalLength}
+          dataLength={comments.length}
           next={fetchMoreData}
           style={{}} //To put endMessage and loader to the top.
-          className="flex flex-col-reverse gap-5"
+          className="flex flex-col-reverse gap-5 scroll-smooth"
           inverse={true} //
-          hasMore={!(comments.length === totalLength)} // TODO: change to dynamic
+          hasMore={comments.length < totalLength}
           loader={
             <div className="overflow-hidden">
               <SpinnerMini />
@@ -86,79 +92,37 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
           scrollableTarget="scrollableDiv"
         >
           {comments.map((comment, index) => (
-            <CommentComponent comment={comment} key={index} />
+            <CommentComponent
+              comment={comment}
+              key={index}
+              openReply={openReply}
+              setOpenReply={setOpenReply}
+              setOpenCommentInput={setOpenCommentInput}
+            />
           ))}
         </InfiniteScroll>
       </div>
 
-      <form onClick={handleSubmit}>
-        <div className="flex items-center">
-          <input
-            type="text"
-            className="w-full p-2"
-            placeholder="Type your comment here..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <button type="submit">O</button>
-        </div>
-      </form>
+      {openCommentInput && (
+        <form onClick={handleSubmit}>
+          <div className="flex items-center">
+            <input
+              type="text"
+              className="w-full p-2"
+              placeholder="Type your comment here..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <button type="submit">O</button>
+          </div>
+        </form>
+      )}
       <button
         className="absolute right-5"
         onClick={() => setOpenComment(false)}
       >
         X
       </button>
-    </div>
-  );
-}
-
-function CommentComponent({ comment }) {
-  const { _id, content, createdAt } = comment;
-  const currentDate = new Date("2024-03-26T06:53:57.849Z");
-
-  // Format the date as "Month Day, Year"
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  // Function to format the time
-  const formatTime = (date: Date) => {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-
-    const formattedHours = hours < 10 ? "0" + hours : hours;
-    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
-
-    return `${formattedHours}:${formattedMinutes}`;
-  };
-
-  // Function to check if the date is today
-  const isToday = (date: Date) => {
-    const today = new Date();
-    const d = new Date(date);
-    return d.toDateString() === today.toDateString();
-  };
-
-  return (
-    <div className="flex flex-col gap-[10px] bg-[#EEEEEE] p-3">
-      <div className="flex items-center gap-1">
-        <img src={UserIcon} alt="user image" />
-
-        <div>
-          <div className="text-sm font-medium">Ngo Tuan Anh</div>
-          <div className="text-[10px] font-light">
-            {formatTime(currentDate)}{" "}
-            {isToday(currentDate) ? "Today" : formatDate(currentDate)}
-          </div>
-        </div>
-      </div>
-
-      <p className="text-xs">{content}</p>
     </div>
   );
 }
