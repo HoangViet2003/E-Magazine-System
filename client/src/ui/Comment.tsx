@@ -5,6 +5,9 @@ import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SpinnerMini from "./SpinnerMini";
 import CommentComponent from "./CommentComponent";
+import CloseIcon from "../assets/icons/cross-svgrepo-com.svg";
+import PlusIcon from "../assets/icons/sidebar-icons/plusIcon";
+import PlayIcon from "../assets/icons/play-1003-svgrepo-com.svg";
 
 interface CommentProps {
   openComment: boolean;
@@ -13,7 +16,6 @@ interface CommentProps {
 
 export default function Comment({ openComment, setOpenComment }: CommentProps) {
   const {
-    comment,
     comments,
     fetchAllComment,
     sendComment,
@@ -40,12 +42,14 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
   }, []);
 
   function fetchMoreData() {
-    setTimeout(() => {
-      fetchMoreComment(submissionId, page);
-      setPage((prevPage) => {
-        return prevPage + 1;
-      });
-    }, 1500);
+    // setTimeout(() => {
+      if (!isLoading) {
+        fetchMoreComment(submissionId, page);
+        setPage((prevPage) => {
+          return prevPage + 1;
+        });
+      }
+    // }, 1500);
   }
 
   const ref = useOutsideClick(() => {
@@ -62,18 +66,18 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
       ref={ref}
     >
       <div className="flex h-[700px] w-[400px] flex-col justify-between gap-5">
-        <h4>
-          Comments
+        <div className="flex items-center gap-5">
+          <h4>Comments</h4>
           <button
-            className="btn btn-info ms-4"
+            className="rounded-full p-2 hover:bg-slate-200"
             onClick={() => {
               setOpenCommentInput(true);
               setOpenReply("");
             }}
           >
-            +
+            <PlusIcon fill="#6B6C7E" />
           </button>
-        </h4>
+        </div>
 
         {comments && comments.length > 0 && (
           <div
@@ -112,7 +116,7 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
 
         {openCommentInput && (
           <form onClick={handleSubmit}>
-            <div className="flex items-center">
+            <div className="flex items-center bg-white">
               <input
                 type="text"
                 className="w-full p-2"
@@ -120,7 +124,9 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
               />
-              <button type="submit">O</button>
+              <button type="submit" className="p-3">
+                <img src={PlayIcon} className="w-4" />
+              </button>
             </div>
           </form>
         )}
@@ -129,7 +135,7 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
         className="absolute right-5"
         onClick={() => setOpenComment(false)}
       >
-        X
+        <img className="w-8" src={CloseIcon} />
       </button>
     </div>
   );

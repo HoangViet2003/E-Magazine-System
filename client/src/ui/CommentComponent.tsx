@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import UserIcon from "../assets/icons/User_cicrle_light.svg";
+import { useParams } from "react-router-dom";
 import { Comment } from "../redux/slices/CommentSlice";
 import { useComment } from "../redux/hooks/useComment";
-import { useParams } from "react-router-dom";
+import UserIcon from "../assets/icons/User_cicrle_light.svg";
+import PlayIcon from "../assets/icons/play-1003-svgrepo-com.svg";
 
 interface CommentComponentProps {
   comment: Comment;
@@ -115,15 +116,17 @@ export default function CommentComponent({
 
         {openReply === _id && (
           <form onSubmit={handleSubmit}>
-            <div className="flex items-center">
+            <div className="flex items-center bg-white">
               <input
                 type="text"
-                className="w-full p-1"
+                className="w-full p-1 outline-none"
                 placeholder="Type your comment here..."
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
               />
-              <button type="submit">O</button>
+              <button type="submit" className="px-2">
+                <img src={PlayIcon} className="w-4" />
+              </button>
             </div>
           </form>
         )}

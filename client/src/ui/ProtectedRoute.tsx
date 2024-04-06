@@ -26,6 +26,10 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     return <Navigate to="/student" />;
   }
 
+  if (role === "marketing manager" && location.pathname.includes("dashboard")) {
+    return <Navigate to="/myFaculty" />;
+  }
+
   if (isLoading)
     return (
       <div>

@@ -22,12 +22,9 @@ export default function ContributionTable() {
   }, [contributionId]);
 
   function openFolder(id: string) {
-    // if (role === "student") navigate(`/student/contributions/submission/${id}`);
-    // else {
-    // }
-    navigate(`/myFaculty/contributions/submission/${id}`);
-    searchParams.set("contributionId", contributionId || "");
-    setSearchParams(searchParams);
+    navigate(
+      `/myFaculty/contributions/submission/${id}?contributionId=${contributionId}`,
+    );
   }
 
   return (

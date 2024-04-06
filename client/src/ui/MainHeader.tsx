@@ -31,18 +31,15 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const role = localStorage.getItem("role");
   const {
     submission,
-    isLoading,
     toggleForSubmit,
     deleteSubmission,
-    addSelectedArticlesToSubmission,
     removeArticlesFromSubmission,
     toggleSelectSubmission,
+    handleDownloadSubmission,
   } = useSubmission();
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
   const [openFileUpload, setOpenFileUpload] = useState("");
-
-  console.log(submission);
 
   return (
     <>
@@ -119,7 +116,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
             </div>
           )}
 
-          {params.submissionId && role !== "student" && (
+          {params.submissionId && role === "marketing coordinator" && (
             <button
               className="p-2 hover:bg-slate-200"
               onClick={() => toggleSelectSubmission(submissionId)}
@@ -139,6 +136,15 @@ const MainHeader: React.FC<MainHeaderProps> = ({
                 <img src={InfoLineIcon} />
               </button>
             </>
+          )}
+
+          {params.submissionId && role === "marketing manager" && (
+            <button
+              className="p-2 hover:bg-slate-200"
+              onClick={() => handleDownloadSubmission(submissionId)}
+            >
+              Download
+            </button>
           )}
         </div>
       </div>

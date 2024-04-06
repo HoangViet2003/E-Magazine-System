@@ -15,6 +15,7 @@ export default function ContributionFolder() {
     contributions,
     isLoading: loadingContribution,
     fetchAllContribution,
+    fetchAllContributionByManager,
   } = useContribution();
   const { getSubmissionByStudentToNavigate, isLoading: loadingSubmission } =
     useSubmission();
@@ -34,15 +35,23 @@ export default function ContributionFolder() {
   }
 
   useEffect(() => {
-    fetchAllContribution();
+    if (role === "marketing manager") {
+      fetchAllContributionByManager();
+    } else {
+      fetchAllContribution();
+    }
   }, []);
 
   function handleSubmissionNavigate(contributionId: string) {
     navigate(`contributions/${contributionId}`);
   }
 
-  async function handleStudentSubmission(contributionId: string) {
+  function handleStudentSubmission(contributionId: string) {
     getSubmissionByStudentToNavigate(contributionId);
+  }
+
+  function handleManagerNavigate(contributionId: string) {
+    navigate(`contributions/academic-year?academicYear=${contributionId}`);
   }
 
   return (
@@ -51,7 +60,7 @@ export default function ContributionFolder() {
         Contributions
       </h3>
 
-      {loadingContribution && loadingSubmission ? (
+      {loadingContribution || loadingSubmission ? (
         <Spinner />
       ) : (
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -62,8 +71,10 @@ export default function ContributionFolder() {
               onDoubleClick={async () => {
                 if (role === "student") {
                   handleStudentSubmission(contribution._id);
-                } else {
+                } else if (role === "marketing coordinator") {
                   handleSubmissionNavigate(contribution._id);
+                } else if (role === "marketing manager") {
+                  handleManagerNavigate(contribution._id);
                 }
               }}
             >

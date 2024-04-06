@@ -1,4 +1,4 @@
-const GET_API = (id: string, page = 1) => {
+const GET_API = (id: string, page = 1, year?: number) => {
   return {
     // article
     GET_DASHBOARD: `/article/dashboard`,
@@ -16,6 +16,7 @@ const GET_API = (id: string, page = 1) => {
     GET_CONTRIBUTION_BY_ID: `/contribution/${id}`,
     GET_ALL_CONTRIBUTIONS: `/contributions`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
+    GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR: `/contributions/academic-year?academicYear=${year}`,
     // faculties
     GET_ALL_FACULTIES: `/faculties`,
     GET_FACULTY_BY_ID: `/faculty/${id}`,
@@ -24,6 +25,7 @@ const GET_API = (id: string, page = 1) => {
     GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT: `/submission/contribution/${id}`,
     GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
     GET_UNSELECTED_ARTICLES_OF_STUDENTS: `/submission/${id}/unselectedArticles`,
+    DOWNLOAD_SUBMISSION: `/submission/${id}/download`,
   };
 };
 

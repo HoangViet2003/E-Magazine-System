@@ -27,11 +27,7 @@ export default function UploadImage({
     isLoading: loadingArticle,
     uploadArticleThenAddToSubmission,
   } = useArticle();
-  // const {
-  //   createSubmissionForStudent,
-  //   submission,
-  //   createSubmissionForStudentThenAddUploadedFiles,
-  // } = useSubmission();
+
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
 

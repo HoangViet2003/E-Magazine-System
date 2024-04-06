@@ -16,7 +16,8 @@ export default function ArticleSelectModal() {
   const sortBy = searchParams.get("sortBy") || "updatedAt-desc";
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  const contributionId = searchParams.get("contributionId") || "";
+  // const contributionId = searchParams.get("contributionId") || "";
+  const role = localStorage.getItem("role");
 
   const [searchInput, setSearchInput] = useState("");
   const [filterArticles, setFilterArticle] = useState<Article[]>([]);
@@ -27,7 +28,8 @@ export default function ArticleSelectModal() {
   const { addSelectedArticlesToSubmission } = useSubmission();
 
   useEffect(() => {
-    if (submissionId) getUnselectedArticleStudent(submissionId);
+    if (submissionId && role === "student")
+      getUnselectedArticleStudent(submissionId);
   }, []);
 
   // FILTER

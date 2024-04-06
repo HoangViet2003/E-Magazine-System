@@ -17,6 +17,7 @@ import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
+import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/myFaculty/contributions/submission/:submissionId",
         element: <Submission />,
+      },
+      {
+        path: "/myFaculty/contributions/academic-year",
+        element: <ManagerFolder />,
       },
       {
         path: "/selectedContribution",

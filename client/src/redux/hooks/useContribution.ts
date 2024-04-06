@@ -2,6 +2,7 @@ import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAllContribution,
+  setAllManagerContribution,
   setContribution,
   setLoadingContribution,
 } from "../slices/ContributionSlice";
@@ -10,9 +11,8 @@ import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 
 export const useContribution = () => {
   const dispatch = useDispatch();
-  const { isLoading, contributions, contribution } = useSelector(
-    (state: RootState) => state.contribution,
-  );
+  const { isLoading, contributions, contribution, managerContributions } =
+    useSelector((state: RootState) => state.contribution);
 
   const fetchAllContribution = async () => {
     dispatch(setLoadingContribution(true));
@@ -27,6 +27,44 @@ export const useContribution = () => {
       }
 
       dispatch(setAllContribution(data?.contributions));
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(setLoadingContribution(false));
+  };
+
+  const fetchAllContributionByManager = async () => {
+    dispatch(setLoadingContribution(true));
+
+    try {
+      const { data, status } = await axios.get(
+        GET_API("").GET_ALL_CONTRIBUTIONS,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error fetching contributions");
+      }
+
+      dispatch(setAllContribution(data?.contributions));
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(setLoadingContribution(false));
+  };
+
+  const fetchAllContributionByAcademicYear = async (year?: number) => {
+    dispatch(setLoadingContribution(true));
+
+    try {
+      if (!year) throw new Error("Year value is required");
+
+      const { data, status } = await axios.get(
+        GET_API("", 1, year).GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR,
+      );
+
+      if (status !== 200) throw new Error("Error fetching contributions");
+
+      dispatch(setAllManagerContribution(data?.contributions));
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +96,10 @@ export const useContribution = () => {
     isLoading,
     contribution,
     contributions,
+    managerContributions,
     fetchAllContribution,
+    fetchAllContributionByManager,
+    fetchAllContributionByAcademicYear,
     getContributionById,
   };
 };
