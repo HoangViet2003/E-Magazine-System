@@ -509,13 +509,16 @@ const downloadSubmission = async (req, res) => {
 					// the image is url, so we need to download the image and save it as a file
 					let index = 0
 					if (image.startsWith("http")) {
-						https.get(image, (response) => {
-							index++
-
-							response.pipe(
-								fs.createWriteStream(path.join(articleFolder, `${index}.png`))
-							)
-						})
+						await https
+							.get(image, (response) => {
+								response.pipe(
+									fs.createWriteStream(path.join(articleFolder, `${index}.png`))
+								)
+								index += 1
+							})
+							.on("error", (e) => {
+								console.error(e)
+							})
 					}
 				}
 			}
@@ -558,7 +561,7 @@ const downloadSubmission = async (req, res) => {
 					__dirname,
 					`../../public/uploads/${articleTitle}`
 				)
-				fs.rmdirSync(articleFolder, { recursive: true })
+				fs.rmSync(articleFolder, { recursive: true })
 			}
 		}
 
