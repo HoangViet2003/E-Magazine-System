@@ -209,8 +209,9 @@ const updateForPublication = async (req, res) => {
 			})
 		}
 
+		const submissionComments = await Comment.find({ submissionId })
 		// Check if the submission has any comments
-		if (submission.comments.length === 0) {
+		if (submissionComments.length === 0) {
 			return res.status(400).json({
 				message: "Submission has no comments",
 			})
