@@ -20,7 +20,7 @@ export default function ManagerRow({ data }) {
         className={commonCell + " font-semibold"}
         style={{ color: "#272833" }}
       >
-        {facultyId.name}'s Submission
+        {facultyId.name}
       </div>
 
       <div className={commonCell}>{formattedDate}</div>

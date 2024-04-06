@@ -17,8 +17,8 @@ export default function UploadImage({
   isAddSubmission: boolean;
   setOpenFileUpload?: (value: string) => void;
 }) {
-  const [searchParams] = useSearchParams();
-  const contributionId = searchParams.get("contributionId") || "";
+  // const [searchParams] = useSearchParams();
+  // const contributionId = searchParams.get("contributionId") || "";
   const { submissionId } = useParams();
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
 
