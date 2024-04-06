@@ -15,6 +15,7 @@ const getAllNotificationByUserId = async (req, res) => {
 
         res.status(200).json({
             notifications,
+            totalPage: Math.ceil(totalNotification/limit),
             totalNotification,
             totalUnSeenNotification
         });
