@@ -51,7 +51,7 @@ const getCommentsBySubmission = async (req, res) => {
 		const replies = await Comment.find({
 			submissionId: id,
 			parentCommentId: { $exists: true },
-		})
+		}).populate("userId", "name")
 
 		// add replies to the comments
 		comments = comments.map((comment) => {

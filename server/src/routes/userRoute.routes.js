@@ -4,7 +4,7 @@ const { authenticateAdministrator } = require("../middlewares/authenticate")
 // const middlewareController = require("../controllers/middlewareController")
 
 router.get("/users", authenticateAdministrator, UserController.getAllUsers)
-router.patch("/user/:id", UserController.editUser)
-router.delete("/user/:id", UserController.deleteUser)
+router.patch("/user/:id", authenticateAdministrator, UserController.editUser)
+router.delete("/user/:id", authenticateAdministrator, UserController.deleteUser)
 
 module.exports = router

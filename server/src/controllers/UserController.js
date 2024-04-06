@@ -15,6 +15,13 @@ const getAllUsers = async (req, res) => {
 	}
 }
 
+const createUser = async (req, res) => {
+	try {
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 const editUser = async (req, res) => {
 	const { error, value } = validateUser(req.body)
 	if (error) {
