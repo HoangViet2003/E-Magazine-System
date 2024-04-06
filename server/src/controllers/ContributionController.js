@@ -81,7 +81,6 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 		const contributions = await Contribution.find({ facultyId: facultyId })
 
 		res.status(200).json({
-			status: "success",
 			contributions,
 		})
 	} catch (error) {
