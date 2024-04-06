@@ -80,7 +80,7 @@ const getAllContributions = async (req, res) => {
 
 const getAllContributionsByAcamemicYear = async (req, res) => {
 	try {
-		const { academicYear } = req.params
+		const { academicYear } = req.query
 		const contributions = await Contribution.find({ academicYear }).populate(
 			"facultyId"
 		)

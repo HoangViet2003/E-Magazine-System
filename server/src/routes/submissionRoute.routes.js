@@ -26,6 +26,12 @@ router.get(
 )
 
 router.get(
+	"/submission/:submissionId/download",
+	authenticateToken,
+	SubmissionController.downloadSubmission
+)
+
+router.get(
 	"/submission/:submissionId/unselectedArticles",
 	authenticateToken,
 	authenticateStudent,

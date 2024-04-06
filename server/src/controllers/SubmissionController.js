@@ -8,6 +8,13 @@ const {
 	Comment,
 } = require("../models")
 
+const PuppeteerHTMLPDF = require("puppeteer-html-pdf")
+
+const path = require("path")
+const fs = require("fs")
+const JSZip = require("jszip")
+const https = require("https")
+
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
@@ -455,6 +462,113 @@ const removeArticlesFromSubmission = async (req, res) => {
 	}
 }
 
+// download submission articles and zip them
+const downloadSubmission = async (req, res) => {
+	try {
+		const { submissionId } = req.params
+
+		const submission = await Submission.findById(submissionId)
+
+		if (!submission) {
+			return res.status(404).json({ message: "Submission not found" })
+		}
+
+		const articles = await Article.find({ _id: { $in: submission.articles } })
+
+		const htmlPDF = new PuppeteerHTMLPDF()
+		htmlPDF.setOptions({ format: "A4" })
+
+		// if articles are word type, convert their html content to pdf files
+		for (let article of articles) {
+			if (article.type === "word") {
+				const pdfBuffer = await htmlPDF.create(article.content)
+				article.content = pdfBuffer
+				await article.save()
+			}
+		}
+
+		// if articles are image type, put all of the images inside a folder with the article title
+		for (let article of articles) {
+			if (article.type === "image") {
+				const articleTitle = article.title
+				const articleImages = article.content
+				const articleFolder = path.join(
+					__dirname,
+					`../../public/uploads/${articleTitle}`
+				)
+
+				try {
+					// Create directories recursively
+					fs.mkdirSync(articleFolder, { recursive: true })
+				} catch (err) {
+					console.error("Error creating directory:", err)
+					continue // Skip to next iteration if directory creation fails
+				}
+
+				for (let image of articleImages) {
+					// the image is url, so we need to download the image and save it as a file
+					let index = 0
+					if (image.startsWith("http")) {
+						https.get(image, (response) => {
+							index++
+
+							response.pipe(
+								fs.createWriteStream(path.join(articleFolder, `${index}.png`))
+							)
+						})
+					}
+				}
+			}
+		}
+
+		let zip = new JSZip()
+
+		for (let article of articles) {
+			if (article.type === "word") {
+				zip.file(`${article.title}.pdf`, article.content)
+			} else if (article.type === "image") {
+				let articleFolder = `${article.title}`
+				let imagesFolder = zip.folder(articleFolder)
+				const articleImages = article.content
+				for (let image of articleImages) {
+					let index = 0
+					let imagePath = path.join(
+						__dirname,
+						`../../public/uploads/${article.title}`,
+						`${index}.png`
+					)
+					let imageData = fs.readFileSync(imagePath)
+					imagesFolder.file(`${image}.png`, imageData)
+
+					index++
+				}
+			}
+		}
+
+		let zipBuffer = await zip.generateAsync({ type: "nodebuffer" })
+		let zipFileName = `submission-${submissionId}.zip`
+		res.setHeader("Content-Disposition", `attachment; filename=${zipFileName}`)
+		res.setHeader("Content-Type", "application/zip")
+
+		// delete the folder after zipping
+		for (let article of articles) {
+			if (article.type === "image") {
+				const articleTitle = article.title
+				const articleFolder = path.join(
+					__dirname,
+					`../../public/uploads/${articleTitle}`
+				)
+				fs.rmdirSync(articleFolder, { recursive: true })
+			}
+		}
+
+		return res.send(zipBuffer)
+	} catch (error) {
+		console.error(error)
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 // remove submission by id
 const removeSubmission = async (req, res) => {
 	try {
@@ -482,4 +596,5 @@ module.exports = {
 	removeSubmission,
 	getUnselectedArticlesOfStudentsBySubmissionId,
 	toggleSubmissionStatus,
+	downloadSubmission,
 }

@@ -14,15 +14,15 @@ router.get(
 	ContributionController.getAllContributions
 )
 router.get(
-	"/contributions/:academicYear",
-	authenticateToken,
-	authenticateMarketingManager,
-	ContributionController.getAllContributionsByAcamemicYear
-)
-router.get(
 	"/contributions/coordinator",
 	authenticateToken,
 	ContributionController.getAllContributionByFaculty
+)
+router.get(
+	"/contributions/academic-year",
+	authenticateToken,
+	authenticateMarketingManager,
+	ContributionController.getAllContributionsByAcamemicYear
 )
 
 router.post(
