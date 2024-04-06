@@ -1,18 +1,25 @@
 const { catchAsync } = require("../utils")
-const fs = require("fs")
-const {
-	uploadFiles,
-	deleteFiles,
-	getFileStream,
-} = require("../services/fileS3.services")
-const mammoth = require("mammoth")
-const { Article, Contribution, History, User, Faculty } = require("../models")
-const EmitterSingleton = require("../configs/eventEmitter")
+const { Contribution, Faculty } = require("../models")
 
-const emitterInstance = EmitterSingleton.getInstance()
-const emitter = emitterInstance.getEmitter()
+const getContributionById = async (req, res) => {
+	try {
+		const { id } = req.params
+		const contribution = await Contribution.findById(id)
 
-const getContributionById = async (req, res) => {}
+		if (!contribution) {
+			return res.status(400).json({
+				status: "fail",
+				message: "Contribution does not exist",
+			})
+		}
+
+		res.status(200).json({
+			contribution,
+		})
+	} catch (error) {
+		res.status(500).json({ error: error.message })
+	}
+}
 
 const createContribution = async (req, res) => {
 	try {

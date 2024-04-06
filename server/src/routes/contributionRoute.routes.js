@@ -1,9 +1,6 @@
 const router = require("express").Router()
 const { ContributionController } = require("../controllers")
-const {
-	authenticateToken,
-	authenticateMarketingCoordinator,
-} = require("../middlewares/authenticate")
+const { authenticateToken } = require("../middlewares/authenticate")
 
 router.get("/contribution/:id", ContributionController.getContributionById)
 router.post("/contribution", ContributionController.createContribution)
