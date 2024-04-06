@@ -53,19 +53,50 @@ const createContribution = async (req, res) => {
 
 const getAllContributions = async (req, res) => {
 	try {
-		const contributions = await Contribution.find()
+		// get contribtuion object with the academic year, only one for each academic year
+		const contributions = await Contribution.aggregate([
+			{
+				$group: {
+					_id: "$academicYear",
+					academicYear: { $first: "$academicYear" },
+					facultyId: { $first: "$facultyId" },
+					status: { $first: "$status" },
+					closureDate: { $first: "$closureDate" },
+					finalClosureDate: { $first: "$finalClosureDate" },
+				},
+			},
+		])
+
+		console.log("contributions", contributions)
+
+		// const contributions = await Contribution.find()
 		res.status(200).json({
-			status: "success",
-			data: contributions,
+			contributions,
 		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
 }
 
+const getAllContributionsByAcamemicYear = async (req, res) => {
+	try {
+		const { academicYear } = req.params
+		const contributions = await Contribution.find({ academicYear }).populate(
+			"facultyId"
+		)
+
+		return res.status(200).json({
+			contributions,
+		})
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	try {
 		const { facultyId } = req.user
+
 		if (!facultyId) {
 			return res.status(400).json({
 				status: "fail",
@@ -108,6 +139,7 @@ module.exports = {
 	createContribution,
 	getAllContributions,
 	getAllContributionByFaculty,
+	getAllContributionsByAcamemicYear,
 	getContributionById,
 	updateContribution,
 }

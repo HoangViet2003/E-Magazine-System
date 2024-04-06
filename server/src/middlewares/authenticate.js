@@ -111,7 +111,7 @@ const authenticateStudent = async (req, res, next) => {
 
 const authenticateMarketingManager = async (req, res, next) => {
 	//Check if user is a marketing manager
-	if (!req.user.role || req.user.role !== "marketing Manager") {
+	if (!req.user.role || req.user.role !== "marketing manager") {
 		return res.status(403).send({
 			status: "error",
 			message: "You are not allowed to perform this action",

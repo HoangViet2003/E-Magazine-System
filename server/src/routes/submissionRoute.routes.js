@@ -22,7 +22,6 @@ router.post(
 router.get(
 	"/submissions/contribution/:contributionId",
 	authenticateToken,
-	authenticateMarketingCoordinator,
 	SubmissionController.getAllSubmissionByContributionId
 )
 
