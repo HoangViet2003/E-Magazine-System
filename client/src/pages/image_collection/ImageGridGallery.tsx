@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Gallery, Image } from "react-grid-gallery";
 import ImageLightbox from "./ImageLightbox";
 
-const ImageGridGallery: React.FC<{ images: Image[]; handleRemoveImage: (index: number) => void; isDeleteMode: boolean }> = ({ images, handleRemoveImage, isDeleteMode }) => {
+const ImageGridGallery: React.FC<{ images: Image[]; handleRemoveImage: (index: number) => void; isDeleteMode: boolean;handleUpdateImages:() => void }> = ({ images, handleRemoveImage, isDeleteMode,handleUpdateImages }) => {
   const [index, setIndex] = useState(-1);
 
 
@@ -19,8 +19,10 @@ const ImageGridGallery: React.FC<{ images: Image[]; handleRemoveImage: (index: n
 
   const handleClick = (index: number) => {
     if (isDeleteMode) {
-      alert("Are you sure you want to delete this image?")
+      //alert yes or no to delete
+      alert("Are you sure you want to delete this image?");
       OnRemove(index);
+      handleUpdateImages();
       return;
     }
     console.log("selected image", images[index])

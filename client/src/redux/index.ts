@@ -4,14 +4,22 @@ import articleSlice from "./slices/ArticleSlice";
 import contributionSlice from "./slices/ContributionSlice";
 import userSlice from "./slices/UserSlice";
 import submissionSlice from "./slices/SubmissionSlice";
+
+import notiSlice from "./slices/NotiSlice"
+import facultySlice from "./slices/FacultySlice"
+
 import commentSlice from "./slices/CommentSlice";
+
 
 const rootReducer = {
   user: userSlice,
   article: articleSlice,
   contribution: contributionSlice,
   submission: submissionSlice,
+  noti: notiSlice,
+  faculty: facultySlice,
   comment: commentSlice,
+
 };
 
 const store = configureStore({

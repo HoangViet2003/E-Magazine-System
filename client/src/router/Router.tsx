@@ -17,6 +17,8 @@ import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
+import SubmissionEmpty from "../pages/my_faculty/submission/SubmissionEmpty";
+import CreateAccount from "../pages/admin/CreateAccount";
 import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 
 const router = createBrowserRouter([
@@ -118,6 +120,10 @@ const router = createBrowserRouter([
         path: "/images/:id",
         element: <SubmissionImage />,
       },
+      {
+        path:"/account/create",
+        element:<CreateAccount/>
+      }
     ],
   },
   {

@@ -14,14 +14,14 @@ interface UpdateImagesProps {
     setUploadImages?: (images: File[]) => void;
     uploadImages?: any[] | undefined;
     handleSetImageCollection?: (images: any[]) => void;
+    handleUpdateImages: () => void;
 }
 
-export default function UploadImage({ type, setOpenImageUpload, setUploadImages, uploadImages, handleSetImageCollection }: UpdateImagesProps) {
+export default function UploadImage({ type, setOpenImageUpload, setUploadImages, uploadImages, handleSetImageCollection,handleUpdateImages }: UpdateImagesProps) {
     // const { setOpenImageUpload } = useSidebarContext();
 
     const { isLoading: loadingArticle } = useArticle();
     const [previews, setPreviews] = useState<string[]>([]);
-    const [title, setTitle] = useState("");
 
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
@@ -62,6 +62,7 @@ export default function UploadImage({ type, setOpenImageUpload, setUploadImages,
         if (typeof acceptedFiles[0] === "undefined") return;
 
         handleSetImageCollection?.(uploadImages ?? []);
+        handleUpdateImages?.();
         setOpenImageUpload(false);
     }
 
