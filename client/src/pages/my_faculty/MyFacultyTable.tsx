@@ -26,13 +26,13 @@ export default function MyFacultyTable() {
     fetchAllArticle,
     searchArticleQuery,
     keyword,
+    isSearchMode
   } = useArticle();
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
-    if (keyword !== "") {
-      // If there's a keyword, perform a search regardless of the role
+    if (isSearchMode && keyword !== "") {
       searchArticleQuery(keyword as string);
     } else if (role === "student") {
       // If the role is "student", fetch articles by student ID

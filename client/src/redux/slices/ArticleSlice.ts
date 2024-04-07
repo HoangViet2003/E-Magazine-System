@@ -24,6 +24,7 @@ interface ArticleState {
   selectedArticles: Article[];
   keyword?: string;
   isFilterMode: boolean;
+  isSearchMode: boolean;
 }
 
 const initialState: ArticleState = {
@@ -52,6 +53,7 @@ const initialState: ArticleState = {
   totalLength: 0,
   keyword: "",
   isFilterMode: false,
+  isSearchMode: false,
 };
 
 const ArticleSlice = createSlice({
@@ -110,6 +112,9 @@ const ArticleSlice = createSlice({
         (article) => !action.payload.includes(article._id),
       );
     },
+    setSearchMode(state, action: PayloadAction<boolean>) {
+      state.isSearchMode = action.payload;
+    }
   },
 });
 
@@ -128,6 +133,7 @@ export const {
   setSuggestionArticles,
   setSelectedArticles,
   removeSubmissionArticle,
+  setSearchMode
 } = actions;
 
 export default reducer;

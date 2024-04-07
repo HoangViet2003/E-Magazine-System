@@ -100,7 +100,7 @@ const SubmissionImage = () => {
     });
   };
 
-  const handleUpdateImages = async () => {
+  const handleUpdateImages = () => {
     if (!id) {
       console.error("ID is undefined");
       return;
@@ -109,8 +109,8 @@ const SubmissionImage = () => {
 
     uploadImages.map((image) => formData.append("files", image));
     imageCollection.map((image) => formData.append("content", image.src));
-    formData.append("title", "Image Collection");
-    await updateArticle(id, formData);
+    formData.append("title", title);
+    updateArticle(id, formData);
 
 
   }
@@ -164,21 +164,17 @@ const SubmissionImage = () => {
           <div className="flex flex-row gap-2">
             <img src={plusIcon} alt="add" />
             <button onClick={() => setOpenImageUpload(true)}>Add</button>
-            {openImageUpload && <UpdateImages type="image" setOpenImageUpload={setOpenImageUpload} handleAddImage={handleAddImage} setImageCollection={setImageCollection} setUploadImages={setUploadImages} uploadImages={uploadImages} handleSetImageCollection={handleSetImageCollection} />}
+            {openImageUpload && <UpdateImages type="image" setOpenImageUpload={setOpenImageUpload} handleAddImage={handleAddImage} setImageCollection={setImageCollection} setUploadImages={setUploadImages} uploadImages={uploadImages} handleSetImageCollection={handleSetImageCollection} handleUpdateImages={handleUpdateImages} />}
           </div>
 
           <div className="flex flex-row gap-2">
             <img src={trash} alt="add" />
             <button className="text-[#CA3636]" onClick={() => setIsDeleteMode(!isDeleteMode)}>{isDeleteMode ? "Cancel" : "Delete"}</button>
           </div>
-          <div className="flex flex-row gap-2">
-            <img src={saveIcon} alt="save" />
-            <button className="text-[#004AD7] font-bold" onClick={() => handleUpdateImages()}>Save</button>
-          </div>
         </div>
       </div>
 
-      {isLoading ? <Spinner /> : <ImageGridGallery images={imageCollection} handleRemoveImage={handleRemoveImage} isDeleteMode={isDeleteMode} />}
+      {isLoading ? <Spinner /> : <ImageGridGallery images={imageCollection} handleRemoveImage={handleRemoveImage} isDeleteMode={isDeleteMode} handleUpdateImages={handleUpdateImages} />}
     </div>
   );
 };

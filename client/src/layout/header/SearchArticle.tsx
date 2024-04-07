@@ -15,7 +15,7 @@ export default function SearchArticle() {
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
   const { setOpenSidebar, openSidebar } = useSidebarContext();
-  const { searchArticleQuery, handleSetKeyword, keyword, handleGetSuggestion, suggestionArticles } = useArticle();
+  const { searchArticleQuery, handleSetKeyword, keyword, handleGetSuggestion, suggestionArticles,handleSetSearchMode } = useArticle();
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const ref = useOutsideClick(() => setShowSuggestions(false), false) as React.RefObject<HTMLDivElement>;
@@ -26,8 +26,9 @@ export default function SearchArticle() {
     e.preventDefault();
 
     if (!keyword) return;
+    handleSetSearchMode(true);
+    searchArticleQuery(keyword);
 
-    // searchArticleQuery(keyword);
     // handleSetKeyword(keyword);
     navigate(`/myFaculty`); // Pass keyword as URL param
   }
@@ -87,7 +88,7 @@ export default function SearchArticle() {
       </form>
       {showSuggestions && <div className="absolute  z-10 overflow-x-auto top-12 h-[536px] " ref={ref}>
         <ul className=" bg-searchBackground w-full [&_li>*]:rounded-none ">
-          {suggestionArticles?.map((article) => (
+          {suggestionArticles?.map((article:any) => (
             <li className="flex flex-row justify-between items-center hover:bg-slate-200 p-3 gap-4">
               <img src={article?.type === "word" ? DocsIcon : ImgIcon} />
               <div

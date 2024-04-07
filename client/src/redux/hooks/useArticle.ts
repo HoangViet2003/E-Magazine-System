@@ -13,6 +13,8 @@ import {
   addNewSubmissionArticle,
   Article,
   setSelectedArticles,
+  setSuggestionArticles,
+  setSearchMode
 } from "../slices/ArticleSlice";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
@@ -31,6 +33,8 @@ export const useArticle = () => {
     isFilterMode,
     submissionArticles,
     selectedArticles,
+    suggestionArticles,
+    isSearchMode
   } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
@@ -278,19 +282,22 @@ export const useArticle = () => {
     dispatch(resetSubmissionArticles());
   };
 
-  const getSuggestion = async () => {
+  const handleGetSuggestion = async (query: string) => {
+    dispatch(setLoadingArticle(true));
+
     try {
       const { data, status } = await axios.get(
-        GET_API("").GET_SUGGESTION_ARTICLES,
+        `${GET_API("").GET_SUGGESTION_ARTICLES}?query=${query}`,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching suggestions");
       }
-
-      return data;
+      console.log(data.articles, "suggestion");
+      dispatch(setSuggestionArticles(data.articles));
     } catch (error) {
       console.error(error);
+      dispatch(setLoadingArticle(false));
     }
   };
 
@@ -338,6 +345,10 @@ export const useArticle = () => {
     }
   };
 
+  const handleSetSearchMode = (isSearchMode: boolean) => {
+    dispatch(setSearchMode(isSearchMode));
+  }
+
   return {
     totalLength,
     isLoading,
@@ -354,7 +365,6 @@ export const useArticle = () => {
     uploadArticle,
     createNewDocument,
     resetSubmissionArticlesState,
-    getSuggestion,
     handleSetKeyword,
     keyword,
     isFilterMode,
@@ -363,5 +373,11 @@ export const useArticle = () => {
     uploadArticleThenAddToSubmission,
     addSubmissionArticle,
     setSelectedArticlesToState,
+    handleGetSuggestion,
+    suggestionArticles,
+    handleSetSearchMode,
+    isSearchMode
+
+    
   };
 };

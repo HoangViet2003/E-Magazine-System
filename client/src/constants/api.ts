@@ -23,10 +23,14 @@ const GET_API = (id: string, page = 1) => {
     GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT: `/submission/contribution/${id}`,
     GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
     GET_UNSELECTED_ARTICLES_OF_STUDENTS: `/submission/${id}/unselectedArticles`,
+
+
+    //notifications
+    GET_ALL_NOTIFICATIONS: `/notifications?page=${page}`,
   };
 };
 
-const POST_API = (id: string) => {
+const POST_API = (id?: string) => {
   return {
     // authenticate
     LOGIN: "/login",
