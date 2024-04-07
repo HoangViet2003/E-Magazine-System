@@ -4,8 +4,6 @@ import Table from "../../../ui/Table";
 import DocsIcon from "../../../assets/icons/icon-document-text.svg";
 import ImgIcon from "../../../assets/icons/Img_box_fill.svg";
 import ProfileImg from "../../../assets/profile1.png";
-import { useArticle } from "../../../redux/hooks";
-import { useState } from "react";
 
 interface SubmissionRowProps {
   data: Article;
@@ -20,7 +18,6 @@ const SubmissionRow: React.FC<SubmissionRowProps> = ({
   setChooseArticle,
   isEditableOn,
 }) => {
-  const { selectedArticles, setSelectedArticlesToState } = useArticle();
   const { title, updatedAt, student, type } = data;
   const action = "test action";
 

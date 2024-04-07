@@ -12,9 +12,10 @@ export default function AppLayOut() {
     <SidebarProvider>
       <div className="grid min-h-screen grid-rows-[auto_1fr] border-borderColor font-BeVietnamPro">
         <Header />
-        <div className="container grid grid-cols-[1fr] xl:grid-cols-[300px_1fr]">
+        <div className="container relative grid grid-cols-[1fr] xl:grid-cols-[300px_1fr]">
           {user.role === "student" && <SidebarStudent />}
           {user.role === "marketing coordinator" && <Sidebar />}
+          {user.role === "marketing manager" && <Sidebar />}
 
           <Outlet />
         </div>

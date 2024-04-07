@@ -1,33 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Submission } from "./SubmissionSlice";
 
-// const fakeContribution = [
-//   {
-//     _id: "1",
-//     title: "2024 Contributions",
-//     isOpen: true,
-//     year: 2024,
-//   },
-//   {
-//     _id: "2",
-//     title: "2023 Contributions",
-//     isOpen: false,
-//     year: 2023,
-//   },
-//   {
-//     _id: "3",
-//     title: "2022 Contributions",
-//     isOpen: false,
-//     year: 2022,
-//   },
-//   {
-//     _id: "4",
-//     title: "2021 Contributions",
-//     isOpen: false,
-//     year: 2021,
-//   },
-// ];
-
 export interface Contribution {
   _id: string;
   facultyId?: string;
@@ -43,12 +16,14 @@ export interface Contribution {
 interface ContributionState {
   isLoading: boolean;
   contributions: Contribution[];
+  managerContributions: Contribution[];
   contribution: Contribution;
 }
 
 const initialState: ContributionState = {
   isLoading: false,
   contributions: [],
+  managerContributions: [],
   contribution: {
     _id: "",
     facultyId: "",
@@ -72,6 +47,9 @@ const ContributionSlice = createSlice({
     setAllContribution(state, action: PayloadAction<Contribution[]>) {
       state.contributions = action.payload;
     },
+    setAllManagerContribution(state, action: PayloadAction<Contribution[]>) {
+      state.managerContributions = action.payload;
+    },
     setContribution(state, action: PayloadAction<Contribution>) {
       state.contribution = action.payload;
     },
@@ -80,7 +58,11 @@ const ContributionSlice = createSlice({
 
 const { reducer, actions } = ContributionSlice;
 
-export const { setLoadingContribution, setAllContribution, setContribution } =
-  actions;
+export const {
+  setLoadingContribution,
+  setAllContribution,
+  setAllManagerContribution,
+  setContribution,
+} = actions;
 
 export default reducer;

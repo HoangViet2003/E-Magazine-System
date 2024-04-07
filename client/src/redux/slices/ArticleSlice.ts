@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "./UserSlice";
+import { PAGE_SIZE } from "../../utils/constant";
 
 export interface Article {
   _id: string;
@@ -20,8 +21,9 @@ interface ArticleState {
   article: Article;
   articles: Article[];
   suggestionArticles: Article[];
-  submissionArticles: Article[];
   selectedArticles: Article[];
+  submissionArticles: Article[];
+  unSubmissionArticles: Article[];
   keyword?: string;
   isFilterMode: boolean;
   isSearchMode: boolean;
@@ -32,6 +34,7 @@ const initialState: ArticleState = {
   suggestionArticles: [],
   submissionArticles: [],
   selectedArticles: [],
+  unSubmissionArticles: [],
   article: {
     _id: "",
     title: "",
@@ -87,8 +90,15 @@ const ArticleSlice = createSlice({
       state.totalLength = action.payload.totalLength;
       state.totalPages = action.payload.totalPages;
     },
+    setUnSubmissionArticles(state, action: PayloadAction<Article[]>) {
+      state.unSubmissionArticles = action.payload;
+    },
     addNewSubmissionArticle(state, action: PayloadAction<Article>) {
-      state.submissionArticles.push(action.payload);
+      state.submissionArticles.unshift(action.payload);
+      if (state.submissionArticles.length > PAGE_SIZE) {
+        state.submissionArticles.pop();
+      }
+      state.totalLength++;
     },
     resetSubmissionArticles(state) {
       state.submissionArticles = [];
@@ -134,6 +144,7 @@ export const {
   setSelectedArticles,
   removeSubmissionArticle,
   setSearchMode
+  setUnSubmissionArticles,
 } = actions;
 
 export default reducer;

@@ -19,6 +19,7 @@ import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
 import SubmissionEmpty from "../pages/my_faculty/submission/SubmissionEmpty";
 import CreateAccount from "../pages/admin/CreateAccount";
+import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/myFaculty/contributions/submission/:submissionId",
         element: <Submission />,
+      },
+      {
+        path: "/myFaculty/contributions/academic-year",
+        element: <ManagerFolder />,
       },
       {
         path: "/selectedContribution",

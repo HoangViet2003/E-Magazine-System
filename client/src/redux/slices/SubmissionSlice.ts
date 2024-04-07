@@ -3,41 +3,6 @@ import { User } from "./UserSlice";
 import { Contribution } from "./ContributionSlice";
 import { Article } from "./ArticleSlice";
 
-// const fakeSubmission = [
-//   {
-//     _id: "1",
-//     title: "Viet's submission",
-//     owner: "Hoang Viet",
-//     contributionId: "1",
-//     createdAt: "2024-03-20T04:46:31.010Z",
-//     updatedAt: "2024-03-20T04:46:31.010Z",
-//   },
-//   {
-//     _id: "2",
-//     title: "Tuan Anh's submission",
-//     owner: "Tuan Anh",
-//     contributionId: "1",
-//     createdAt: "2024-03-20T04:46:31.010Z",
-//     updatedAt: "2024-03-20T04:46:31.010Z",
-//   },
-//   {
-//     _id: "3",
-//     title: "Tung's submission",
-//     owner: "Tung Ngo",
-//     contributionId: "1",
-//     createdAt: "2024-03-20T04:46:31.010Z",
-//     updatedAt: "2024-03-20T04:46:31.010Z",
-//   },
-//   {
-//     _id: "4",
-//     title: "Ha's submission",
-//     owner: "Ha Nguyen",
-//     contributionId: "1",
-//     createdAt: "2024-03-20T04:46:31.010Z",
-//     updatedAt: "2024-03-20T04:46:31.010Z",
-//   },
-// ];
-
 export interface Submission {
   _id: string;
   title: string;

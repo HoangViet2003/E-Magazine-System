@@ -1,15 +1,12 @@
 import { ReactNode, useState } from "react";
 import { useParams } from "react-router-dom";
-import Comment from "./Comment";
 
 import UlListIcon from "../assets/icons/list-ul.svg";
 import InfoLineIcon from "../assets/icons/Icon-info-circle-line.svg";
 import CheckIcon from "../assets/icons/check_ring_round_light.svg";
-import CommentIcon from "../assets/icons/comment_duotone.svg";
 import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
 import { Submission } from "../redux/slices/SubmissionSlice";
 import { useArticle, useSubmission } from "../redux/hooks";
-import Spinner from "./Spinner";
 import ArticleSelectModal from "../pages/my_faculty/submission/modal/ArticleSelectModal";
 import UploadImage from "./UploadFile";
 // import ShareIcon from "../assets/icons/Out.svg";
@@ -32,14 +29,13 @@ const MainHeader: React.FC<MainHeaderProps> = ({
 }) => {
   const params = useParams();
   const role = localStorage.getItem("role");
-  const [openComment, setOpenComment] = useState(false);
   const {
     submission,
-    isLoading,
     toggleForSubmit,
     deleteSubmission,
-    addSelectedArticlesToSubmission,
     removeArticlesFromSubmission,
+    toggleSelectSubmission,
+    handleDownloadSubmission,
   } = useSubmission();
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
@@ -98,14 +94,6 @@ const MainHeader: React.FC<MainHeaderProps> = ({
                 </>
               )}
 
-              <button
-                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                onClick={() => setOpenComment(!openComment)}
-              >
-                <img src={CommentIcon} />
-                Comments
-              </button>
-
               {isUnsubmittable && submissionId && (
                 <button
                   className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
@@ -118,13 +106,25 @@ const MainHeader: React.FC<MainHeaderProps> = ({
 
               <button
                 className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                onClick={() => deleteSubmission(submissionId)}
+                onClick={async () => {
+                  await deleteSubmission(submissionId);
+                  window.location.reload();
+                }}
               >
                 Remove
               </button>
-
-              {openComment && <Comment setOpenComment={setOpenComment} />}
             </div>
+          )}
+
+          {params.submissionId && role === "marketing coordinator" && (
+            <button
+              className="p-2 hover:bg-slate-200"
+              onClick={() => toggleSelectSubmission(submissionId)}
+            >
+              {submission.isSelectedForPublication
+                ? "Unselect submission"
+                : "Select submission"}
+            </button>
           )}
 
           {!params.submissionId && (
@@ -136,6 +136,15 @@ const MainHeader: React.FC<MainHeaderProps> = ({
                 <img src={InfoLineIcon} />
               </button>
             </>
+          )}
+
+          {params.submissionId && role === "marketing manager" && (
+            <button
+              className="p-2 hover:bg-slate-200"
+              onClick={() => handleDownloadSubmission(submissionId)}
+            >
+              Download
+            </button>
           )}
         </div>
       </div>

@@ -17,8 +17,8 @@ export default function UploadImage({
   isAddSubmission: boolean;
   setOpenFileUpload?: (value: string) => void;
 }) {
-  const [searchParams] = useSearchParams();
-  const contributionId = searchParams.get("contributionId") || "";
+  // const [searchParams] = useSearchParams();
+  // const contributionId = searchParams.get("contributionId") || "";
   const { submissionId } = useParams();
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
 
@@ -27,11 +27,7 @@ export default function UploadImage({
     isLoading: loadingArticle,
     uploadArticleThenAddToSubmission,
   } = useArticle();
-  const {
-    createSubmissionForStudent,
-    submission,
-    createSubmissionForStudentThenAddUploadedFiles,
-  } = useSubmission();
+
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
 
@@ -96,17 +92,15 @@ export default function UploadImage({
 
     if (isAddSubmission) {
       if (submissionId)
-        uploadArticleThenAddToSubmission(formData, submissionId);
-      else {
-        createSubmissionForStudentThenAddUploadedFiles(
-          contributionId,
-          formData,
-        );
-      }
+        await uploadArticleThenAddToSubmission(formData, submissionId);
     } else {
       await uploadArticle(formData);
-      setOpenDocUpload(false);
-      setOpenImageUpload(false);
+    }
+
+    setOpenDocUpload(false);
+    setOpenImageUpload(false);
+    if (setOpenFileUpload) {
+      setOpenFileUpload("");
     }
   }
 

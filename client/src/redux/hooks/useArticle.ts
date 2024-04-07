@@ -13,9 +13,14 @@ import {
   addNewSubmissionArticle,
   Article,
   setSelectedArticles,
+
   setSuggestionArticles,
   setSearchMode
+
+  setUnSubmissionArticles,
+
 } from "../slices/ArticleSlice";
+import { setSubmission } from "../slices/SubmissionSlice.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
 import { URL } from "../../utils/constant.js";
@@ -31,10 +36,12 @@ export const useArticle = () => {
     article,
     keyword,
     isFilterMode,
-    submissionArticles,
     selectedArticles,
     suggestionArticles,
     isSearchMode
+
+    submissionArticles,
+    unSubmissionArticles,
   } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
@@ -196,21 +203,18 @@ export const useArticle = () => {
         (article: Article) => article._id,
       );
 
-      // dispatch(addNewArticle({ article: uploadData?.article, user }));
-
-      const { data, status: submissionStatus } = await axios.put(
-        PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
-        {
-          newArticleIds: articlesIds,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+      const { data: submissionData, status: submissionStatus } =
+        await axios.put(
+          PUT_API(submissionId).ADD_ARTICLES_TO_SUBMISSION,
+          {
+            newArticleIds: articlesIds,
           },
-        },
-      );
-
-      console.log(data);
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
       if (submissionStatus !== 200) {
         throw new Error("Error adding articles to submission");
@@ -221,6 +225,8 @@ export const useArticle = () => {
           dispatch(addNewSubmissionArticle(article));
         });
       }
+
+      dispatch(setSubmission(submissionData?.updatedSubmission));
 
       console.log("success");
     } catch (error) {
@@ -323,7 +329,7 @@ export const useArticle = () => {
         throw new Error("Error fetching submissions");
       }
 
-      dispatch(setAllArticles(data));
+      dispatch(setUnSubmissionArticles(data?.articles));
     } catch (error) {
       console.log(error);
     } finally {
@@ -354,6 +360,7 @@ export const useArticle = () => {
     isLoading,
     articles,
     submissionArticles,
+    unSubmissionArticles,
     selectedArticles,
     article,
     fetchAllArticle,

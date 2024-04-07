@@ -12,6 +12,8 @@ import SubmissionEmpty from "./SubmissionEmpty";
 import Spinner from "../../../ui/Spinner";
 import { format } from "date-fns";
 import useWindowWidth from "../../../redux/hooks/useWindowWidth";
+import CommentIcon from "../../../assets/icons/comment_duotone.svg";
+import Comment from "../../../ui/Comment";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -23,22 +25,17 @@ export default function Submission() {
   const [page, setPage] = useState(1);
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
 
-  const {
-    contribution,
-    contributions,
-    getContributionById,
-    fetchAllContribution,
-  } = useContribution();
+  const { contribution, getContributionById } = useContribution();
   const {
     submission,
-    submissions,
     isLoading: loadingSubmission,
     getSubmissionByContributionStudent,
-    fetchAllSubmission,
     getSubmissionById,
   } = useSubmission();
   const {
+    submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
     setSelectedArticlesToState,
@@ -59,29 +56,15 @@ export default function Submission() {
     return format(date, "HH:mm dd/MM/yyyy");
   }
 
-  // Get contribution and set in state (optimize by running create get
-  // contribution by Id api)
-
-  useEffect(() => {
-    const fetchContributions = async () => {
-      await fetchAllContribution();
-    };
-    fetchContributions();
-  }, [contributionId]);
   useEffect(() => {
     const fetchContributionById = async () => {
-      await getContributionById(contributionId);
+      getContributionById(contributionId);
     };
     fetchContributionById();
-  }, [contributionId, contributions]);
+  }, []);
 
-  // fetchAllSubmission for marketer coordinator
   useEffect(() => {
     const fetchData = async () => {
-      if (role !== "student") {
-        fetchAllSubmission();
-      }
-
       if (role === "student" && contributionId) {
         getSubmissionByContributionStudent(contributionId);
       } else if (submissionId) {
@@ -93,7 +76,7 @@ export default function Submission() {
       return () => resetSubmissionArticlesState();
     };
     fetchData();
-  }, [submissions, role, submissionId, page]);
+  }, [contributionId, page, role, submissionId]);
 
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
@@ -154,11 +137,13 @@ export default function Submission() {
               <Dropdowns.Dropdown>
                 <Dropdowns.Toggle id={`current ${submission._id}`}>
                   <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                    <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                      {role === "student"
-                        ? `${contribution.academicYear} Contributions`
-                        : `${submission.student.name}`}
-                    </h1>
+                    {submissionArticles && submissionArticles.length > 0 && (
+                      <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
+                        {role === "student"
+                          ? `${contribution.academicYear} Contributions`
+                          : `${submissionArticles[0].student?.name}`}
+                      </h1>
+                    )}
                     <img src={DropdownIcon} alt="" />
                   </span>
                 </Dropdowns.Toggle>
@@ -217,6 +202,26 @@ export default function Submission() {
               }
             />
           )}
+
+          {!openComment &&
+            submissionId &&
+            (role === "student" || role === "marketing coordinator") && (
+              <button
+                className="fixed bottom-0 right-4 flex items-center gap-3 border border-borderColor px-2 py-1 shadow-[0_0px_12px_rgba(0,0,0,0.10)] hover:bg-slate-100"
+                onClick={() => setOpenComment(!openComment)}
+              >
+                <img src={CommentIcon} />
+                Comments
+              </button>
+            )}
+
+          {submissionId &&
+            (role === "student" || role === "marketing coordinator") && (
+              <Comment
+                openComment={openComment}
+                setOpenComment={setOpenComment}
+              />
+            )}
         </div>
       )}
     </div>

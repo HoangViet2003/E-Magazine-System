@@ -16,8 +16,6 @@ import 'react-toastify/dist/ReactToastify.css';
 const Header = () => {
   const { user } = useAuth();
   const { disconnectSocket } = useSocket();
-  // const id = "65fff16b2efcd832390a8534"; // Replace with the coordinator ID
-  // const ENDPOINT = "http://localhost:8080";
   const ENDPOINT = "https://e-magazine.onrender.com"
 
   useEffect(() => {

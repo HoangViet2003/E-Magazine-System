@@ -29,23 +29,6 @@ export const useSubmission = () => {
     (state: RootState) => state.submission,
   );
 
-  const fetchAllSubmission = async () => {
-    dispatch(setLoadingSubmission(true));
-    try {
-      const { data, status } = await axios.get(GET_API("").GET_ALL_SUBMISSIONS);
-
-      if (status !== 200) {
-        throw new Error("Error fetching articles");
-      }
-
-      dispatch(setAllSubmissions(data?.submissions));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      dispatch(setLoadingSubmission(false));
-    }
-  };
-
   const getSubmissionsByContributionId = async (contributionId: string) => {
     dispatch(setLoadingSubmission(true));
 
@@ -273,66 +256,66 @@ export const useSubmission = () => {
     }
   };
 
-  const createSubmissionForStudentThenAddUploadedFiles = async (
-    contributionId: string,
-    formData: FormData,
-  ) => {
-    dispatch(setLoadingSubmission(true));
+  // const createSubmissionForStudentThenAddUploadedFiles = async (
+  //   contributionId: string,
+  //   formData: FormData,
+  // ) => {
+  //   dispatch(setLoadingSubmission(true));
 
-    try {
-      const { data: createData, status: createSubmissionStatus } =
-        await axios.post(POST_API("").CREATE_SUBMISSION);
+  //   try {
+  //     const { data: createData, status: createSubmissionStatus } =
+  //       await axios.post(POST_API("").CREATE_SUBMISSION);
 
-      if (createSubmissionStatus !== 200 && createSubmissionStatus !== 201) {
-        throw new Error("Error creating submissions");
-      }
+  //     if (createSubmissionStatus !== 200 && createSubmissionStatus !== 201) {
+  //       throw new Error("Error creating submissions");
+  //     }
 
-      dispatch(setSubmission(createData));
+  //     dispatch(setSubmission(createData));
 
-      const { data: uploadData, status: uploadStatus } = await axios.post(
-        POST_API("").UPLOAD_ARTICLE,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
+  //     const { data: uploadData, status: uploadStatus } = await axios.post(
+  //       POST_API("").UPLOAD_ARTICLE,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       },
+  //     );
 
-      if (uploadStatus !== 200 && uploadStatus !== 201) {
-        throw new Error("Error upload article");
-      }
+  //     if (uploadStatus !== 200 && uploadStatus !== 201) {
+  //       throw new Error("Error upload article");
+  //     }
 
-      const articlesId: string[] = uploadData.article.map(
-        (article: Article) => article._id,
-      );
+  //     const articlesId: string[] = uploadData.article.map(
+  //       (article: Article) => article._id,
+  //     );
 
-      const { status: addArticleStatus } = await axios.put(
-        PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
-        {
-          newArticleIds: articlesId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
+  //     const { status: addArticleStatus } = await axios.put(
+  //       PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
+  //       {
+  //         newArticleIds: articlesId,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
 
-      if (addArticleStatus !== 200) {
-        throw new Error("Error adding articles to submission");
-      }
+  //     if (addArticleStatus !== 200) {
+  //       throw new Error("Error adding articles to submission");
+  //     }
 
-      navigate(`${createData?.newSubmission._id}`);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      searchParams.set("contributionId", contributionId);
-      setSearchParams(searchParams);
+  //     navigate(`${createData?.newSubmission._id}`);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     searchParams.set("contributionId", contributionId);
+  //     setSearchParams(searchParams);
 
-      dispatch(setLoadingSubmission(false));
-    }
-  };
+  //     dispatch(setLoadingSubmission(false));
+  //   }
+  // };
 
   const toggleForSubmit = async (submissionId?: string) => {
     dispatch(setLoadingSubmission(true));
@@ -425,11 +408,42 @@ export const useSubmission = () => {
     }
   };
 
+  const toggleSelectSubmission = async (submissionId?: string) => {
+    dispatch(setLoadingSubmission(true));
+
+    try {
+      if (!submissionId) throw new Error("SubmissionId is required!");
+
+      const { data, status } = await axios.patch(
+        PATCH_API(submissionId).TOGGLE_PUBLICATION,
+      );
+
+      if (status !== 200)
+        throw new Error("Error toggle submission for publication");
+
+      dispatch(setSubmission(data?.updatedSubmission));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
+    }
+  };
+
+  const handleDownloadSubmission = async (submissionId?: string) => {
+    try {
+      if (!submissionId) throw new Error("SubmissionId is required");
+      const res = await axios.get(GET_API(submissionId).DOWNLOAD_SUBMISSION);
+
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     isLoading,
     submission,
     submissions,
-    fetchAllSubmission,
     getSubmissionsByContributionId,
     getSubmissionByStudentToNavigate,
     getSubmissionByStudent,
@@ -438,9 +452,10 @@ export const useSubmission = () => {
     getSubmissionByContributionStudent,
     addSelectedArticlesToSubmission,
     createSubmissionForStudentThenAddSelectedArticles,
-    createSubmissionForStudentThenAddUploadedFiles,
     toggleForSubmit,
     deleteSubmission,
     removeArticlesFromSubmission,
+    toggleSelectSubmission,
+    handleDownloadSubmission,
   };
 };
