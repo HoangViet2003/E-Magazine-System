@@ -15,7 +15,7 @@ import {
   setSelectedArticles,
 
   setSuggestionArticles,
-  setSearchMode
+  setSearchMode,
 
   setUnSubmissionArticles,
 
@@ -38,7 +38,7 @@ export const useArticle = () => {
     isFilterMode,
     selectedArticles,
     suggestionArticles,
-    isSearchMode
+    isSearchMode,
 
     submissionArticles,
     unSubmissionArticles,

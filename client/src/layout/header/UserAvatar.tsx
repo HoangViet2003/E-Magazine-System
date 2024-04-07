@@ -32,7 +32,7 @@ export default function UserAvatar() {
                 Sign out
               </span>
             </Dropdowns.Button> */}
-    {openNotification && <div className="absolute w-100 right-20 top-20 "><Notification/></div>}
+    {openNotification && <div className="absolute w-100 right-20 top-20 z-[999999]"><Notification/></div>}
 
       {/* </Dropdowns.List> */}
       {/* </Dropdowns.Dropdown>

@@ -143,7 +143,7 @@ export const {
   setSuggestionArticles,
   setSelectedArticles,
   removeSubmissionArticle,
-  setSearchMode
+  setSearchMode,
   setUnSubmissionArticles,
 } = actions;
 

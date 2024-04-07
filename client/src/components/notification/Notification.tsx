@@ -76,12 +76,12 @@ const Notification = () => {
     console.log(notifications)
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-4 z-10 w-[420px] ">
+        <div className="bg-white rounded-lg shadow-md p-4 z-[9999] w-[420px] ">
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Notifications</h2>
                 <button className="text-blue-500 hover:text-blue-700">View all</button>
             </div>
-            <div className="space-y-4  overscroll-y-scroll">
+            <div className="space-y-4  ">
                 <InfiniteScroll
                     style={{height: '500px'}}
                     dataLength={notifications?.length}
