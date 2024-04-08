@@ -220,6 +220,9 @@ const getAllArticlesByStudentId = async (req, res) => {
 		const articles = await Article.find({
 			student: student._id,
 		})
+			.sort({
+				createdAt: -1,
+			})
 			.skip(skip)
 			.limit(limit)
 

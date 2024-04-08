@@ -65,11 +65,14 @@ const getAllContributions = async (req, res) => {
 					finalClosureDate: { $first: "$finalClosureDate" },
 				},
 			},
+			// sorted by academicYear
+			{
+				$sort: {
+					academicYear: -1,
+				},
+			},
 		])
 
-		console.log("contributions", contributions)
-
-		// const contributions = await Contribution.find()
 		res.status(200).json({
 			contributions,
 		})
