@@ -251,6 +251,8 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 			return res.status(404).json({ error: "Submission not found" })
 		}
 
+		console.log("submission articles: ", submission.articles)
+
 		const articles = await Article.find({
 			_id: { $in: submission.articles },
 		})

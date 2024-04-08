@@ -407,6 +407,18 @@ const addArticlesToSubmission = async (req, res) => {
 				.json({ error: "The final closure date has passed" })
 		}
 
+		// check if articles exists
+		const addedArticles = await Article.find({
+			_id: { $in: newArticleIds },
+		})
+
+		// if the length of the addedArtices is different from the newArticleIds, return error
+		if (addedArticles.length != newArticleIds.length) {
+			return res.status(400).json({
+				error: "One or many articles ids are not exist.",
+			})
+		}
+
 		// Update the submission articles array
 		const updatedSubmission = await Submission.findByIdAndUpdate(
 			submissionId,
