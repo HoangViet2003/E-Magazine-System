@@ -26,7 +26,7 @@ export default function MyFacultyTable() {
     fetchAllArticle,
     searchArticleQuery,
     keyword,
-    isSearchMode
+    isSearchMode,
   } = useArticle();
 
   useEffect(() => {
@@ -93,8 +93,8 @@ export default function MyFacultyTable() {
           )}
         />
       </Table>
-
-      <Pagination count={articleLength} />
+      
+      {!loadingArticle && <Pagination count={articleLength} />}
     </>
   );
 }

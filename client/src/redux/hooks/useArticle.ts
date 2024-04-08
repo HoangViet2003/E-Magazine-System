@@ -13,12 +13,11 @@ import {
   addNewSubmissionArticle,
   Article,
   setSelectedArticles,
-
   setSuggestionArticles,
   setSearchMode,
-
   setUnSubmissionArticles,
-
+  updateSelectedArticle,
+  resetSelectedArticles,
 } from "../slices/ArticleSlice";
 import { setSubmission } from "../slices/SubmissionSlice.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
@@ -345,15 +344,19 @@ export const useArticle = () => {
     }
   };
 
-  const setSelectedArticlesToState = (articles: Article[]) => {
-    if (articles && articles.length > 0) {
-      dispatch(setSelectedArticles(articles));
+  const resetSelectedArticlesState = () => {
+    dispatch(resetSelectedArticles());
+  };
+
+  const updateSelectedArticleState = (articles: Article) => {
+    if (articles) {
+      dispatch(updateSelectedArticle(articles));
     }
   };
 
   const handleSetSearchMode = (isSearchMode: boolean) => {
     dispatch(setSearchMode(isSearchMode));
-  }
+  };
 
   return {
     totalLength,
@@ -379,12 +382,11 @@ export const useArticle = () => {
     getUnselectedArticleStudent,
     uploadArticleThenAddToSubmission,
     addSubmissionArticle,
-    setSelectedArticlesToState,
+    resetSelectedArticlesState,
     handleGetSuggestion,
     suggestionArticles,
     handleSetSearchMode,
-    isSearchMode
-
-    
+    isSearchMode,
+    updateSelectedArticleState,
   };
 };

@@ -1,26 +1,26 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useArticle, useSubmission } from "../redux/hooks";
+import { useArticle } from "../redux/hooks";
 
 import { useSidebarContext } from "../layout/sidebar/SidebarContext";
 import DropComponent from "./DropComponent";
 import SpinnerMini from "./SpinnerMini";
 import { useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { URL } from "../utils/constant";
 
 export default function UploadImage({
   type,
-  isAddSubmission,
+  isAddSubmission = false,
   setOpenFileUpload,
 }: {
   type: string;
-  isAddSubmission: boolean;
+  isAddSubmission?: boolean;
   setOpenFileUpload?: (value: string) => void;
 }) {
-  // const [searchParams] = useSearchParams();
-  // const contributionId = searchParams.get("contributionId") || "";
   const { submissionId } = useParams();
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
+  const navigate = useNavigate();
 
   const {
     uploadArticle,
@@ -102,6 +102,9 @@ export default function UploadImage({
     if (setOpenFileUpload) {
       setOpenFileUpload("");
     }
+    const currentUrl = window.location.href.replace(URL, "");
+    const newUrl = currentUrl.replace(/&?page=\d+/, "");
+    navigate(newUrl);
   }
 
   return (

@@ -9,6 +9,8 @@ import SignoutIcon from "../../assets/icons/Sign_out_circle_duotone_line.svg";
 import Notification from './../../components/notification/Notification';
 import { useNotifications } from "../../redux/hooks/useNotification";
 
+
+
 export default function UserAvatar() {
   const { logout } = useAuth();
   const [openNotification, setOpenNotification] = useState(false);
@@ -20,12 +22,14 @@ export default function UserAvatar() {
       {/* <Dropdowns>
         <Dropdowns.Dropdown> */}
       {/* <Dropdowns.Toggle id="notification" startPosition="right"> */}
+
       <div className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block" onClick={() => {
         setOpenNotification(!openNotification)
         handleReadNotification(false)
         handleUpdateUnSeenNotification()
       }}>
         <img src={isRead ? UnSeenNotificationIcon : NotificationIcon} />
+
       </div>
       {/* </Dropdowns.Toggle> */}
 
@@ -41,6 +45,8 @@ export default function UserAvatar() {
               </span>
             </Dropdowns.Button> */}
       {openNotification && <div className="absolute w-100 right-20 top-20 z-[999999]"><Notification /></div>}
+
+
 
       {/* </Dropdowns.List> */}
       {/* </Dropdowns.Dropdown>
@@ -58,7 +64,7 @@ export default function UserAvatar() {
             </a>
           </Dropdowns.Toggle>
 
-          <Dropdowns.List id="faculty" startPosition="right">
+          <Dropdowns.List id="faculty">
             <Dropdowns.Button icon={UserIcon}>
               <span className="font-bold" style={{ color: "#004AD7" }}>
                 Profile

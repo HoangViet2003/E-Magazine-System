@@ -83,7 +83,7 @@ const ArticleSlice = createSlice({
         student: action.payload.user,
       };
 
-      state.articles.push(action.payload.article);
+      state.articles.unshift(action.payload.article);
     },
     setSubmissionArticles(state, action: PayloadAction<ArticleState>) {
       state.submissionArticles = action.payload.articles;
@@ -114,9 +114,6 @@ const ArticleSlice = createSlice({
     setSuggestionArticles(state, action: PayloadAction<Article[]>) {
       state.suggestionArticles = action.payload;
     },
-    setSelectedArticles(state, action: PayloadAction<Article[]>) {
-      state.selectedArticles = action.payload;
-    },
     removeSubmissionArticle(state, action: PayloadAction<string[]>) {
       state.submissionArticles = state.submissionArticles.filter(
         (article) => !action.payload.includes(article._id),
@@ -124,7 +121,23 @@ const ArticleSlice = createSlice({
     },
     setSearchMode(state, action: PayloadAction<boolean>) {
       state.isSearchMode = action.payload;
-    }
+    },
+    resetSelectedArticles(state) {
+      state.selectedArticles = [];
+    },
+    updateSelectedArticle(state, action: PayloadAction<Article>) {
+      const isDataAlreadySelected = state.selectedArticles.some(
+        (article) => article._id === action.payload._id,
+      );
+
+      if (!isDataAlreadySelected) {
+        state.selectedArticles.push(action.payload);
+      } else {
+        state.selectedArticles = state.selectedArticles.filter(
+          (article) => article._id !== action.payload._id,
+        );
+      }
+    },
   },
 });
 
@@ -141,10 +154,11 @@ export const {
   setSubmissionArticles,
   resetSubmissionArticles,
   setSuggestionArticles,
-  setSelectedArticles,
+  resetSelectedArticles,
   removeSubmissionArticle,
   setSearchMode,
   setUnSubmissionArticles,
+  updateSelectedArticle,
 } = actions;
 
 export default reducer;

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useSubmission } from "../../../../redux/hooks";
 import Button from "../../../../ui/Button";
 
 interface SubmissionTosModalProps {
@@ -10,6 +11,10 @@ export default function SubmissionTosModal({
   isAccepted,
   setIsAccepted,
 }: SubmissionTosModalProps) {
+  const [searchParams] = useSearchParams();
+  const contributionId = searchParams.get("contributionId") || "";
+  const { createSubmissionForStudent } = useSubmission();
+
   return (
     <dialog id="terms_and_conditions" className="modal">
       <div className="modal-box max-w-[1100px] px-11 py-9">
@@ -248,19 +253,7 @@ export default function SubmissionTosModal({
             <form method="dialog">
               <Button type="light">Cancel</Button>
               <Button
-                onClick={() => {
-                  // Open modal create submission
-                  const createSubmissionElement = document.getElementById(
-                    "create_submission",
-                  ) as HTMLDialogElement | null;
-                  if (createSubmissionElement) {
-                    createSubmissionElement.showModal();
-                  } else {
-                    console.error(
-                      "Element with ID 'create_submission' not found",
-                    );
-                  }
-                }}
+                onClick={() => createSubmissionForStudent(contributionId)}
                 disabled={!isAccepted}
               >
                 Accept

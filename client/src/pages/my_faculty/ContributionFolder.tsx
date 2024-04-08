@@ -17,8 +17,7 @@ export default function ContributionFolder() {
     fetchAllContribution,
     fetchAllContributionByManager,
   } = useContribution();
-  const { getSubmissionByStudentToNavigate, isLoading: loadingSubmission } =
-    useSubmission();
+  const { getSubmissionByStudentToNavigate } = useSubmission();
   const role = localStorage.getItem("role");
 
   function calculateClosureDate(date?: string) {
@@ -60,48 +59,42 @@ export default function ContributionFolder() {
         Contributions
       </h3>
 
-      {loadingContribution || loadingSubmission ? (
-        <Spinner />
-      ) : (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {contributions.map((contribution, index) => (
-            <button
-              key={index}
-              className="rounded border border-borderColor p-4 hover:bg-slate-100"
-              onDoubleClick={async () => {
-                if (role === "student") {
-                  handleStudentSubmission(contribution._id);
-                } else if (role === "marketing coordinator") {
-                  handleSubmissionNavigate(contribution._id);
-                } else if (role === "marketing manager") {
-                  handleManagerNavigate(contribution._id);
-                }
-              }}
-            >
-              <div className={"flex items-center gap-4"}>
-                <img src={FolderIcon} />
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {contributions.map((contribution, index) => (
+          <button
+            key={index}
+            className="rounded border border-borderColor p-4 hover:bg-slate-100"
+            onDoubleClick={async () => {
+              if (role === "student") {
+                handleStudentSubmission(contribution._id);
+              } else if (role === "marketing coordinator") {
+                handleSubmissionNavigate(contribution._id);
+              } else if (role === "marketing manager") {
+                handleManagerNavigate(contribution._id);
+              }
+            }}
+          >
+            <div className={"flex items-center gap-4"}>
+              <img src={FolderIcon} />
 
-                <span className={ellipsis + " font-semibold leading-tight"}>
-                  {contribution.academicYear + " Contributions"}
+              <span className={ellipsis + " font-semibold leading-tight"}>
+                {contribution.academicYear + " Contributions"}
 
-                  {contribution.status === "open" && (
-                    <div
-                      className={
-                        ellipsis + " text-left text-[10px] font-normal"
-                      }
-                      style={{ color: "#CA3636" }}
-                    >
-                      {calculateClosureDate(contribution.closureDate) < 0
-                        ? ""
-                        : `${calculateClosureDate(contribution.closureDate)} days until closure date`}
-                    </div>
-                  )}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
+                {contribution.status === "open" && (
+                  <div
+                    className={ellipsis + " text-left text-[10px] font-normal"}
+                    style={{ color: "#CA3636" }}
+                  >
+                    {calculateClosureDate(contribution.closureDate) < 0
+                      ? ""
+                      : `${calculateClosureDate(contribution.closureDate)} days until closure date`}
+                  </div>
+                )}
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useSidebarContext } from "./SidebarContext";
 import { useState } from "react";
@@ -18,10 +18,12 @@ import Logo from "../../assets/Logo.png";
 import Dropdowns from "../../ui/Dropdowns";
 import UploadImage from "../../ui/UploadFile";
 import { useArticle } from "../../redux/hooks";
+import { URL } from "../../utils/constant";
 
 export default function SidebarStudent() {
   const currentPath = useLocation().pathname;
   const windowWidth = useWindowWidth();
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const { openSidebar, setOpenSidebar } = useSidebarContext();
   const {
@@ -74,6 +76,10 @@ export default function SidebarStudent() {
 
   async function openNewDocument() {
     await createNewDocument();
+
+    const currentUrl = window.location.href.replace(URL, "");
+    const newUrl = currentUrl.replace(/&?page=\d+/, "");
+    navigate(newUrl);
   }
 
   return windowWidth < 1024 ? (

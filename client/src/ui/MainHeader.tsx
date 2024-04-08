@@ -3,18 +3,16 @@ import { useParams } from "react-router-dom";
 
 import UlListIcon from "../assets/icons/list-ul.svg";
 import InfoLineIcon from "../assets/icons/Icon-info-circle-line.svg";
-import CheckIcon from "../assets/icons/check_ring_round_light.svg";
-import UnsubmitIcon from "../assets/icons/Refresh_light.svg";
-import { Submission } from "../redux/slices/SubmissionSlice";
 import { useArticle, useSubmission } from "../redux/hooks";
 import ArticleSelectModal from "../pages/my_faculty/submission/modal/ArticleSelectModal";
 import UploadImage from "./UploadFile";
+import Dropdowns from "./Dropdowns";
+import useWindowWidth from "../redux/hooks/useWindowWidth";
+import OptionIcon from "../assets/icons/options-svgrepo-com.svg";
 // import ShareIcon from "../assets/icons/Out.svg";
 
 interface MainHeaderProps {
   children: ReactNode;
-  isUnsubmittable?: boolean;
-  submission?: Submission;
   isEditable?: boolean;
   isEditableOn?: boolean;
   setIsEditableOn?: (value: boolean) => void;
@@ -22,7 +20,6 @@ interface MainHeaderProps {
 
 const MainHeader: React.FC<MainHeaderProps> = ({
   children,
-  isUnsubmittable,
   isEditable,
   isEditableOn,
   setIsEditableOn,
@@ -31,8 +28,6 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const role = localStorage.getItem("role");
   const {
     submission,
-    toggleForSubmit,
-    deleteSubmission,
     removeArticlesFromSubmission,
     toggleSelectSubmission,
     handleDownloadSubmission,
@@ -40,79 +35,153 @@ const MainHeader: React.FC<MainHeaderProps> = ({
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
   const [openFileUpload, setOpenFileUpload] = useState("");
+  const windowWidth = useWindowWidth();
 
   return (
     <>
       <div className="flex items-center justify-between border-b border-borderColor py-4">
         {children}
 
-        <div className="relative hidden lg:inline-block">
+        <div className="relative inline-block">
           {params.submissionId && role === "student" && (
-            <div className="flex">
+            <div className="flex flex-row-reverse items-center gap-2">
               {isEditable && (
-                <button
-                  className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                  onClick={() =>
-                    setIsEditableOn && setIsEditableOn(!isEditableOn)
-                  }
-                >
-                  <img src={CheckIcon} />
-                  {isEditableOn ? "Cancel" : "Edit"}
-                </button>
+                <label className="label cursor-pointer gap-5">
+                  {!isEditableOn && (
+                    <span className="label-text text-base">Edit</span>
+                  )}
+                  <input
+                    type="checkbox"
+                    className={` ${isEditableOn ? "toggle border-[#004AD7] bg-[#004AD7] " : "toggle border-[#949699] bg-[#949699] "}`}
+                    checked={isEditableOn}
+                    onChange={() =>
+                      setIsEditableOn && setIsEditableOn(!isEditableOn)
+                    }
+                  />
+                </label>
               )}
 
-              {isEditableOn && (
-                <>
-                  <button
-                    className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                    onClick={() => {
-                      const modal = document.getElementById(
-                        "select articles",
-                      ) as HTMLDialogElement | null;
-                      if (modal) {
-                        modal.showModal();
-                      } else {
-                        console.error("Modal not found");
-                      }
-                    }}
-                  >
-                    Add
-                  </button>
-                  {submissionId && (
+              {isEditableOn &&
+                (windowWidth > 576 ? (
+                  <>
+                    {submissionId && (
+                      <button
+                        className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100 disabled:cursor-not-allowed"
+                        onClick={async () => {
+                          if (selectedArticles && selectedArticles.length > 0) {
+                            await removeArticlesFromSubmission(
+                              submissionId,
+                              selectedArticles,
+                            );
+                            window.location.reload();
+                          }
+                        }}
+                        disabled={
+                          !selectedArticles || selectedArticles.length === 0
+                        }
+                      >
+                        Delete
+                      </button>
+                    )}
+
                     <button
                       className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                      onClick={() =>
-                        removeArticlesFromSubmission(
-                          submissionId,
-                          selectedArticles,
-                        )
-                      }
+                      onClick={() => {
+                        const modal = document.getElementById(
+                          "select articles",
+                        ) as HTMLDialogElement | null;
+                        if (modal) {
+                          modal.showModal();
+                        } else {
+                          console.error("Modal not found");
+                        }
+                      }}
                     >
-                      Delete
+                      Add
                     </button>
-                  )}
-                </>
-              )}
 
-              {isUnsubmittable && submissionId && (
-                <button
-                  className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
-                  onClick={() => toggleForSubmit(submissionId)}
-                >
-                  <img src={UnsubmitIcon} />
-                  {submission.unsubmitted ? "Submit" : "Unsubmit"}
-                </button>
-              )}
+                    <Dropdowns>
+                      <Dropdowns.Dropdown>
+                        <Dropdowns.Toggle id="upload_submission">
+                          <span className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
+                            Upload files
+                          </span>
+                        </Dropdowns.Toggle>
 
-              <button
-                className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                onClick={async () => {
-                  await deleteSubmission(submissionId);
-                  window.location.reload();
-                }}
-              >
-                Remove
-              </button>
+                        <Dropdowns.List id="upload_submission">
+                          <Dropdowns.Button
+                            onClick={() => setOpenFileUpload("word")}
+                          >
+                            <span
+                              className="font-bold"
+                              style={{ color: "#004AD7" }}
+                            >
+                              Documents
+                            </span>
+                          </Dropdowns.Button>
+                          <Dropdowns.Button
+                            onClick={() => setOpenFileUpload("image")}
+                          >
+                            <span
+                              className="font-bold"
+                              style={{ color: "#CA3636" }}
+                            >
+                              Images
+                            </span>
+                          </Dropdowns.Button>
+                        </Dropdowns.List>
+                      </Dropdowns.Dropdown>
+                    </Dropdowns>
+                  </>
+                ) : (
+                  <Dropdowns>
+                    <Dropdowns.Dropdown>
+                      <Dropdowns.Toggle id="update_article">
+                        <div className="rounded hover:bg-slate-200">
+                          <img src={OptionIcon} className="w-8" />
+                        </div>
+                      </Dropdowns.Toggle>
+
+                      <Dropdowns.List id="update_article">
+                        {/* <Dropdowns.Button
+                          onClick={() => setOpenFileUpload("word")}
+                        >
+                          <span>Upload files</span>
+                        </Dropdowns.Button> */}
+                        <Dropdowns.Button
+                          onClick={() => {
+                            const modal = document.getElementById(
+                              "select articles",
+                            ) as HTMLDialogElement | null;
+                            if (modal) {
+                              modal.showModal();
+                            } else {
+                              console.error("Modal not found");
+                            }
+                          }}
+                        >
+                          <span>Add</span>
+                        </Dropdowns.Button>
+                        <Dropdowns.Button
+                          onClick={async () => {
+                            if (
+                              selectedArticles &&
+                              selectedArticles.length > 0
+                            ) {
+                              await removeArticlesFromSubmission(
+                                submissionId,
+                                selectedArticles,
+                              );
+                              window.location.reload();
+                            }
+                          }}
+                        >
+                          <span>Delete</span>
+                        </Dropdowns.Button>
+                      </Dropdowns.List>
+                    </Dropdowns.Dropdown>
+                  </Dropdowns>
+                ))}
             </div>
           )}
 
@@ -137,7 +206,6 @@ const MainHeader: React.FC<MainHeaderProps> = ({
               </button>
             </>
           )}
-
           {params.submissionId && role === "marketing manager" && (
             <button
               className="p-2 hover:bg-slate-200"
@@ -148,6 +216,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
           )}
         </div>
       </div>
+
       <ArticleSelectModal />
 
       {openFileUpload === "word" && (
