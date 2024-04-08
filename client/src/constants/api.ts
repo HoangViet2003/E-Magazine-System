@@ -25,14 +25,13 @@ const GET_API = (id: string, page = 1, year?: number) => {
     GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT: `/submission/contribution/${id}`,
     GET_SUBMISSION_BY_STUDENT_ID: `/submission/student?contributionId=${id}`,
     GET_UNSELECTED_ARTICLES_OF_STUDENTS: `/submission/${id}/unselectedArticles`,
-
-
+    DOWNLOAD_SUBMISSION: `/submission/${id}/download`,
 
     //notifications
     GET_ALL_NOTIFICATIONS: `/notifications?page=${page}`,
 
-    DOWNLOAD_SUBMISSION: `/submission/${id}/download`,
-
+    //users
+    GET_ALL_USERS: `/users?page=${page}`,
   };
 };
 
@@ -56,6 +55,8 @@ const POST_API = (id?: string) => {
     CREATE_FACULTY: `/faculty`,
     // submissions
     CREATE_SUBMISSION: `/submission`,
+
+   
   };
 };
 
@@ -68,8 +69,7 @@ const PUT_API = (id: string) => {
 
     // contributions
     UPDATE_CONTRIBUTION: `/contribution/${id}`,
-    // faculties
-    EDIT_FACULTY: `/faculty/${id}`,
+
     ADD_MARKETING_COORDINATOR: `/faculty/${id}/add-marketing-coordinator`,
     // submissions
     ADD_COMMENT_SUBMISSION: `/submission/${id}`,
@@ -92,6 +92,9 @@ const DELETE_API = (id: string) => {
     DELETE_FACULTY: `/faculty/${id}`,
     // submissions
     DELETE_SUBMISSION: `/submission/${id}`,
+
+    //user
+    DELETE_USER: `/user/${id}`,
   };
 };
 
@@ -100,6 +103,15 @@ const PATCH_API = (id: string) => {
     // submissions
     TOGGLE_PUBLICATION: `/submission/${id}/publication`,
     TOGGLE_SUBMIT: `/submission/${id}/submit`,
+
+    //user
+    EDIT_USER: `/user/${id}`,
+
+    // faculties
+    EDIT_FACULTY: `/faculty/${id}`,
+
+    //notifications
+    UPDATE_UNSEEN_NOTIFICATIONS: `/notification`,
   };
 };
 

@@ -18,6 +18,7 @@ interface NotificationState {
   currentPage: number;
   totalPage: number;
   totalNotification: number;
+  isRead:boolean;
 }
 
 const initialState: NotificationState = {
@@ -36,7 +37,7 @@ const initialState: NotificationState = {
   currentPage: 1,
   totalPage: 0,
   totalNotification: 0,
-
+  isRead:false
  
 };
 
@@ -58,6 +59,10 @@ const slice = createSlice({
     },
     setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
+    },
+    setIsRead(state, action: PayloadAction<boolean>) {
+      state.isRead = action.payload;
+    
     }
 
 
@@ -66,7 +71,7 @@ const slice = createSlice({
 
 const { reducer, actions } = slice;
 
-export const {setAllNotifications,setLoading,setCurrentPage,setNotificationLength,setToTalPage} = actions;
+export const {setAllNotifications,setLoading,setCurrentPage,setNotificationLength,setToTalPage,setIsRead} = actions;
 
 export type { Notification, NotificationState };
 

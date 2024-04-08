@@ -11,11 +11,13 @@ import useSocket from './../../redux/hooks/useSocket';
 import { useAuth } from "./../../redux/hooks/useAuth";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNotifications } from "../../redux/hooks/useNotification";
 
 
 const Header = () => {
   const { user } = useAuth();
   const { disconnectSocket } = useSocket();
+  const {handleReadNotification} = useNotifications()
   const ENDPOINT = "https://e-magazine.onrender.com"
 
   useEffect(() => {
@@ -28,6 +30,7 @@ const Header = () => {
       setTimeout(() => {
         socket.on("notification", (data) => {
           toast.info(data.message);
+          handleReadNotification(true)
         });
       }, 3000);
     });

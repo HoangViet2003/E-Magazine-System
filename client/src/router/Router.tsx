@@ -20,6 +20,9 @@ import SubmissionImage from "../pages/image_collection/ImageCollection";
 import SubmissionEmpty from "../pages/my_faculty/submission/SubmissionEmpty";
 import CreateAccount from "../pages/admin/CreateAccount";
 import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
+import AccountTable from "../pages/admin/AccountTable";
+import FacultyTable from "../pages/admin/FacultyTable";
+import CreateFaculty from "../pages/admin/CreateFaculty";
 
 const router = createBrowserRouter([
   {
@@ -123,7 +126,18 @@ const router = createBrowserRouter([
       {
         path:"/account/create",
         element:<CreateAccount/>
-      }
+      },{
+        path:"/account",
+        element:<AccountTable/>
+      },
+      {
+        path: "/faculty",
+        element: <FacultyTable />,
+      },
+      {
+        path: "/faculty/create",
+        element: <CreateFaculty />,
+      },
     ],
   },
   {
