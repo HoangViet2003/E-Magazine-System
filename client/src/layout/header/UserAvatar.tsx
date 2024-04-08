@@ -5,7 +5,7 @@ import NotificationIcon from "../../assets/icons/Bell_pin_fill.svg";
 import User from "../../assets/default-user.jpg";
 import UserIcon from "../../assets/icons/User_fill.svg";
 import SignoutIcon from "../../assets/icons/Sign_out_circle_duotone_line.svg";
-import Notification from './../../components/notification/Notification';
+import Notification from "./../../components/notification/Notification";
 
 export default function UserAvatar() {
   const { logout } = useAuth();
@@ -16,7 +16,10 @@ export default function UserAvatar() {
       {/* <Dropdowns>
         <Dropdowns.Dropdown> */}
       {/* <Dropdowns.Toggle id="notification" startPosition="right"> */}
-      <div className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block" onClick={() => setOpenNotification(!openNotification)}>
+      <div
+        className="hidden rounded-full p-1 duration-300 hover:bg-slate-200 xl:block"
+        onClick={() => setOpenNotification(!openNotification)}
+      >
         <img src={NotificationIcon} />
       </div>
       {/* </Dropdowns.Toggle> */}
@@ -32,7 +35,11 @@ export default function UserAvatar() {
                 Sign out
               </span>
             </Dropdowns.Button> */}
-    {openNotification && <div className="absolute w-100 right-20 top-20 z-[999999]"><Notification/></div>}
+      {openNotification && (
+        <div className="w-100 absolute right-20 top-20 z-[999999]">
+          <Notification />
+        </div>
+      )}
 
       {/* </Dropdowns.List> */}
       {/* </Dropdowns.Dropdown>
@@ -50,7 +57,7 @@ export default function UserAvatar() {
             </a>
           </Dropdowns.Toggle>
 
-          <Dropdowns.List id="faculty" startPosition="right">
+          <Dropdowns.List id="faculty">
             <Dropdowns.Button icon={UserIcon}>
               <span className="font-bold" style={{ color: "#004AD7" }}>
                 Profile

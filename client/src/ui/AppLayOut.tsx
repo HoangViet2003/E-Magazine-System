@@ -16,6 +16,7 @@ export default function AppLayOut() {
           {user.role === "student" && <SidebarStudent />}
           {user.role === "marketing coordinator" && <Sidebar />}
           {user.role === "marketing manager" && <Sidebar />}
+          {user.role === "administrator" && <Sidebar />}
 
           <Outlet />
         </div>

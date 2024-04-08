@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Image } from "react-grid-gallery";
 
 import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
-import PrevIcon from "../../assets/icons/angle-left-svgrepo-com.svg";
-import NextIcon from "../../assets/icons/angle-right-svgrepo-com.svg";
+import AngleFill from "../../assets/icons/angle_fill";
 
 export default function ImageLightbox({
   currentImage,
@@ -70,7 +69,7 @@ export default function ImageLightbox({
         className="z-10 h-52 w-20 opacity-50 duration-300 hover:opacity-100"
         onClick={handleClickLeft}
       >
-        <img src={PrevIcon} alt="Previous" />
+        <AngleFill fill="#fff" className="w-20" />
       </button>
 
       <img
@@ -104,7 +103,7 @@ export default function ImageLightbox({
         className="z-10 h-52 w-20 opacity-50 duration-300 hover:opacity-100"
         onClick={handleClickRight}
       >
-        <img src={NextIcon} alt="Next" />
+        <AngleFill fill="#fff" className="w-20 rotate-180" />
       </button>
     </div>
   );

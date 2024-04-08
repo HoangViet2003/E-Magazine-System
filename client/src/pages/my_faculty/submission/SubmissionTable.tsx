@@ -16,14 +16,12 @@ interface SubmissionTableProps {
 
 const SubmissionTable: React.FC<SubmissionTableProps> = ({ isEditableOn }) => {
   const {
-    selectedArticles,
     submissionArticles,
     isLoading: loadingArticle,
     totalLength,
-    setSelectedArticlesToState,
+    resetSelectedArticlesState,
   } = useArticle();
   const navigate = useNavigate();
-  const [chooseArticle, setChooseArticle] = useState<Article[]>([]);
 
   function openNewDocument(id: string) {
     window.open(`${URL}/documents/${id}`, "_blank");
@@ -34,13 +32,15 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ isEditableOn }) => {
   }
 
   useEffect(() => {
-    setChooseArticle([]);
-    setSelectedArticlesToState([]);
+    resetSelectedArticlesState();
   }, [isEditableOn]);
 
-  useEffect(() => {
-    setSelectedArticlesToState(chooseArticle);
-  }, [chooseArticle, setSelectedArticlesToState]);
+  // useEffect(() => {
+  //   setSelectedArticlesToState(chooseArticle);
+  // }, [chooseArticle, setSelectedArticlesToState]);
+
+  // console.log("choose", chooseArticle);
+  // console.log("select", selectedArticles);
 
   return (
     <>
@@ -68,17 +68,13 @@ const SubmissionTable: React.FC<SubmissionTableProps> = ({ isEditableOn }) => {
                   }}
                   key={data._id}
                 >
-                  <SubmissionRow
-                    data={data}
-                    isEditableOn={isEditableOn}
-                    chooseArticle={chooseArticle}
-                    setChooseArticle={setChooseArticle}
-                  />
+                  <SubmissionRow data={data} isEditableOn={isEditableOn} />
                 </div>
               )}
             />
           </Table>
-          <Pagination count={totalLength} />
+
+          {!loadingArticle && <Pagination count={totalLength} />}
         </>
       )}
     </>

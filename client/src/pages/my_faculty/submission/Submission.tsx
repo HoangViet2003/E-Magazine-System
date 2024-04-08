@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import useWindowWidth from "../../../redux/hooks/useWindowWidth";
 import CommentIcon from "../../../assets/icons/comment_duotone.svg";
 import Comment from "../../../ui/Comment";
+import UnsubmitIcon from "../../../assets/icons/Refresh_light.svg";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -33,12 +34,13 @@ export default function Submission() {
     isLoading: loadingSubmission,
     getSubmissionByContributionStudent,
     getSubmissionById,
+    toggleForSubmit,
+    deleteSubmission,
   } = useSubmission();
   const {
     submissionArticles,
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
-    setSelectedArticlesToState,
   } = useArticle();
 
   const isUnsubmittable =
@@ -83,17 +85,11 @@ export default function Submission() {
     setPage(page);
   }, [searchParams]);
 
-  useEffect(() => {
-    setSelectedArticlesToState([]);
-  }, [isEditableOn, setSelectedArticlesToState]);
-
   return (
     <div className="grid grid-rows-[auto_1fr]">
       {!loadingSubmission && (
         <MainHeader
-          isUnsubmittable={isUnsubmittable}
           isEditable={isEditable}
-          submission={submission}
           setIsEditableOn={setIsEditableOn}
           isEditableOn={isEditableOn}
         >
@@ -137,31 +133,46 @@ export default function Submission() {
               <Dropdowns.Dropdown>
                 <Dropdowns.Toggle id={`current ${submission._id}`}>
                   <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
-                    {submissionArticles && submissionArticles.length > 0 && (
+                    {submissionArticles && (
                       <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
                         {role === "student"
                           ? `${contribution.academicYear} Contributions`
                           : `${submissionArticles[0].student?.name}`}
                       </h1>
                     )}
-                    <img src={DropdownIcon} alt="" />
+                    <img src={DropdownIcon} />
                   </span>
                 </Dropdowns.Toggle>
 
-                <Dropdowns.List id={`current ${submission._id}`}>
-                  <Dropdowns.Button icon={DropdownIcon}>
-                    Download
-                  </Dropdowns.Button>
-                  <Dropdowns.Button icon={DropdownIcon}>
-                    Delete
-                  </Dropdowns.Button>
-                </Dropdowns.List>
+                {isUnsubmittable && (
+                  <Dropdowns.List id={`current ${submission._id}`}>
+                    <Dropdowns.Button icon={UnsubmitIcon}>
+                      <span
+                        className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
+                        onClick={() => toggleForSubmit(submissionId)}
+                      >
+                        {submission.unsubmitted ? "Submit" : "Unsubmit"}
+                      </span>
+                    </Dropdowns.Button>
+
+                    <Dropdowns.Button icon={DropdownIcon}>
+                      <span
+                        className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
+                        onClick={async () => {
+                          await deleteSubmission(submissionId);
+                        }}
+                      >
+                        Remove
+                      </span>
+                    </Dropdowns.Button>
+                  </Dropdowns.List>
+                )}
               </Dropdowns.Dropdown>
             </Dropdowns>
 
             {role === "student" && contribution.closureDate && (
               <p
-                className={`whitespace-nowrap text-sm font-normal italic
+                className={`hidden whitespace-nowrap text-sm font-normal italic 2xl:block
                 ${today.getTime() < new Date(contribution.closureDate).getTime() ? "text-[#004AD7]" : "text-[#8B8989]"}`}
               >
                 {`Closure Date: ${formattedDate(contribution.closureDate)}

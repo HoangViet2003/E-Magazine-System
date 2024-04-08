@@ -84,17 +84,19 @@ export const useSubmission = () => {
         GET_API(contributionId).GET_SUBMISSION_BY_CONTRIBUTION_ID_FOR_STUDENT,
       );
       if (status !== 200) {
+        navigate("submission");
         throw new Error("Error fetching submission");
       }
 
       dispatch(setSubmission(data?.submission));
-      navigate(`submission/${data?.submission._id}`);
+      navigate(
+        `submission/${data?.submission._id}?contributionId=${contributionId}`,
+      );
     } catch (error) {
-      navigate("submission");
-    } finally {
-      searchParams.set("contributionId", contributionId);
-      setSearchParams(searchParams);
+      navigate(`submission?contributionId=${contributionId}`);
 
+      console.log(error);
+    } finally {
       dispatch(setLoadingSubmission(false));
     }
   };

@@ -1,10 +1,9 @@
 import LockIcon from "../../../assets/icons/submission-pages/Lock_fill.svg";
 import EmptyIcon from "../../../assets/icons/submission-pages/Empty Icon 203873 1.svg";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import SubmissionTosModal from "./modal/SubmissionTosModal";
 import Button from "../../../ui/Button";
-import CreateSubmissionModal from "./modal/CreateSubmissionModal";
 import { useSubmission } from "../../../redux/hooks";
 
 import ArticleSelectModal from "./modal/ArticleSelectModal";
@@ -19,20 +18,17 @@ export default function SubmissionEmpty({
   isSubmissionOpen: boolean;
   hasSubmission?: boolean;
 }) {
-  const [searchParams] = useSearchParams();
-  const contributionId = searchParams.get("contributionId") || "";
   const [openFileUpload, setOpenFileUpload] = useState("");
 
   const navigate = useNavigate();
   const [isAccepted, setIsAccepted] = useState(false);
-  const { createSubmissionForStudent, isLoading: loadingSubmission } =
-    useSubmission();
+  const { isLoading: loadingSubmission } = useSubmission();
 
   if (loadingSubmission) return <Spinner />;
 
   return (
     <>
-      <div className="mt-[100px] flex flex-col items-center justify-center gap-[18px]">
+      <div className="mt-[100px] flex flex-col items-center justify-center gap-[18px] text-center">
         <img src={isSubmissionOpen ? EmptyIcon : LockIcon} alt="Lock Icon" />
 
         {isSubmissionOpen ? (
@@ -53,15 +49,27 @@ export default function SubmissionEmpty({
         {!isSubmissionOpen ? (
           <Button onClick={() => navigate("/student")}>RETURN HOME</Button>
         ) : !hasSubmission ? (
-          <Button onClick={() => createSubmissionForStudent(contributionId)}>
+          <Button
+            onClick={() => {
+              setIsAccepted(false);
+              const modal = document.getElementById(
+                "terms_and_conditions",
+              ) as HTMLDialogElement | null;
+              if (modal) {
+                modal.showModal();
+              } else {
+                console.error("Modal not found");
+              }
+            }}
+          >
             CREATE SUBMISSION
           </Button>
         ) : (
-          <div className="flex">
+          <div className="flex flex-wrap justify-center">
             <Dropdowns>
               <Dropdowns.Dropdown>
                 <Dropdowns.Toggle id="upload_submission">
-                  <span className="rounded px-10 py-3 font-semibold text-[#004AD7]">
+                  <span className="block rounded px-10 py-3 font-semibold text-[#004AD7]">
                     Upload files
                   </span>
                 </Dropdowns.Toggle>
@@ -100,12 +108,11 @@ export default function SubmissionEmpty({
         )}
       </div>
 
-      {/* <SubmissionTosModal
+      <SubmissionTosModal
         isAccepted={isAccepted}
         setIsAccepted={setIsAccepted}
-      /> */}
+      />
 
-      <CreateSubmissionModal setOpenFileUpload={setOpenFileUpload} />
       <ArticleSelectModal />
 
       {openFileUpload === "word" && (
