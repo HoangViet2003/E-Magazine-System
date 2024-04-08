@@ -1,17 +1,23 @@
-import axios from "axios";
+import axios from "../../utils/axios.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../index";
-import { setLoadingUser, setUser } from "../slices/UserSlice";
+import {
+  setLoadingUser,
+  setUser,
+  setUsers,
+  setIsLoadingTable,
+} from "../slices/UserSlice";
+import { GET_API, PUT_API, DELETE_API, POST_API,PATCH_API } from "../../constants/api.js";
+import {toast } from "react-toastify";
 
 export function useAuth() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuth, isLoading, user } = useSelector(
+  const { isAuth, isLoading, user, users, isLoadingTable } = useSelector(
     (state: RootState) => state.user,
   );
 
-  const url = "https://e-magazine.onrender.com/api/v1/";
 
   const setUserFromToken = async (userToken?: string) => {
     dispatch(setLoadingUser(true));
@@ -35,14 +41,11 @@ export function useAuth() {
     dispatch(setLoadingUser(true));
 
     try {
-      const { data } = await axios({
-        method: "post",
-        url: `${url}/login`,
-        data: {
-          email,
-          password,
-        },
+      const { data } = await axios.post(POST_API().LOGIN, {
+        email,
+        password,
       });
+  
 
       if (data.status === "success") {
         dispatch(setUser(data.user));
@@ -51,14 +54,16 @@ export function useAuth() {
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("role", data.user.role);
 
-        alert("Login successfully");
+        toast.success("Login successfully");
 
         navigate("/dashboard", { replace: true });
       } else {
-        alert("Provided email or password are incorrect");
+        toast.error("Provided email or password are incorrect");
       }
     } catch (error) {
       console.log(error);
+      toast.error("Provided email or password are incorrect");
+
     } finally {
       dispatch(setLoadingUser(false));
     }
@@ -69,6 +74,57 @@ export function useAuth() {
     navigate("/login", { replace: true });
   };
 
+  const getAllUser = async (page: number) => {
+    dispatch(setIsLoadingTable(true));
+    try {
+      const res = await axios.get(GET_API("", page).GET_ALL_USERS);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      dispatch(setUsers(res.data));
+      dispatch(setIsLoadingTable(false));
+    } catch (error) {
+      console.log(error);
+      dispatch(setIsLoadingTable(false));
+    }
+  };
+
+  const updateUser = async (id:string,data: any) => {
+    dispatch(setIsLoadingTable(true));
+    try {
+      const res = await axios.patch(PATCH_API(id).EDIT_USER, data);
+      console.log(res);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      toast.success("User updated successfully");
+      dispatch(setIsLoadingTable(false));
+    } catch (error) {
+      console.log(error);
+      dispatch(setIsLoadingTable(false));
+      toast.error("User updated failed");
+    }
+  
+  }
+
+  const deleteUser = async (id: string) => {
+    dispatch(setIsLoadingTable(true));
+    try {
+      const res = await axios.delete(DELETE_API(id).DELETE_USER);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      console.log(res)
+      toast.success("User deleted successfully");
+      dispatch(setIsLoadingTable(false));
+    } catch (error) {
+      console.log(error);
+      dispatch(setIsLoadingTable(false));
+      toast.error("User deleted failed");
+    }
+  
+  }
+
   return {
     user,
     isLoading,
@@ -76,5 +132,10 @@ export function useAuth() {
     login,
     logout,
     setUserFromToken,
+    getAllUser,
+    users,
+    isLoadingTable,
+    updateUser,
+    deleteUser
   };
 }

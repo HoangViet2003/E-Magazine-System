@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { set } from "date-fns";
 
 interface Faculty {
   _id: string;
   name: string;
-  description: string;
+  marketingCoordinatorId?: string;
 }
 
 interface FacultyState {
   faculties: Faculty[];
   faculty: Faculty;
-  loading: boolean;
+  isLoading: boolean;
   currentPage: number;
   totalPages: number;
   totalLength: number;
@@ -18,14 +17,14 @@ interface FacultyState {
 
 const initialState: FacultyState = {
   faculties: [],
-  loading: false,
+  isLoading: false,
   currentPage: 1,
   totalPages: 0,
   totalLength: 0,
   faculty: {
     _id: "",
     name: "",
-    description: "",
+    marketingCoordinatorId: "",
   },
 };
 
@@ -35,13 +34,17 @@ const slice = createSlice({
   reducers: {
     setFaculties: (state, action: PayloadAction<Faculty[]>) => {
       state.faculties = action.payload;
+    },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    
     }
   },
 });
 
 const { reducer, actions } = slice;
 
-export const {setFaculties} = actions;
+export const { setFaculties,setIsLoading } = actions;
 
 export type { FacultyState, Faculty };
 
