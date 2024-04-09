@@ -1,44 +1,41 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 interface Notification {
   _id: string;
-  title:string;
-  message:string;
-  actionUrl:string;
-  isRead:boolean;
-  createdAt:string;
-  updatedAt:string;
+  title: string;
+  message: string;
+  actionUrl: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface NotificationState {
   notifications: Notification[];
-  notification:Notification;
+  notification: Notification;
   isLoading: boolean;
   currentPage: number;
   totalPage: number;
   totalNotification: number;
-  isRead:boolean;
+  totalUnSeenNotification: number;
 }
 
 const initialState: NotificationState = {
   notifications: [],
   notification: {
     _id: "",
-    title:"",
-    message:"",
-    actionUrl:"",
-    isRead:false,
-    createdAt:"",
-    updatedAt:"",
-
+    title: "",
+    message: "",
+    actionUrl: "",
+    isRead: false,
+    createdAt: "",
+    updatedAt: "",
   },
   isLoading: false,
   currentPage: 1,
   totalPage: 0,
   totalNotification: 0,
-  isRead:false
- 
+  totalUnSeenNotification: 0,
 };
 
 const slice = createSlice({
@@ -60,18 +57,22 @@ const slice = createSlice({
     setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
     },
-    setIsRead(state, action: PayloadAction<boolean>) {
-      state.isRead = action.payload;
-    
-    }
-
-
+    setIsReadAllNotification(state, action: PayloadAction<number>) {
+      state.totalUnSeenNotification = action.payload;
+    },
   },
 });
 
 const { reducer, actions } = slice;
 
-export const {setAllNotifications,setLoading,setCurrentPage,setNotificationLength,setToTalPage,setIsRead} = actions;
+export const {
+  setAllNotifications,
+  setLoading,
+  setCurrentPage,
+  setNotificationLength,
+  setToTalPage,
+  setIsReadAllNotification,
+} = actions;
 
 export type { Notification, NotificationState };
 

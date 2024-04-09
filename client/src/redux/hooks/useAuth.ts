@@ -8,8 +8,14 @@ import {
   setUsers,
   setIsLoadingTable,
 } from "../slices/UserSlice";
-import { GET_API, PUT_API, DELETE_API, POST_API,PATCH_API } from "../../constants/api.js";
-import {toast } from "react-toastify";
+import {
+  GET_API,
+  PUT_API,
+  DELETE_API,
+  POST_API,
+  PATCH_API,
+} from "../../constants/api.js";
+import { toast } from "react-toastify";
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -17,7 +23,6 @@ export function useAuth() {
   const { isAuth, isLoading, user, users, isLoadingTable } = useSelector(
     (state: RootState) => state.user,
   );
-
 
   const setUserFromToken = async (userToken?: string) => {
     dispatch(setLoadingUser(true));
@@ -45,7 +50,6 @@ export function useAuth() {
         email,
         password,
       });
-  
 
       if (data.status === "success") {
         dispatch(setUser(data.user));
@@ -63,7 +67,6 @@ export function useAuth() {
     } catch (error) {
       console.log(error);
       toast.error("Provided email or password are incorrect");
-
     } finally {
       dispatch(setLoadingUser(false));
     }
@@ -83,13 +86,14 @@ export function useAuth() {
       }
       dispatch(setUsers(res.data));
       dispatch(setIsLoadingTable(false));
+      console.log(res);
     } catch (error) {
       console.log(error);
       dispatch(setIsLoadingTable(false));
     }
   };
 
-  const updateUser = async (id:string,data: any) => {
+  const updateUser = async (id: string, data: any) => {
     dispatch(setIsLoadingTable(true));
     try {
       const res = await axios.patch(PATCH_API(id).EDIT_USER, data);
@@ -104,8 +108,7 @@ export function useAuth() {
       dispatch(setIsLoadingTable(false));
       toast.error("User updated failed");
     }
-  
-  }
+  };
 
   const deleteUser = async (id: string) => {
     dispatch(setIsLoadingTable(true));
@@ -114,7 +117,7 @@ export function useAuth() {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      console.log(res)
+      console.log(res);
       toast.success("User deleted successfully");
       dispatch(setIsLoadingTable(false));
     } catch (error) {
@@ -122,8 +125,7 @@ export function useAuth() {
       dispatch(setIsLoadingTable(false));
       toast.error("User deleted failed");
     }
-  
-  }
+  };
 
   return {
     user,
@@ -136,6 +138,6 @@ export function useAuth() {
     users,
     isLoadingTable,
     updateUser,
-    deleteUser
+    deleteUser,
   };
 }

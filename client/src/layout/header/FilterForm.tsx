@@ -17,10 +17,9 @@ const FilterForm: React.FC<FilterFormProps> = ({
   openFilter,
   setOpenFilter,
 }) => {
-
   const [type, setType] = useState("");
   const [keyword, setKeyword] = useState("");
-  const { handleSetIsFilterMode,searchArticleQuery } = useArticle();
+  const { handleSetIsFilterMode, searchArticleQuery } = useArticle();
   const ref = useOutsideClick(
     () => setOpenFilter(false),
     false,
@@ -33,10 +32,9 @@ const FilterForm: React.FC<FilterFormProps> = ({
   if (!openFilter) return null;
 
   const handleFilterSubmit = () => {
-    handleSetIsFilterMode(true)
-    searchArticleQuery(keyword,type)
-    
-  }
+    handleSetIsFilterMode(true);
+    searchArticleQuery(keyword, type);
+  };
 
   return (
     <div
@@ -62,7 +60,6 @@ const FilterForm: React.FC<FilterFormProps> = ({
           onChange={(e) => setType(e.target.value)}
         />
 
-
         <label className={labelClassName}>Includes the words</label>
         <input
           className={inputClassName}
@@ -85,7 +82,10 @@ const FilterForm: React.FC<FilterFormProps> = ({
         />
       </div>
 
-      <button className="float-end me-4 mt-4 rounded bg-blue-500 px-6 py-4 text-white" onClick={() => handleFilterSubmit()}>
+      <button
+        className="float-end me-4 mt-4 rounded bg-blue-500 px-6 py-4 text-white"
+        onClick={() => handleFilterSubmit()}
+      >
         Search
       </button>
       <button className="float-end mt-4 rounded bg-transparent px-6 py-4">

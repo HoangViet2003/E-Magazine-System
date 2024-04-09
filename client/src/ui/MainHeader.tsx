@@ -52,7 +52,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
                   )}
                   <input
                     type="checkbox"
-                    className={` ${isEditableOn ? "toggle border-[#004AD7] bg-[#004AD7] " : "toggle border-[#949699] bg-[#949699] "}`}
+                    className={` ${isEditableOn ? "toggle border-[#004AD7] bg-[#004AD7] hover:bg-blue-700 " : "toggle border-[#949699] bg-[#949699] "}`}
                     checked={isEditableOn}
                     onChange={() =>
                       setIsEditableOn && setIsEditableOn(!isEditableOn)
@@ -136,18 +136,16 @@ const MainHeader: React.FC<MainHeaderProps> = ({
                 ) : (
                   <Dropdowns>
                     <Dropdowns.Dropdown>
-                      <Dropdowns.Toggle id="update_article">
+                      <Dropdowns.Toggle
+                        id="update_article"
+                        startPosition="right"
+                      >
                         <div className="rounded hover:bg-slate-200">
                           <img src={OptionIcon} className="w-8" />
                         </div>
                       </Dropdowns.Toggle>
 
-                      <Dropdowns.List id="update_article">
-                        {/* <Dropdowns.Button
-                          onClick={() => setOpenFileUpload("word")}
-                        >
-                          <span>Upload files</span>
-                        </Dropdowns.Button> */}
+                      <Dropdowns.List id="update_article" startPosition="right">
                         <Dropdowns.Button
                           onClick={() => {
                             const modal = document.getElementById(

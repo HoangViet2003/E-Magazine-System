@@ -2,7 +2,13 @@ import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
 import { setFaculties, setIsLoading } from "../slices/FacultySlice.js";
 import axios from "../../utils/axios.js";
-import { GET_API, PUT_API, DELETE_API, POST_API,PATCH_API } from "../../constants/api.js";
+import {
+  GET_API,
+  PUT_API,
+  DELETE_API,
+  POST_API,
+  PATCH_API,
+} from "../../constants/api.js";
 import { toast } from "react-toastify";
 
 export const useFaculty = () => {
@@ -12,11 +18,11 @@ export const useFaculty = () => {
   const getFaculties = async () => {
     try {
       const res = await axios.get(GET_API("").GET_ALL_FACULTIES);
-      console.log(res.data.data);
+      console.log(res.data.faculties);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      dispatch(setFaculties(res.data.data));
+      dispatch(setFaculties(res.data.faculties));
     } catch (error) {
       console.log(error);
     }
@@ -64,13 +70,13 @@ export const useFaculty = () => {
       console.log(error);
       setIsLoading(false);
     }
-  }
+  };
 
   const updateFaculty = async (id: string, data: any) => {
     setIsLoading(true);
     try {
       const res = await axios.patch(PATCH_API(id).EDIT_FACULTY, data);
-      console.log(res)
+      console.log(res);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
@@ -80,7 +86,7 @@ export const useFaculty = () => {
       console.log(error);
       setIsLoading(false);
     }
-  }
+  };
 
   return {
     getFaculties,
@@ -88,7 +94,6 @@ export const useFaculty = () => {
     createAccount,
     createFaculty,
     deleteFaculty,
-    updateFaculty
-
+    updateFaculty,
   };
 };

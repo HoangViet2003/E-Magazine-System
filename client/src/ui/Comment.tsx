@@ -8,13 +8,9 @@ import CommentComponent from "./CommentComponent";
 import CloseIcon from "../assets/icons/cross-svgrepo-com.svg";
 import PlusIcon from "../assets/icons/sidebar-icons/plusIcon";
 import PlayIcon from "../assets/icons/play-1003-svgrepo-com.svg";
+import { useCommentContext } from "./CommentContext";
 
-interface CommentProps {
-  openComment: boolean;
-  setOpenComment: (open: boolean) => void;
-}
-
-export default function Comment({ openComment, setOpenComment }: CommentProps) {
+export default function Comment() {
   const {
     comments,
     fetchAllComment,
@@ -28,6 +24,7 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
   const [page, setPage] = useState(2);
   const [openCommentInput, setOpenCommentInput] = useState(false);
   const [openReply, setOpenReply] = useState("");
+  const { openComment, setOpenComment } = useCommentContext();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,14 +39,14 @@ export default function Comment({ openComment, setOpenComment }: CommentProps) {
   }, []);
 
   function fetchMoreData() {
-    // setTimeout(() => {
+    setTimeout(() => {
       if (!isLoading) {
         fetchMoreComment(submissionId, page);
         setPage((prevPage) => {
           return prevPage + 1;
         });
       }
-    // }, 1500);
+    }, 1500);
   }
 
   const ref = useOutsideClick(() => {

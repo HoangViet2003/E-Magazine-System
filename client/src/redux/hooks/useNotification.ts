@@ -6,10 +6,16 @@ import {
   setCurrentPage,
   setNotificationLength,
   setToTalPage,
-  setIsRead
+  setIsReadAllNotification,
 } from "../slices/NotiSlice";
 import axios from "../../utils/axios.js";
-import { GET_API, PUT_API, DELETE_API, POST_API,PATCH_API } from "../../constants/api.js";
+import {
+  GET_API,
+  PUT_API,
+  DELETE_API,
+  POST_API,
+  PATCH_API,
+} from "../../constants/api.js";
 
 export const useNotifications = () => {
   const dispatch = useDispatch();
@@ -19,7 +25,7 @@ export const useNotifications = () => {
     totalPage,
     totalNotification,
     currentPage,
-    isRead
+    totalUnSeenNotification,
   } = useSelector((state: RootState) => state.noti);
 
   const getAllNotifications = async (page: number) => {
@@ -31,14 +37,14 @@ export const useNotifications = () => {
       }
 
       if (page === 1) {
-        dispatch(setAllNotifications(res.data.notifications));
-        dispatch(setNotificationLength(res.data.totalNotification));
-        dispatch(setToTalPage(res.data.totalPage));
+        dispatch(setAllNotifications(res.data?.notifications));
+        dispatch(setNotificationLength(res.data?.totalNotification));
+        dispatch(setToTalPage(res.data?.totalPage));
+        dispatch(setIsReadAllNotification(res.data?.totalUnSeenNotification));
       } else {
         const newArr = [...notifications, ...res.data.notifications];
         dispatch(setAllNotifications(newArr));
       }
-
 
       dispatch(setLoading(false));
     } catch (error) {
@@ -48,23 +54,22 @@ export const useNotifications = () => {
 
   const handleUpdateUnSeenNotification = async () => {
     try {
-      const res = await axios.patch(PATCH_API('').UPDATE_UNSEEN_NOTIFICATIONS);
-      console.log(res)
+      const res = await axios.patch(PATCH_API("").UPDATE_UNSEEN_NOTIFICATIONS);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleSetCurrentPage = (page: number) => {
     dispatch(setCurrentPage(page));
   };
 
-  const handleReadNotification = async (isRead: boolean) => {
-    dispatch(setIsRead(isRead));
-  }
+  const handleReadNotification = async (totalUnSeenNoti: number) => {
+    dispatch(setIsReadAllNotification(totalUnSeenNoti));
+  };
 
   return {
     getAllNotifications,
@@ -74,8 +79,8 @@ export const useNotifications = () => {
     totalNotification,
     handleSetCurrentPage,
     currentPage,
-    isRead,
+    totalUnSeenNotification,
     handleReadNotification,
-    handleUpdateUnSeenNotification
+    handleUpdateUnSeenNotification,
   };
 };

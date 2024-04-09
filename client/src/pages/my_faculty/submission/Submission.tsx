@@ -15,6 +15,7 @@ import useWindowWidth from "../../../redux/hooks/useWindowWidth";
 import CommentIcon from "../../../assets/icons/comment_duotone.svg";
 import Comment from "../../../ui/Comment";
 import UnsubmitIcon from "../../../assets/icons/Refresh_light.svg";
+import { useCommentContext } from "../../../ui/CommentContext";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -23,10 +24,11 @@ export default function Submission() {
   const [searchParams] = useSearchParams();
   const contributionId = searchParams.get("contributionId") || "";
   const { submissionId } = useParams();
+
   const [page, setPage] = useState(1);
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
+  const { openComment, setOpenComment } = useCommentContext();
 
   const { contribution, getContributionById } = useContribution();
   const {
@@ -43,27 +45,9 @@ export default function Submission() {
     resetSubmissionArticlesState,
   } = useArticle();
 
-  const isUnsubmittable =
-    contribution.closureDate &&
-    today.getTime() < new Date(contribution.closureDate).getTime()
-      ? true
-      : false;
-  const isEditable =
-    contribution.finalClosureDate &&
-    today.getTime() < new Date(contribution.finalClosureDate).getTime()
-      ? true
-      : false;
-
   function formattedDate(date: string) {
     return format(date, "HH:mm dd/MM/yyyy");
   }
-
-  useEffect(() => {
-    const fetchContributionById = async () => {
-      getContributionById(contributionId);
-    };
-    fetchContributionById();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,9 +65,27 @@ export default function Submission() {
   }, [contributionId, page, role, submissionId]);
 
   useEffect(() => {
+    const fetchContributionById = async () => {
+      getContributionById(contributionId);
+    };
+    fetchContributionById();
+  }, []);
+
+  useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
     setPage(page);
   }, [searchParams]);
+
+  const isUnsubmittable =
+    contribution.closureDate &&
+    today.getTime() < new Date(contribution.closureDate).getTime()
+      ? true
+      : false;
+  const isEditable =
+    contribution.finalClosureDate &&
+    today.getTime() < new Date(contribution.finalClosureDate).getTime()
+      ? true
+      : false;
 
   return (
     <div className="grid grid-rows-[auto_1fr]">
@@ -137,7 +139,7 @@ export default function Submission() {
                       <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
                         {role === "student"
                           ? `${contribution.academicYear} Contributions`
-                          : `${submissionArticles[0].student?.name}`}
+                          : `${submission.student?.name}`}
                       </h1>
                     )}
                     <img src={DropdownIcon} />
@@ -218,7 +220,7 @@ export default function Submission() {
             submissionId &&
             (role === "student" || role === "marketing coordinator") && (
               <button
-                className="fixed bottom-0 right-4 flex items-center gap-3 border border-borderColor px-2 py-1 shadow-[0_0px_12px_rgba(0,0,0,0.10)] hover:bg-slate-100"
+                className="fixed bottom-0 right-4 -z-0 flex items-center gap-3 border border-borderColor px-2 py-1 shadow-[0_0px_12px_rgba(0,0,0,0.10)] hover:bg-slate-100"
                 onClick={() => setOpenComment(!openComment)}
               >
                 <img src={CommentIcon} />
@@ -228,10 +230,7 @@ export default function Submission() {
 
           {submissionId &&
             (role === "student" || role === "marketing coordinator") && (
-              <Comment
-                openComment={openComment}
-                setOpenComment={setOpenComment}
-              />
+              <Comment />
             )}
         </div>
       )}

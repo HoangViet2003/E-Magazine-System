@@ -14,8 +14,8 @@ export default function ContributionTable() {
   } = useSubmission();
   const navigate = useNavigate();
   const { contributionId } = useParams();
-  // const role = localStorage.getItem("role");
   const [searchParams, setSearchParams] = useSearchParams();
+  // const role = localStorage.getItem("role");
 
   useEffect(() => {
     if (contributionId) getSubmissionsByContributionId(contributionId);
@@ -23,7 +23,7 @@ export default function ContributionTable() {
 
   function openFolder(id: string) {
     navigate(
-      `/myFaculty/contributions/submission/${id}?contributionId=${contributionId}`,
+      `/myFaculty/contributions/submissions/${id}?contributionId=${contributionId}`,
     );
   }
 

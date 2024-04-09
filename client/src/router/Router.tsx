@@ -17,12 +17,11 @@ import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
-import SubmissionEmpty from "../pages/my_faculty/submission/SubmissionEmpty";
-import CreateAccount from "../pages/admin/CreateAccount";
+import CreateAccount from "../pages/admin/AccountTable/CreateAccount";
 import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
-import AccountTable from "../pages/admin/AccountTable";
-import FacultyTable from "../pages/admin/FacultyTable";
-import CreateFaculty from "../pages/admin/CreateFaculty";
+import AccountTable from "../pages/admin/AccountTable/AccountTable";
+import FacultyTable from "../pages/admin/FacultyTable/FacultyTable";
+import CreateFaculty from "../pages/admin/FacultyTable/CreateFaculty";
 
 const router = createBrowserRouter([
   {
@@ -50,7 +49,7 @@ const router = createBrowserRouter([
         element: <Contribution />,
       },
       {
-        path: "/myFaculty/contributions/submission/:submissionId",
+        path: "/myFaculty/contributions/submissions/:submissionId",
         element: <Submission />,
       },
       {
@@ -72,6 +71,22 @@ const router = createBrowserRouter([
       {
         path: "/trash",
         element: <LandingPage />,
+      },
+      {
+        path: "/account/create",
+        element: <CreateAccount />,
+      },
+      {
+        path: "/account",
+        element: <AccountTable />,
+      },
+      {
+        path: "/faculty",
+        element: <FacultyTable />,
+      },
+      {
+        path: "/faculty/create",
+        element: <CreateFaculty />,
       },
     ],
   },
@@ -96,11 +111,11 @@ const router = createBrowserRouter([
         element: <Contribution />,
       },
       {
-        path: "/student/submission/:submissionId",
+        path: "/student/submissions/:submissionId",
         element: <Submission />,
       },
       {
-        path: "/student/submission",
+        path: "/student/submissions",
         element: <Submission />,
       },
       {
@@ -123,28 +138,12 @@ const router = createBrowserRouter([
         path: "/images/:id",
         element: <SubmissionImage />,
       },
-      {
-        path:"/account/create",
-        element:<CreateAccount/>
-      },{
-        path:"/account",
-        element:<AccountTable/>
-      },
-      {
-        path: "/faculty",
-        element: <FacultyTable />,
-      },
-      {
-        path: "/faculty/create",
-        element: <CreateFaculty />,
-      },
     ],
   },
   {
     path: "/documents",
     element: <Navigate replace to={`${uuidv4()}`} />,
   },
-
   {
     path: "/documents/:id",
     element: <TextEditor />,

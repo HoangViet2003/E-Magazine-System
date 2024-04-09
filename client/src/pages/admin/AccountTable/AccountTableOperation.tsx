@@ -3,7 +3,7 @@ import OrderArrowIcon from "../../../assets/icons/order-arrow-up.svg";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
-export default function ContributionOperation() {
+export default function AccountTableOperation() {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortBy = searchParams.get("sortBy") || "";
 
@@ -16,7 +16,10 @@ export default function ContributionOperation() {
 
   return (
     <>
-      <div></div>
+      <div className={ellipsis + " flex cursor-pointer select-none gap-1"}>
+        Profile Image
+      </div>
+
       <div
         className={ellipsis + " flex cursor-pointer select-none gap-1"}
         onClick={() =>
@@ -42,7 +45,7 @@ export default function ContributionOperation() {
             : handleChange("owner-asc")
         }
       >
-        Owner
+        Email
         {field === "owner" && (
           <img
             src={OrderArrowIcon}
@@ -50,21 +53,13 @@ export default function ContributionOperation() {
           />
         )}
       </div>
-      <div
-        className={ellipsis + " flex cursor-pointer select-none gap-1"}
-        onClick={() =>
-          sortBy === "updatedAt-asc"
-            ? handleChange("updatedAt-desc")
-            : handleChange("updatedAt-asc")
-        }
-      >
-        Modified Date
-        {field === "updatedAt" && (
-          <img
-            src={OrderArrowIcon}
-            className={direction === "desc" ? "rotate-180" : ""}
-          />
-        )}
+
+      <div className={ellipsis + " flex cursor-pointer select-none gap-1"}>
+        Action
+      </div>
+
+      <div className={ellipsis + " flex cursor-pointer select-none gap-1"}>
+        Action
       </div>
     </>
   );

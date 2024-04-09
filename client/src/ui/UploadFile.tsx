@@ -6,8 +6,7 @@ import { useSidebarContext } from "../layout/sidebar/SidebarContext";
 import DropComponent from "./DropComponent";
 import SpinnerMini from "./SpinnerMini";
 import { useParams } from "react-router";
-import { useNavigate } from "react-router-dom";
-import { URL } from "../utils/constant";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 export default function UploadImage({
   type,
@@ -18,8 +17,11 @@ export default function UploadImage({
   isAddSubmission?: boolean;
   setOpenFileUpload?: (value: string) => void;
 }) {
+  const currentPath = useLocation().pathname;
   const { submissionId } = useParams();
   const { setOpenImageUpload, setOpenDocUpload } = useSidebarContext();
+  const [searchParams] = useSearchParams();
+  const contributionId = searchParams.get("contributionId") || "";
   const navigate = useNavigate();
 
   const {
@@ -102,9 +104,9 @@ export default function UploadImage({
     if (setOpenFileUpload) {
       setOpenFileUpload("");
     }
-    const currentUrl = window.location.href.replace(URL, "");
-    const newUrl = currentUrl.replace(/&?page=\d+/, "");
-    navigate(newUrl);
+
+    console.log(`${currentPath}?contributionId=${contributionId}`);
+    navigate(`${currentPath}?contributionId=${contributionId}`);
   }
 
   return (
@@ -181,7 +183,7 @@ export default function UploadImage({
       </div>
 
       <div
-        className="fixed left-0 top-0 h-screen w-screen bg-black opacity-30"
+        className="fixed left-0 top-0 z-10 h-screen w-screen bg-black opacity-30"
         onClick={() => {
           setOpenImageUpload(false);
           setOpenDocUpload(false);

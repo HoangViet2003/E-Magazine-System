@@ -10,15 +10,19 @@ import Spinner from "../../../ui/Spinner";
 
 export default function ManagerFolder() {
   const navigate = useNavigate();
-  const { isLoading, managerContributions, fetchAllContributionByAcademicYear } =
-    useContribution();
+  const {
+    isLoading,
+    managerContributions,
+    fetchAllContributionByAcademicYear,
+  } = useContribution();
   // const { contributionId } = useParams();
   const role = localStorage.getItem("role");
   const [searchParams] = useSearchParams();
   const academicYear = searchParams.get("academicYear") || "";
 
   useEffect(() => {
-    fetchAllContributionByAcademicYear(parseInt(academicYear, 10));
+    if (role === "marketing manager")
+      fetchAllContributionByAcademicYear(parseInt(academicYear, 10));
   }, []);
 
   return (
@@ -40,7 +44,8 @@ export default function ManagerFolder() {
                   <Dropdowns.Toggle id={managerContributions[0]._id}>
                     <span className="flex w-44 items-center gap-3 rounded-3xl px-6 py-1 hover:bg-slate-100 md:w-auto">
                       <h1 className="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-normal ">
-                        {managerContributions[0].academicYear + " Contributions"}
+                        {managerContributions[0].academicYear +
+                          " Contributions"}
                       </h1>
                       <img src={DropdownIcon} alt="" />
                     </span>

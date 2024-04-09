@@ -50,7 +50,6 @@ const Header = () => {
             <h5 className="text-nowrap text-lg font-semibold text-logoText">
               E-Magazine System
             </h5>
-
           </div>
         </Link>
         <SearchArticle />
