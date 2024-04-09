@@ -397,10 +397,24 @@ const deleteArticle = async (req, res) => {
 				.json({ error: "You are not allowed to perform this action" })
 		}
 
+		// check if article is in any submission
+		const submission = await Submission.findOne({
+			articles: articleId,
+		})
+
+		// if submission, remove the article ids from the submisison articles array
+		if (submission) {
+			await Submission.updateOne(
+				{ _id: submission._id },
+				{ $pull: { articles: articleId } }
+			)
+		}
+
 		await Article.findByIdAndDelete(articleId)
 
 		res.status(200).json({ message: "Article deleted" })
 	} catch (error) {
+		console.log("error: ", error)
 		res.status(500).json({ error: error.message })
 	}
 }
@@ -576,49 +590,49 @@ const getDashboard = async (req, res) => {
 			query["contributionId"] = contribution._id
 		}
 
-		const articles = await Article.find(query).populate("student", "_id")
+		// total submission
+		const submissions = await Submission.find(query).populate("student", "_id")
 
-		const totalArticles = articles.length
+		const totalSubmissions = submissions.length
 
-		// get the articles that are selected for publication
-		const selectedArticles = articles.filter(
-			(article) => article.status == "selected"
+		let totalArticles = 0
+		let totalSubmissionsWithComments = 0
+		let totalComments = 0
+		let totalSelectedSubmissions = 0
+
+		// Aggregate totalArticles and totalSelectedSubmissions
+		submissions.forEach((submission) => {
+			totalArticles += submission.articles.length
+			if (submission.isSelectedForPublication) {
+				totalSelectedSubmissions++
+			}
+		})
+
+		// Aggregate totalComments and totalSubmissionsWithComments
+		const commentsPromises = submissions.map((submission) =>
+			Comment.countDocuments({ submissionId: submission })
 		)
-		const totalSelectedArticles = selectedArticles.length
-
-		// get the total number of contributors
-		const contributors = new Set()
-		articles.forEach((article) => {
-			contributors.add(article.student._id)
-		})
-		const totalContributors = contributors.size
-
-		// Get the total number of comments
-		const comments = await Comment.find({
-			articleId: { $in: articles.map((article) => article._id) },
+		const commentsCounts = await Promise.all(commentsPromises)
+		commentsCounts.forEach((count) => {
+			totalComments += count
+			if (count > 0) {
+				totalSubmissionsWithComments++
+			}
 		})
 
-		const totalComments = comments.length
-
-		// Get the total of articles that have comments and do not have comments
-		const articlesWithComments = new Set()
-		comments.forEach((comment) => {
-			articlesWithComments.add(comment.articleId)
-		})
-		const totalArticlesWithComments = articlesWithComments.size
-
-		const totalArticlesWithoutComments =
-			totalArticles - totalArticlesWithComments
+		const totalSubmissionsWithoutComments =
+			totalSubmissions - totalSubmissionsWithComments
 
 		return res.status(200).json({
 			totalArticles,
-			totalSelectedArticles,
-			totalContributors,
 			totalComments,
-			totalArticlesWithComments,
-			totalArticlesWithoutComments,
+			totalSubmissions,
+			totalSelectedSubmissions,
+			totalSubmissionsWithComments,
+			totalSubmissionsWithoutComments,
 		})
 	} catch (error) {
+		console.error("error: ", error)
 		return res.status(500).json({ error: error.message })
 	}
 }
