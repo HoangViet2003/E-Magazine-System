@@ -5,10 +5,12 @@ const facultySchema = new mongoose.Schema(
 		name: {
 			type: String,
 			required: true,
+			unique: true,
 		},
 		marketingCoordinatorId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
+			unique: true,
 		},
 	},
 	{

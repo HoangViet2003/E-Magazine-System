@@ -1,11 +1,27 @@
 const router = require("express").Router()
 const { FacultyController } = require("../controllers")
-const middleware = require("../middlewares/authenticate")
+const {
+	authenticateToken,
+	authenticateStudent,
+	authenticateMarketingCoordinator,
+	authenticateAdministrator,
+} = require("../middlewares/authenticate")
+
 // const {validateParam, schemas} = require('../validations/validation')
 
-router.post("/faculty", FacultyController.createFaculty)
-router.get("/faculties", FacultyController.getAllFaculties)
-router.get("/faculty/:id", FacultyController.getAFaculties)
+router.post(
+	"/faculty",
+	authenticateToken,
+	authenticateAdministrator,
+	FacultyController.createFaculty
+)
+router.get(
+	"/faculties",
+	authenticateToken,
+	authenticateAdministrator,
+	FacultyController.getAllFaculties
+)
+router.get("/faculty/:id", FacultyController.getFacultyById)
 router.patch("/faculty/:id", FacultyController.editFaculty)
 router.patch(
 	"/faculty/:id/add-marketing-coordinator",
@@ -13,7 +29,8 @@ router.patch(
 )
 router.delete(
 	"/faculty/:id",
-	middleware.authenticateAdministrator,
+	authenticateToken,
+	authenticateAdministrator,
 	FacultyController.deleteFaculty
 )
 
