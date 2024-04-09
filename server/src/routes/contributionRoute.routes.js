@@ -26,14 +26,24 @@ router.get(
 )
 
 router.post(
-	"/contribution",
+	"/contributions",
+	authenticateToken,
 	authenticateAdministrator,
-	ContributionController.createContribution
+	ContributionController.createContributions
 )
 
 router.put(
-	"/contribution/:id",
+	"/contributions",
+	authenticateToken,
 	authenticateAdministrator,
-	ContributionController.updateContribution
+	ContributionController.updateContributions
 )
+
+router.delete(
+	"/contributions",
+	authenticateToken,
+	authenticateAdministrator,
+	ContributionController.deleteContributions
+)
+
 module.exports = router

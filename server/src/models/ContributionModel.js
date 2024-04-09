@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { Contribution } = require("../models")
 
 const contributionSchema = new mongoose.Schema(
 	{
@@ -30,7 +31,16 @@ const contributionSchema = new mongoose.Schema(
 	}
 )
 
-//populate submissions
+// Define pre-remove middleware to delete associated submissions
+contributionSchema.pre("remove", async function (next) {
+	try {
+		// Remove all submissions associated with this contribution
+		await Submission.deleteMany({ contributionId: this._id })
+		next()
+	} catch (error) {
+		next(error)
+	}
+})
 
 const Contribution = mongoose.model("Contribution", contributionSchema)
 

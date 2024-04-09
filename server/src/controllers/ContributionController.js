@@ -21,30 +21,101 @@ const getContributionById = async (req, res) => {
 	}
 }
 
-const createContribution = async (req, res) => {
+const createContributions = async (req, res) => {
 	try {
-		const { facultyId, status, academicYear } = req.body
+		const { academicYear, closureDate, finalClosureDate } = req.body
 
-		const closureDate = new Date()
+		// Get the current date
+		const currentDate = new Date()
 
-		//final closureDtate is 3 day after closure date
-		const finalClosureDate = new Date(
-			closureDate.getTime() + 3 * 24 * 60 * 60 * 1000
+		// Validate closure date is larger than today
+		const closureDateTime = new Date(closureDate)
+		if (closureDateTime <= currentDate) {
+			return res
+				.status(400)
+				.json({ error: "Closure date must be later than today." })
+		}
+
+		// Get the current year
+		const currentYear = currentDate.getFullYear()
+
+		// Validate academic year
+		if (academicYear !== currentYear) {
+			return res
+				.status(400)
+				.json({ error: "Academic year must be the current year." })
+		}
+
+		// Validate closure date and final closure date are in the current year
+		const finalClosureDateTime = new Date(finalClosureDate)
+		if (
+			closureDateTime.getFullYear() !== currentYear ||
+			finalClosureDateTime.getFullYear() !== currentYear
+		) {
+			return res.status(400).json({
+				error:
+					"Closure date and final closure date must be in the current year.",
+			})
+		}
+
+		// Validate final closure date is at least 14 days after closure date
+		const daysDifference = Math.floor(
+			(finalClosureDateTime - closureDateTime) / (1000 * 60 * 60 * 24)
 		)
+		if (daysDifference < 14) {
+			return res.status(400).json({
+				error:
+					"Final closure date must be at least 14 days after closure date.",
+			})
+		}
 
-		const newContribution = new Contribution({
-			facultyId,
-			status,
-			academicYear,
-			closureDate,
-			finalClosureDate,
+		// Check if all faculties already have contributions for the academic year
+		const faculties = await Faculty.find().select("_id")
+		const facultyIds = faculties.map((faculty) => faculty._id)
+		const facultyContributions = await Contribution.aggregate([
+			{
+				$match: {
+					facultyId: { $in: facultyIds },
+					academicYear: currentYear.toString(),
+				},
+			},
+			{
+				$group: {
+					_id: "$facultyId",
+					count: { $sum: 1 },
+				},
+			},
+		])
+
+		// If all faculties have contributions, no need to create new ones
+		if (facultyContributions.length === facultyIds.length) {
+			return res.status(200).json({
+				message:
+					"All faculties already have contributions for the academic year.",
+			})
+		}
+
+		// Create contributions for faculties that don't have contributions yet
+		const facultiesWithoutContributions = faculties.filter((faculty) => {
+			return !facultyContributions.find((contribution) =>
+				contribution._id.equals(faculty._id)
+			)
 		})
 
-		await newContribution.save()
+		const contributions = facultiesWithoutContributions.map((faculty) => {
+			return Contribution.create({
+				facultyId: faculty._id,
+				status: "open",
+				academicYear,
+				closureDate,
+				finalClosureDate,
+			})
+		})
+
+		await Promise.all(contributions)
 
 		res.status(201).json({
-			status: "success",
-			data: newContribution,
+			status: "Create contributions for all of faculties successfully!",
 		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })
@@ -122,27 +193,109 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	}
 })
 
-const updateContribution = catchAsync(async (req, res) => {
+const updateContributions = async (req, res) => {
 	try {
-		const { id } = req.params
+		const { academicYear, closureDate, finalClosureDate } = req.body
 
-		const contribution = await Contribution.findById(id)
+		// Get the current date
+		const currentDate = new Date()
 
-		if (!contribution) {
+		// Validate closure date is larger than today
+		const closureDateTime = new Date(closureDate)
+		if (closureDateTime <= currentDate) {
+			return res
+				.status(400)
+				.json({ error: "Closure date must be later than today." })
+		}
+
+		// Get the current year
+		const currentYear = currentDate.getFullYear()
+
+		// Validate academic year
+		if (academicYear !== currentYear) {
+			return res
+				.status(400)
+				.json({ error: "Academic year must be the current year." })
+		}
+
+		// Validate closure date and final closure date are in the current year
+		const finalClosureDateTime = new Date(finalClosureDate)
+		if (
+			closureDateTime.getFullYear() !== currentYear ||
+			finalClosureDateTime.getFullYear() !== currentYear
+		) {
 			return res.status(400).json({
-				message: "Contribution does not exist",
+				error:
+					"Closure date and final closure date must be in the current year.",
 			})
 		}
+
+		// Validate final closure date is at least 14 days after closure date
+		const daysDifference = Math.floor(
+			(finalClosureDateTime - closureDateTime) / (1000 * 60 * 60 * 24)
+		)
+		if (daysDifference < 14) {
+			return res.status(400).json({
+				error:
+					"Final closure date must be at least 14 days after closure date.",
+			})
+		}
+
+		// Update contributions based on the provided criteria
+		await Contribution.updateMany(
+			{ academicYear: academicYear },
+			{ closureDate: closureDate, finalClosureDate: finalClosureDate }
+		)
+
+		res.status(200).json({
+			status: "success",
+			message: "Contributions updated successfully.",
+		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
-})
+}
+
+const deleteContributions = async (req, res) => {
+	try {
+		const { academicYear } = req.body
+
+		// Get the current date
+		const currentDate = new Date()
+
+		// Get the current year
+		const currentYear = currentDate.getFullYear()
+
+		// Validate academic year
+		if (academicYear !== currentYear) {
+			return res
+				.status(400)
+				.json({ error: "Academic year must be the current year." })
+		}
+
+		// Delete contributions based on the provided criteria
+		const result = await Contribution.deleteMany({ academicYear: academicYear })
+
+		if (result.deletedCount === 0) {
+			return res.status(404).json({
+				error: "No contributions found for the specified academic year.",
+			})
+		}
+
+		res.status(200).json({
+			message: `Deleted ${result.deletedCount} contributions for the academic year ${academicYear}.`,
+		})
+	} catch (error) {
+		res.status(500).json({ error: error.message })
+	}
+}
 
 module.exports = {
-	createContribution,
+	createContributions,
 	getAllContributions,
 	getAllContributionByFaculty,
 	getAllContributionsByAcamemicYear,
 	getContributionById,
-	updateContribution,
+	updateContributions,
+	deleteContributions,
 }
