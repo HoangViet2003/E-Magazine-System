@@ -9,6 +9,7 @@ import SignoutIcon from "../../assets/icons/Sign_out_circle_duotone_line.svg";
 import Notification from "./../../components/notification/Notification";
 import { useNotifications } from "../../redux/hooks/useNotification";
 import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
+import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 
 export default function UserAvatar() {
   const { logout } = useAuth();
@@ -30,6 +31,8 @@ export default function UserAvatar() {
     () => setOpenNotification(false),
     false,
   ) as React.RefObject<HTMLDivElement>;
+
+  useAddNoScrollClass(openNotification);
 
   return (
     <div className="flex items-center gap-4">

@@ -115,12 +115,28 @@ const Notification = ({
       setOpenComment(true);
   }
 
-  console.log(notifications);
-
   useEffect(() => {
     fetchAllContribution();
     getAllNotifications(currentPage);
-  }, []); 
+  }, []);
+
+  function calculateDate(date?: string) {
+    const createdDate = new Date(date || new Date().toISOString());
+    const today = new Date();
+
+    // Calculate the difference in milliseconds between the given date and today
+    const differenceInMilliseconds = today.getTime() - createdDate.getTime();
+    const differenceHours = Math.round(
+      differenceInMilliseconds / (1000 * 3600),
+    );
+
+    if (differenceHours > 24) {
+      const differenceInDays = Math.round(differenceHours / 24);
+      return differenceInDays + " days ago";
+    }
+
+    return differenceHours + " hours ago";
+  }
 
   return (
     <div className="z-[20] w-[420px] rounded-lg bg-white py-4 shadow-md">
@@ -163,7 +179,7 @@ const Notification = ({
                 <h6 className="text-sm font-semibold">{notification?.title}</h6>
                 <p className="text-sm text-gray-600">{notification?.message}</p>
                 <p className="text-xs text-gray-500">
-                  {notification?.createdAt}
+                  {calculateDate(notification?.createdAt)}
                 </p>
               </div>
 
