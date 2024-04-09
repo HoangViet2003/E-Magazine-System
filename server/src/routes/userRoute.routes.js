@@ -4,7 +4,6 @@ const {
 	authenticateToken,
 	authenticateAdministrator,
 } = require("../middlewares/authenticate")
-// const middlewareController = require("../controllers/middlewareController")
 
 router.get(
 	"/users",
@@ -18,7 +17,17 @@ router.post(
 	authenticateAdministrator,
 	UserController.createUser
 )
-// router.patch("/user/:id", authenticateAdministrator, UserController.editUser)
-router.delete("/user/:id", authenticateAdministrator, UserController.deleteUser)
+router.patch(
+	"/user/:id",
+	authenticateToken,
+	authenticateAdministrator,
+	UserController.editUser
+)
+router.delete(
+	"/user/:id",
+	authenticateToken,
+	authenticateAdministrator,
+	UserController.deleteUser
+)
 
 module.exports = router
