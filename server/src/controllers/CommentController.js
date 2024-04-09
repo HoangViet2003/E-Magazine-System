@@ -13,7 +13,7 @@ const { handleSendEmail, sendMail } = require("../utils/sendMail")
 
 const emitterInstance = EmitterSingleton.getInstance()
 const emitter = emitterInstance.getEmitter()
-
+const {emitNotification} = require('../utils/initSocket')
 const ejs = require("ejs")
 
 const getCommentsBySubmission = async (req, res) => {
@@ -107,7 +107,7 @@ const addComment = async (req, res) => {
 			)
 
 			// if the role is marketing coordinator, check if the facultyId matches the facultyId of the submission
-			// if the role is student, check if the student is the author of the submission, if not return 403
+// if the role is student, check if the student is the author of the submission, if not return 403
 			if (req.user.role === "marketing coordinator") {
 				if (
 					req.user.facultyId.toString() !== contribution.facultyId.toString()
@@ -174,6 +174,11 @@ const addComment = async (req, res) => {
 				actionUrl: `/submissions/${submission._id}`,
 			})
 
+			emitNotification(
+				submission.student._id.toString(),
+				`Marketing coordinator: ${req.user.name} has commented on your submission.`
+			)
+
 			await newNotification.save()
 		} else if (req.user.role == "student") {
 			// Check if there are any comments that the marketing coordinator has made on the submission
@@ -193,7 +198,7 @@ const addComment = async (req, res) => {
 
 			if (comments.length > 0) {
 				// Send email to the marketing coordinator
-				await sendMail({
+await sendMail({
 					to: marketingCoordinator.email,
 					subject: `${req.user.name} has commented on the submission`,
 					html,
@@ -207,6 +212,12 @@ const addComment = async (req, res) => {
 					message: `${req.user.name} has commented on the submission.`,
 					actionUrl: `/submissions/${submission._id}`,
 				})
+
+				
+			emitNotification(
+				marketingCoordinator._id.toString(),
+				`${req.user.name} has commented on the submission.`
+			)
 
 				await newNotification.save()
 			}
@@ -290,8 +301,7 @@ const replyComment = async (req, res) => {
 		}).populate("userId", "name")
 
 		comment["replies"] = replies
-
-		const html = await ejs.renderFile(
+const html = await ejs.renderFile(
 			path.join(__dirname, "../emails/comments/crudComments.email.ejs"),
 			{
 				comment: comment,
@@ -321,6 +331,8 @@ const replyComment = async (req, res) => {
 				message: `Marketing coordinator: ${req.user.name} has replied to your comment.`,
 				actionUrl: `/submissions/${submission._id}`,
 			})
+
+			emitNotification(submission.student._id.toString(), `Marketing coordinator: ${req.user.name} has replied to your comment.`)
 
 			await newNotification.save()
 		} else if (req.user.role == "student") {
@@ -356,6 +368,8 @@ const replyComment = async (req, res) => {
 					actionUrl: `/submissions/${submission._id}`,
 				})
 
+				emitNotification(marketingCoordinator._id.toString(), `${req.user.name} has replied to your comment.`)
+
 				await newNotification.save()
 			}
 		}
@@ -381,7 +395,7 @@ const deleteComment = async (req, res) => {
 			req.user.role !== "student"
 		) {
 			return res.status(403).json({ error: "Forbidden" })
-		} else {
+} else {
 			comment = await Comment.findById(id)
 
 			if (!comment) {

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { Contribution } = require("../models")
 
 const contributionSchema = new mongoose.Schema(
 	{
