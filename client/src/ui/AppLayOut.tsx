@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "../layout/sidebar/SidebarContext";
 import { useAuth } from "../redux/hooks/useAuth";
 import SidebarStudent from "../layout/sidebar/SidebarStudent";
+import SidebarAdmin from "../layout/sidebar/SidebarAdmin";
 
 export default function AppLayOut() {
   const { user } = useAuth();
@@ -16,7 +17,7 @@ export default function AppLayOut() {
           {user.role === "student" && <SidebarStudent />}
           {user.role === "marketing coordinator" && <Sidebar />}
           {user.role === "marketing manager" && <Sidebar />}
-          {user.role === "administrator" && <Sidebar />}
+          {user.role === "administrator" && <SidebarAdmin />}
 
           <Outlet />
         </div>

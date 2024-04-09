@@ -42,7 +42,7 @@ const FacultyTable = () => {
                           </td>
                           <td>
                               {/* Display truncated email */}
-                              {faculty?.marketingCoordinatorId}
+                              {faculty?.marketingCoordinatorId?.name}
                               <br />
                               {/* <span className='badge badge-ghost badge-sm whitespace-nowrap'>{user.role}</span> */}
                           </td>

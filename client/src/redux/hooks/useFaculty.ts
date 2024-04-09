@@ -12,11 +12,11 @@ export const useFaculty = () => {
   const getFaculties = async () => {
     try {
       const res = await axios.get(GET_API("").GET_ALL_FACULTIES);
-      console.log(res.data.data);
+      console.log(res.data.faculties);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      dispatch(setFaculties(res.data.data));
+      dispatch(setFaculties(res.data.faculties));
     } catch (error) {
       console.log(error);
     }
