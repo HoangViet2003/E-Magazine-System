@@ -129,7 +129,7 @@ const createSubmission = async (req, res) => {
 				studentName: req.user.name,
 				studentEmail: req.user.email,
 				submissionDate: new Date(),
-				linkToViewSubmission: `${process.env.FRONTEND_URL}/submissions/contribution/${newSubmission._id}`,
+				linkToViewSubmission: `${process.env.FRONTEND_URL}/submission/${newSubmission._id}`,
 			}
 		)
 
@@ -143,7 +143,7 @@ const createSubmission = async (req, res) => {
 		const newNotification = {
 			title: "New Submission",
 			message: `New submission from ${req.user.name}`,
-			actionUrl: `/submissions/contribution/${contribution._id}`,
+			actionUrl: `/submissions/${newSubmission._id}`,
 			receiver: marketingCoordinator._id,
 			doer: req.user._id,
 		}
