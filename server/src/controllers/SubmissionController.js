@@ -513,8 +513,6 @@ const downloadSubmission = async (req, res) => {
 				await htmlPDF.writeFile(pdfBuffer, filePath)
 				zip.file(`${article.title}.pdf`, fs.readFileSync(filePath))
 				// delete the pdf after zipping
-
-				fs.rmSync(filePath)
 			} else {
 				const articleTitle = article.title
 				const articleImages = article.content
@@ -566,17 +564,17 @@ const downloadSubmission = async (req, res) => {
 		res.setHeader("Content-Disposition", `attachment; filename=${zipFileName}`)
 		res.setHeader("Content-Type", "application/zip")
 
-		// delete the folder after zipping
-		for (let article of articles) {
-			if (article.type === "image") {
-				const articleTitle = article.title
-				const articleFolder = path.join(
-					__dirname,
-					`../../public/uploads/${articleTitle}`
-				)
-				fs.rmSync(articleFolder, { recursive: true })
-			}
-		}
+		// // delete the folder after zipping
+		// for (let article of articles) {
+		// 	if (article.type === "image") {
+		// 		const articleTitle = article.title
+		// 		const articleFolder = path.join(
+		// 			__dirname,
+		// 			`../../public/uploads/${articleTitle}`
+		// 		)
+		// 		fs.rmSync(articleFolder, { recursive: true })
+		// 	}
+		// }
 
 		return res.send(zipBuffer)
 	} catch (error) {
