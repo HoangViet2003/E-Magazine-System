@@ -374,6 +374,8 @@ export const useSubmission = () => {
   };
 
   const downloadSubmission = async (submissionId?: string) => {
+    dispatch(setLoadingSubmission(true));
+    
     try {
       if (!submissionId) throw new Error("SubmissionId is required");
 
@@ -384,6 +386,8 @@ export const useSubmission = () => {
       download(res.data, `submission_${submissionId}`, "application/zip");
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(setLoadingSubmission(false));
     }
   };
 
