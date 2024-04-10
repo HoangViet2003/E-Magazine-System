@@ -4,20 +4,19 @@ const { StatusCodes } = require("http-status-codes")
 const { validateData } = require("../validations/validation")
 
 const createFaculty = async (req, res) => {
-	const { name, marketingCoordinatorId } = req.body
+	const { name } = req.body
 	try {
 		// check if marketingCoordinatorId exists
-		const user = await User.findById(marketingCoordinatorId)
+		// const user = await User.findById(marketingCoordinatorId)
 
-		if (!user) {
-			return res.status(StatusCodes.NOT_FOUND).json({
-				error: "marketing coordinator id does not exist!",
-			})
-		}
+		// if (!user) {
+		// 	return res.status(StatusCodes.NOT_FOUND).json({
+		// 		error: "marketing coordinator id does not exist!",
+		// 	})
+		// }
 
 		const newFaculty = await Faculty.create({
 			name,
-			marketingCoordinatorId,
 		})
 
 		return res.status(StatusCodes.CREATED).json({
