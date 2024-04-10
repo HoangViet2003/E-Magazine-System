@@ -254,8 +254,6 @@ const getAllArticlesBySubmissionId = async (req, res) => {
 			return res.status(404).json({ error: "Submission not found" })
 		}
 
-		console.log("submission articles: ", submission.articles)
-
 		const articles = await Article.find({
 			_id: { $in: submission.articles },
 		})
@@ -306,7 +304,7 @@ const getArticleById = async (req, res) => {
 
 		// if user is a marketing coordinator, check if the article's faculty is the same as the user's faculty
 		if (
-			user.role == "marketing coordinator" &&
+			(user.role == "marketing coordinator" || user.role == "guest") &&
 			article.student.facultyId.toString() != req.user.facultyId.toString()
 		) {
 			return res
