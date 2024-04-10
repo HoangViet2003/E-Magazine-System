@@ -41,6 +41,8 @@ const createUser = async (req, res) => {
 			// check if facultyId exists
 			const faculty = await Faculty.findById(facultyId)
 
+
+
 			if (!faculty) {
 				return res.status(400).json({ error: "facultyId does not exist" })
 			}
@@ -56,6 +58,12 @@ const createUser = async (req, res) => {
 			facultyId,
 		})
 		await newUser.save()
+
+		if (role === "marketing coordinator") {
+			await Faculty.findByIdAndUpdate(facultyId, {
+				marketingCoordinatorId: newUser._id,
+			})
+		}
 
 		return res.status(201).json({ newUser })
 	} catch (error) {
