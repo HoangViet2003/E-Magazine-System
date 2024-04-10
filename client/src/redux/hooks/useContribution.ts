@@ -8,6 +8,7 @@ import {
 } from "../slices/ContributionSlice";
 import axios from "../../utils/axios.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
+import { toast } from "react-toastify";
 
 export const useContribution = () => {
   const dispatch = useDispatch();
@@ -92,6 +93,21 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(false));
   };
 
+  const createContributionForAllFaculty = async (data: any) => {
+    console.log(data);
+
+    try {
+      const res = await axios.post(POST_API().CREATE_CONTRIBUTION, data);
+      console.log(res);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      toast.success("Contribution created successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     isLoading,
     contribution,
@@ -101,5 +117,6 @@ export const useContribution = () => {
     fetchAllContributionByManager,
     fetchAllContributionByAcademicYear,
     getContributionById,
+    createContributionForAllFaculty,
   };
 };

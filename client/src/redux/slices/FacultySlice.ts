@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Faculty {
   _id: string;
   name: string;
-  marketingCoordinatorId?: string;
+  marketingCoordinatorId?: Object;
 }
 
 interface FacultyState {
@@ -24,7 +24,10 @@ const initialState: FacultyState = {
   faculty: {
     _id: "",
     name: "",
-    marketingCoordinatorId: "",
+    marketingCoordinatorId: {
+      name: "",
+      _id: "",
+    },
   },
 };
 
@@ -37,14 +40,13 @@ const slice = createSlice({
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
-    
-    }
+    },
   },
 });
 
 const { reducer, actions } = slice;
 
-export const { setFaculties,setIsLoading } = actions;
+export const { setFaculties, setIsLoading } = actions;
 
 export type { FacultyState, Faculty };
 

@@ -29,6 +29,7 @@ export const useFaculty = () => {
   };
 
   const createAccount = async (data: any) => {
+    console.log(data)
     try {
       const res = await axios.post(POST_API().SIGNUP, data);
       console.log(res);
@@ -38,6 +39,7 @@ export const useFaculty = () => {
       toast.success("Account created successfully");
     } catch (error) {
       console.log(error);
+      toast.error("Account creation failed");
     }
   };
 

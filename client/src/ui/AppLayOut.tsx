@@ -12,6 +12,7 @@ import TimeIcon from "../assets/icons/sidebar-icons/time";
 import StarIcon from "../assets/icons/sidebar-icons/star";
 import TrashIcon from "../assets/icons/sidebar-icons/trash";
 import { CommentProvider } from "./CommentContext";
+import SidebarAdmin from "../layout/sidebar/SidebarAdmin";
 
 export default function AppLayOut() {
   const currentPath = useLocation().pathname;
@@ -186,7 +187,7 @@ export default function AppLayOut() {
               <Sidebar navLinks={marketingManagerNavLinks} />
             )}
             {user.role === "administrator" && (
-              <Sidebar navLinks={adminNavLinks} />
+              <SidebarAdmin navLinks={adminNavLinks} />
             )}
             {user.role === "guest" && <Sidebar navLinks={guestNavLinks} />}
 

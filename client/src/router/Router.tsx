@@ -19,10 +19,10 @@ import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
 import CreateAccount from "../pages/admin/AccountTable/CreateAccount";
 import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
-import AccountTable from "../pages/admin/AccountTable/AccountTable";
-import FacultyTable from "../pages/admin/FacultyTable/FacultyTable";
-import CreateFaculty from "../pages/admin/FacultyTable/CreateFaculty";
-import Guest from "../pages/guest_page/Guest";
+import AccountTable from "../pages/admin/AccountTable";
+import FacultyTable from "../pages/admin/FacultyTable";
+import CreateFaculty from "../pages/admin/CreateFaculty";
+import CreateContribution from "../pages/admin/CreateContribution";
 
 const router = createBrowserRouter([
   {
@@ -143,6 +143,25 @@ const router = createBrowserRouter([
       {
         path: "/images/:id",
         element: <SubmissionImage />,
+      },
+      {
+        path:"/account/create",
+        element:<CreateAccount/>
+      },{
+        path:"/account",
+        element:<AccountTable/>
+      },
+      {
+        path: "/faculty",
+        element: <FacultyTable />,
+      },
+      {
+        path: "/faculty/create",
+        element: <CreateFaculty />,
+      },
+      {
+        path: "/contribution/create",
+        element: <CreateContribution />,
       },
     ],
   },
