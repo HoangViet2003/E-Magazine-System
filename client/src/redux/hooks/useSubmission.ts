@@ -1,5 +1,6 @@
 import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
+import download from "downloadjs";
 import {
   resetSubmission,
   setAllSubmissions,
@@ -372,12 +373,15 @@ export const useSubmission = () => {
     }
   };
 
-  const handleDownloadSubmission = async (submissionId?: string) => {
+  const downloadSubmission = async (submissionId?: string) => {
     try {
       if (!submissionId) throw new Error("SubmissionId is required");
-      const res = await axios.get(GET_API(submissionId).DOWNLOAD_SUBMISSION);
 
-      console.log(res);
+      const res = await axios.get(GET_API(submissionId).DOWNLOAD_SUBMISSION, {
+        responseType: "blob",
+      });
+
+      download(res.data, `submission_${submissionId}`, "application/zip");
     } catch (error) {
       console.log(error);
     }
@@ -399,6 +403,6 @@ export const useSubmission = () => {
     deleteSubmission,
     removeArticlesFromSubmission,
     toggleSelectSubmission,
-    handleDownloadSubmission,
+    downloadSubmission,
   };
 };

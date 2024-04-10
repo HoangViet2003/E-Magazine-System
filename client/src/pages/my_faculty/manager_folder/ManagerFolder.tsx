@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useContribution } from "../../../redux/hooks";
+import { useContribution, useSubmission } from "../../../redux/hooks";
 import MainHeader from "../../../ui/MainHeader";
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import Dropdowns from "../../../ui/Dropdowns";
@@ -15,7 +15,7 @@ export default function ManagerFolder() {
     managerContributions,
     fetchAllContributionByAcademicYear,
   } = useContribution();
-  // const { contributionId } = useParams();
+
   const role = localStorage.getItem("role");
   const [searchParams] = useSearchParams();
   const academicYear = searchParams.get("academicYear") || "";

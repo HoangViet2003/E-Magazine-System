@@ -30,7 +30,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
     submission,
     removeArticlesFromSubmission,
     toggleSelectSubmission,
-    handleDownloadSubmission,
+    downloadSubmission,
   } = useSubmission();
   const { selectedArticles } = useArticle();
   const { submissionId } = useParams();
@@ -207,7 +207,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
           {params.submissionId && role === "marketing manager" && (
             <button
               className="p-2 hover:bg-slate-200"
-              onClick={() => handleDownloadSubmission(submissionId)}
+              onClick={() => downloadSubmission(submissionId)}
             >
               Download
             </button>
