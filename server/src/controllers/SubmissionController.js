@@ -489,13 +489,20 @@ const downloadSubmission = async (req, res) => {
 	try {
 		const { submissionId } = req.params
 
+		console.log("Submission ID:", submissionId)
+
 		const submission = await Submission.findById(submissionId)
 
+		console.log("Submission:", submission)
+
 		if (!submission) {
+			console.log("Submission not found")
 			return res.status(404).json({ message: "Submission not found" })
 		}
 
 		const articles = await Article.find({ _id: { $in: submission.articles } })
+
+		console.log("Articles:", articles)
 
 		const htmlPDF = new PuppeteerHTMLPDF()
 		htmlPDF.setOptions({ format: "A4" })
@@ -504,22 +511,37 @@ const downloadSubmission = async (req, res) => {
 
 		// Download and save articles
 		for (let article of articles) {
+			console.log("Processing article:", article)
+
 			if (article.type === "word") {
+				console.log("Processing word article:", article.title)
+
 				const pdfBuffer = await htmlPDF.create(article.content)
+				console.log("PDF buffer:", pdfBuffer)
+
 				const filePath = path.join(
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
 				)
+				console.log("File path:", filePath)
+
 				await htmlPDF.writeFile(pdfBuffer, filePath)
+				console.log("PDF written to file")
+
 				zip.file(`${article.title}.pdf`, fs.readFileSync(filePath))
+				console.log("PDF added to zip")
+
 				// delete the pdf after zipping
 			} else {
+				console.log("Processing image article:", article.title)
+
 				const articleTitle = article.title
 				const articleImages = article.content
 				const articleFolder = path.join(
 					__dirname,
 					`../../public/uploads/${articleTitle}`
 				)
+				console.log("Article folder:", articleFolder)
 
 				// Create directories asynchronously
 				await fs.promises
@@ -534,6 +556,8 @@ const downloadSubmission = async (req, res) => {
 					if (image.startsWith("http")) {
 						await new Promise((resolve, reject) => {
 							const imagePath = path.join(articleFolder, `${imageIndex}.png`)
+							console.log("Image path:", imagePath)
+
 							const fileStream = fs.createWriteStream(imagePath)
 							fileStream.on("error", (err) => {
 								console.error("Error writing image:", err)
@@ -546,6 +570,7 @@ const downloadSubmission = async (req, res) => {
 									fileStream.on("finish", () => {
 										const imageData = fs.readFileSync(imagePath)
 										imagesFolder.file(`${imageIndex}.png`, imageData)
+										console.log("Image added to zip:", `${imageIndex}.png`)
 										resolve()
 									})
 								})
@@ -564,21 +589,10 @@ const downloadSubmission = async (req, res) => {
 		res.setHeader("Content-Disposition", `attachment; filename=${zipFileName}`)
 		res.setHeader("Content-Type", "application/zip")
 
-		// // delete the folder after zipping
-		// for (let article of articles) {
-		// 	if (article.type === "image") {
-		// 		const articleTitle = article.title
-		// 		const articleFolder = path.join(
-		// 			__dirname,
-		// 			`../../public/uploads/${articleTitle}`
-		// 		)
-		// 		fs.rmSync(articleFolder, { recursive: true })
-		// 	}
-		// }
-
+		console.log("Sending zip buffer")
 		return res.send(zipBuffer)
 	} catch (error) {
-		console.log("error", error)
+		console.log("Error:", error)
 		return res.status(500).json({ error: error.message })
 	}
 }
