@@ -21,7 +21,7 @@ const CreateAccount = () => {
 
 
 
-    console.log(user)
+    console.log("facultyId",faculty)
 
 
     useEffect(() => {
@@ -72,6 +72,9 @@ const CreateAccount = () => {
 
     }
 
+    const handleSetFaculyId = (e:any) => {
+        setFaculty(e.target.value)
+    }
 
 
 
@@ -130,7 +133,7 @@ const CreateAccount = () => {
                                 Faculty
                             </label>
                             <div className="relative">
-                                <select value={faculty} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" onChange={(e) => setFaculty(e.target.value)}>
+                                <select value={faculty} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" onChange={handleSetFaculyId}>
                                     {faculties.map(faculty => (
                                         <option key={faculty._id} value={faculty._id}>{faculty.name}</option>
 

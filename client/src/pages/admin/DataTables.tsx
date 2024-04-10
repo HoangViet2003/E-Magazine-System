@@ -76,7 +76,7 @@ const DataTables = (props: {
             },
             {
                 name: 'marketing coordinator',
-                selector: (row) => row.marketingCoordinatorId.name,
+                selector: (row) => row?.marketingCoordinatorId?.name,
             },
             {
                 name: 'Action',

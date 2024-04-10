@@ -47,6 +47,7 @@ export const useFaculty = () => {
     setIsLoading(true);
     try {
       const res = await axios.post(POST_API().CREATE_FACULTY, data);
+      console.log(res)
       if (res.status !== 201) {
         throw new Error(res.statusText);
       }
@@ -54,7 +55,9 @@ export const useFaculty = () => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      toast.error("Faculty creation failed");
       setIsLoading(false);
+
     }
   };
 
