@@ -145,6 +145,12 @@ const ArticleSlice = createSlice({
     resetSelectedArticles(state) {
       state.selectedArticles = [];
     },
+    deleteArticle(state, action: PayloadAction<Article>) {
+      state.articles = state.articles.filter(
+        (article) => article._id !== action.payload._id,
+      );
+    },
+
     updateSelectedArticle(state, action: PayloadAction<Article>) {
       const isDataAlreadySelected = state.selectedArticles.some(
         (article) => article._id === action.payload._id,
@@ -183,6 +189,7 @@ export const {
   setUnSubmissionArticles,
   updateSelectedArticle,
   setDashboard,
+  deleteArticle,
 } = actions;
 
 export default reducer;

@@ -19,6 +19,7 @@ import {
   updateSelectedArticle,
   resetSelectedArticles,
   setDashboard,
+  deleteArticle,
 } from "../slices/ArticleSlice";
 import { setSubmission } from "../slices/SubmissionSlice.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
@@ -372,10 +373,32 @@ export const useArticle = () => {
       );
 
       if (status !== 200) {
-        throw new Error("Error fetching submissions");
+        throw new Error("Error fetching dashboard");
       }
 
       dispatch(setDashboard(data));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
+  const deleteArticleById = async (articleId: string) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      if (!articleId) throw new Error("ArticleId is required.");
+
+      const { data, status } = await axios.delete(
+        DELETE_API(articleId).DELETE_ARTICLE,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error deleting article");
+      }
+
+      dispatch(deleteArticle(data?.article));
     } catch (error) {
       console.log(error);
     } finally {
@@ -416,5 +439,6 @@ export const useArticle = () => {
     updateSelectedArticleState,
     handleSetDashBoard,
     setDashboard,
+    deleteArticleById,
   };
 };
