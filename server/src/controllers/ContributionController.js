@@ -171,7 +171,11 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	try {
 		const { facultyId, role } = req.user
 
-		if (role !== "marketing coordinator" && role !== "guest") {
+		if (
+			role !== "marketing coordinator" &&
+			role !== "guest" &&
+			role !== "student"
+		) {
 			return res
 				.status(403)
 				.json({ error: "You do not have permission to access this route" })
