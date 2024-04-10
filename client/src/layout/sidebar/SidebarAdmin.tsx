@@ -50,26 +50,16 @@ export default function SidebarAdmin() {
             ),
         },
         {
-            title: "Recent",
-            link: "/recent",
+            title: "Contribution",
+            link: "/contribution/create",
             icon: (
-                <TimeIcon fill={currentPath === "/recent" ? "#004AD7" : "#6B6C7E"} />
+                <CheckCircleIcon
+                    fill={currentPath === "/contribution/create" ? "#004AD7" : "#6B6C7E"}
+                />
             ),
-        },
-        {
-            title: "Starred",
-            link: "/starred",
-            icon: (
-                <StarIcon fill={currentPath === "/starred" ? "#004AD7" : "#6B6C7E"} />
-            ),
-        },
-        {
-            title: "Trash",
-            link: "/trash",
-            icon: (
-                <TrashIcon fill={currentPath === "/trash" ? "#004AD7" : "#6B6C7E"} />
-            ),
-        },
+        }
+        
+      
     ];
 
     return windowWidth < 1024 ? (

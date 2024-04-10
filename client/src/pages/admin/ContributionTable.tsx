@@ -1,15 +1,15 @@
-import {useEffect,useState} from 'react'
+import { useEffect, useState } from 'react'
 import { useFaculty } from '../../redux/hooks/useFaculty'
 import { useNavigate } from 'react-router-dom';
 import DataTables from './DataTables';
 
 const FacultyTable = () => {
 
-    const { faculties, getFaculties,deleteFaculty } = useFaculty()
+    const { faculties, getFaculties, deleteFaculty } = useFaculty()
     const navigate = useNavigate();
     useEffect(() => {
         getFaculties()
-    },[])
+    }, [])
 
     const handleDeleteFaculty = (id: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this faculty?');
@@ -18,22 +18,20 @@ const FacultyTable = () => {
         }
     }
 
-  return (
-      <div>
-          <button className="btn btn-xs sm:btn-md md:btn-md lg:btn-md mb-8" onClick={() => navigate('/faculty/create')}>Create New Faculty</button>
-
+    return (
+        <div>
             <DataTables
                 tableName='faculty'
                 data={faculties}
                 totalLength={faculties?.length}
                 loading={false}
-                onPageChange={() => {}}
-                handleSearch={() => {}}
+                onPageChange={() => { }}
+                handleSearch={() => { }}
                 handleDeleteClick={handleDeleteFaculty}
             />
-         
-      </div>
-  )
+
+        </div>
+    )
 }
 
 export default FacultyTable

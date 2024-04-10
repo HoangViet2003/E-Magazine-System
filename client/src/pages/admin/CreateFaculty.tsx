@@ -12,7 +12,7 @@ const CreateFaculty = () => {
 
     const { state } = location;
 
-    const faculty = state && state.faculty;
+    const faculty = state && state.row;
     console.log(faculty)
 
     useEffect(() => {
@@ -29,11 +29,11 @@ const CreateFaculty = () => {
         }
         if (faculty) {
             updateFaculty(faculty._id, data)
-            // navigate('/faculty')
+            navigate('/faculty')
             return
         }
         createFaculty(data)
-        // navigate('/faculty')
+        navigate('/faculty')
     }
 
     return (

@@ -39,7 +39,7 @@ const POST_API = (id?: string) => {
   return {
     // authenticate
     LOGIN: "/login",
-    SIGNUP: `/register`,
+    SIGNUP: `/user`,
     // article
     UPLOAD_ARTICLE: "/article",
     CREATE_BLANK_WORD_FILE: "/article/create-doc",
@@ -50,7 +50,7 @@ const POST_API = (id?: string) => {
     CREATE_COMMENT: `/submission/${id}/comment`,
     REPLY_COMMENT: `/comment/${id}/reply`,
     // contributions
-    CREATE_CONTRIBUTION: `/contribution`,
+    CREATE_CONTRIBUTION: `/contributions`,
     // faculties
     CREATE_FACULTY: `/faculty`,
     // submissions

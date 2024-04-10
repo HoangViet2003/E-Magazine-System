@@ -15,8 +15,10 @@ const DataTables = (props: {
     onPageChange: any;
     loading: boolean;
     handleSearch: any;
+    handleDeleteClick?: any;
+    // onRowDoubleClicked?: any;
 }) => {
-    const { tableName, data, totalLength, onPageChange, loading, handleSearch } =
+    const { tableName, data, totalLength, onPageChange, loading, handleSearch,handleDeleteClick } =
         props;
 
 
@@ -26,30 +28,67 @@ const DataTables = (props: {
 
 
     const navigate = useNavigate();
-    
+
 
     let columns: Column[] = [];
 
     if (tableName === 'account') {
         columns = [
 
-            { name: 'name', selector: (row) => row.name , sortable: true},
+            { name: 'name', selector: (row) => row.name, sortable: true },
             { name: 'email', selector: (row) => row.email, sortable: true },
             { name: 'role', selector: (row) => row.role, sortable: true },
+            {
+                name: 'created at',
+                selector: (row) =>
+                    new Date(row.createdAt).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    }),
+            },
+            //button for delete
+            {
+                name: 'Action',
+                selector: (row) => (
+                    <button
+                        onClick={() => {
+                            handleDeleteClick(row._id);
+                        }}
+                    >
+                        Delete
+                    </button>
+                ),
+            },
         ];
-    } else if (tableName === 'orders') {
+    } else if (tableName === 'faculty') {
         columns = [
             {
                 name: 'id',
-                selector: (row) => row.id,
+                selector: (row) => row._id,
             },
             {
-                name: 'total ($)',
-                selector: (row) => row.totalCost,
+                name: 'faculty name',
+                selector: (row) => row.name,
             },
             {
-                name: 'status',
-                selector: (row) => row.status,
+                name: 'marketing coordinator',
+                selector: (row) => row.marketingCoordinatorId.name,
+            },
+            {
+                name: 'Action',
+                selector: (row) => (
+                    <button
+                        onClick={() => {
+                            handleDeleteClick(row._id);
+                        }}
+                    >
+                        Delete
+                    </button>
+                ),
             },
             {
                 name: 'created at',
@@ -84,45 +123,7 @@ const DataTables = (props: {
             },
         ];
     }
-    else if (tableName === 'transactions') {
-        columns = [
-            {
-                name: 'id',
-                selector: (row) => row.id,
-            }, {
-                name: 'order id',
-                selector: (row) => row.orderId,
-            },
-            // {
-            //   name: 'status',
-            //   selector: (row) => row.status,
-            // },
-            {
-                name: 'payment method',
-                selector: (row) => row.paymentMethod,
-            },
-            {
-                name: 'amount',
-                selector: (row) => row.amount,
-            },
-            {
-                name: 'type',
-                selector: (row) => row.type
-            },
-            {
-                name: 'created at',
-                selector: (row) =>
-                    new Date(row.timestamp).toLocaleString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                    }),
-            },
-        ];
-    }
+    
 
     const handleSearchData = (e: any) => {
         setSearchText(e.target.value);
@@ -144,9 +145,7 @@ const DataTables = (props: {
     //     handleSearch(filteredData);
     // };
 
-    const handleCreate = () => {
-        window.location.href = '/admin/products/create';
-    }
+
 
 
 
@@ -161,8 +160,8 @@ const DataTables = (props: {
                 <h2>
                     {tableName === 'account'
                         ? 'Accounts'
-                        : tableName === 'orders'
-                            ? 'Orders'
+                        : tableName === 'faculty'
+                            ? 'Faculty'
                             : tableName === 'users'
                                 ? 'Users'
                                 : 'Transaction'}
@@ -180,7 +179,7 @@ const DataTables = (props: {
 
 
             </div>
-         
+
             <DataTable
                 columns={columns}
                 data={data}
@@ -191,27 +190,16 @@ const DataTables = (props: {
                 paginationTotalRows={totalLength}
                 progressPending={loading}
                 onChangePage={onPageChange}
-                onRowDoubleClicked={(row:any) => {
+                onRowDoubleClicked={(row: any) => {
                     if (tableName === 'account') {
-                        window.location.href = `/account/create`;
+                        navigate('/account/create', { state: { row } })
                     } else if (
-                        tableName === 'orders' &&
-                        window.location.href.includes('admin')
+                        tableName === 'faculty'
                     ) {
-                        window.location.href = `/admin/orders/${row.id}`;
-                    } else if (tableName === 'orders') {
-                        window.location.href = `/orders/${row.id}`;
-                    } else if (
-                        tableName === 'users' &&
-                        window.location.href.includes('users')
-                    ) {
-                        window.location.href = `/admin/users/${row.id}`;
-                    } else if (
-                        tableName === 'transactions' &&
-                        window.location.href.includes('admin')
-                    ) {
-                        window.location.href = `/admin/transactions/${row.id}`;
-                    }
+                        navigate('/faculty/create', { state: { row } })
+                    } else if (tableName === 'contribution') {
+                        navigate('/contribution/create', { state: { row } })
+                    } 
                 }
                 }
             />

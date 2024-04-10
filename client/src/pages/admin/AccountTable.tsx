@@ -3,7 +3,7 @@ import profile from '../../assets/profile1.png';
 import { useAuth } from '../../redux/hooks';
 import Spinner from '../../ui/Spinner';
 import { useNavigate } from 'react-router-dom';
-import DataTables from './Datatables';
+import DataTables from './DataTables';
 import { User } from '../../redux/slices/UserSlice';
 
 const AccountTable = () => {
@@ -37,8 +37,7 @@ const AccountTable = () => {
 
     return (
         <div className=''>
-         
-            
+            <button className="btn btn-xs sm:btn-md md:btn-md lg:btn-md mb-8" onClick={() => navigate('/account/create')}>Create New Account</button>
 
             <DataTables
                 tableName='account'
@@ -47,6 +46,7 @@ const AccountTable = () => {
                 loading={isLoadingTable}
                 onPageChange={() => setCurrentPage(currentPage + 1)}
                 handleSearch={() => {}}
+                handleDeleteClick={handleDeleteClick}
             />
         </div>
     );

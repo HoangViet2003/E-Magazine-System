@@ -23,6 +23,7 @@ import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 import AccountTable from "../pages/admin/AccountTable";
 import FacultyTable from "../pages/admin/FacultyTable";
 import CreateFaculty from "../pages/admin/CreateFaculty";
+import CreateContribution from "../pages/admin/CreateContribution";
 
 const router = createBrowserRouter([
   {
@@ -137,6 +138,10 @@ const router = createBrowserRouter([
       {
         path: "/faculty/create",
         element: <CreateFaculty />,
+      },
+      {
+        path: "/contribution/create",
+        element: <CreateContribution />,
       },
     ],
   },
