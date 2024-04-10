@@ -523,7 +523,7 @@ const downloadSubmission = async (req, res) => {
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
 				)
-				await fs.mkdir(path.dirname(filePath), { recursive: true })
+				await fs.mkdirSync(path.dirname(filePath), { recursive: true })
 				console.log("File path:", filePath)
 
 				await htmlPDF.writeFile(pdfBuffer, filePath)
@@ -546,7 +546,7 @@ const downloadSubmission = async (req, res) => {
 
 				// Create directories asynchronously
 				await fs.promises
-					.mkdir(articleFolder, { recursive: true })
+					.mkdirSync(articleFolder, { recursive: true })
 					.catch((err) => {
 						console.error("Error creating directory:", err)
 					})
