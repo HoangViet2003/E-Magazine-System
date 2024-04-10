@@ -129,7 +129,7 @@ const createSubmission = async (req, res) => {
 				studentName: req.user.name,
 				studentEmail: req.user.email,
 				submissionDate: new Date(),
-				linkToViewSubmission: `${process.env.FRONTEND_URL}/submission/${newSubmission._id}`,
+				linkToViewSubmission: `${process.env.FRONTEND_URL}/submissions/contribution/${newSubmission._id}`,
 			}
 		)
 
@@ -166,12 +166,22 @@ const getAllSubmissionByContributionId = async (req, res) => {
 		const limit = 5
 		const skip = (page - 1) * limit
 
+		if (req.user.role == "guest") {
+			const contribution = await Contribution.findById(contributionId)
+
+			if (req.user.facultyId.toString() !== contribution.facultyId.toString()) {
+				return res
+					.status(403)
+					.json({ message: "You are not authorized to perform this action" })
+			}
+		}
+
 		let query = {
 			contributionId,
 			unsubmitted: false,
 		}
 
-		if (req.user.role == "marketing manager") {
+		if (req.user.role == "marketing manager" || req.user.role == "guest") {
 			query.isSelectedForPublication = true
 		}
 

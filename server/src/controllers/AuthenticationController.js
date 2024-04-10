@@ -154,6 +154,15 @@ const login = catchAsync(async (req, res) => {
 	}
 })
 
+const confirmResetPassowrd = async (req, res) => {
+	try {
+	} catch (error) {
+		return res.status(500).json({
+			error: error.message,
+		})
+	}
+}
+
 const forgotPassword = catchAsync(async (req, res) => {
 	try {
 		const { email } = req.body

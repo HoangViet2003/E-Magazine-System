@@ -169,7 +169,13 @@ const getAllContributionsByAcamemicYear = async (req, res) => {
 
 const getAllContributionByFaculty = catchAsync(async (req, res) => {
 	try {
-		const { facultyId } = req.user
+		const { facultyId, role } = req.user
+
+		if (role !== "marketing coordinator" && role !== "guest") {
+			return res
+				.status(403)
+				.json({ error: "You do not have permission to access this route" })
+		}
 
 		if (!facultyId) {
 			return res.status(400).json({
@@ -177,6 +183,7 @@ const getAllContributionByFaculty = catchAsync(async (req, res) => {
 				message: "Faculty ID is required",
 			})
 		}
+
 		const faculty = await Faculty.findById(facultyId)
 
 		if (!faculty) {
