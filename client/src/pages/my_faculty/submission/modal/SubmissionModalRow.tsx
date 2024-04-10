@@ -18,7 +18,7 @@ const SubmissionModalRow: React.FC<SubmissionModalRowProps> = ({
   const { title, updatedAt, type } = data;
 
   const date = updatedAt ? new Date(updatedAt) : new Date();
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate() < 10 ? "0" : ""}${date.getDate()}/${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}/${date.getFullYear()}`;
 
   const isSelected = selectedArticle.some(
     (article) => article._id === data._id,

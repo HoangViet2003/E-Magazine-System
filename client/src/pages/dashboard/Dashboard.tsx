@@ -6,8 +6,16 @@ import CommentedArticlesChart from "./CommentedArticlesChart";
 import DailyTrafficChart from "./DailyTrafficChart";
 import SubmissionTrendsChart from "./SubmissionTrendsChart";
 import MainHeader from "../../ui/MainHeader";
+import { useEffect } from "react";
+import { useArticle } from "../../redux/hooks";
 
 export default function Dashboard() {
+  const { handleSetDashBoard } = useArticle();
+
+  useEffect(() => {
+    handleSetDashBoard("This month");
+  }, []);
+
   return (
     <div>
       <MainHeader>

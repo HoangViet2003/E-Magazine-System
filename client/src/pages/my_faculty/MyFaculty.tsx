@@ -31,7 +31,7 @@ export default function MyFaculty() {
       <div className="my-5 flex flex-col gap-5 xl:ps-6">
         <ContributionFolder />
 
-        {role !== "marketing manager" && (
+        {role !== "marketing manager" && role !== "guest" && (
           <div className="my-5 flex flex-col gap-5 xl:ps-6">
             <MyFacultyTable />
           </div>

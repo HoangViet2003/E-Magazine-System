@@ -71,6 +71,8 @@ export default function ContributionFolder() {
                 handleSubmissionNavigate(contribution._id);
               } else if (role === "marketing manager") {
                 handleManagerNavigate(contribution._id);
+              } else if (role === "guest") {
+                handleSubmissionNavigate(contribution._id);
               }
             }}
           >

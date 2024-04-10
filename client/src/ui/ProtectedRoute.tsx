@@ -10,6 +10,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const role = localStorage.getItem("role");
 
   const marketingCorRestrictedPaths = ["dashboard", "myFaculty"];
+  const guestRestrictedPaths = ["dashboard"];
 
   useEffect(() => {
     if (userToken) {
@@ -27,6 +28,17 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   }
 
   if (role === "marketing manager" && location.pathname.includes("dashboard")) {
+    return <Navigate to="/myFaculty" />;
+  }
+
+  if (role === "marketing manager" && location.pathname.includes("dashboard")) {
+    return <Navigate to="/myFaculty" />;
+  }
+
+  if (
+    role === "guest" &&
+    guestRestrictedPaths.some((word) => location.pathname.includes(word))
+  ) {
     return <Navigate to="/myFaculty" />;
   }
 

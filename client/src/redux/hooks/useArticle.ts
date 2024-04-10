@@ -18,6 +18,7 @@ import {
   setUnSubmissionArticles,
   updateSelectedArticle,
   resetSelectedArticles,
+  setDashboard,
 } from "../slices/ArticleSlice";
 import { setSubmission } from "../slices/SubmissionSlice.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
@@ -38,9 +39,9 @@ export const useArticle = () => {
     selectedArticles,
     suggestionArticles,
     isSearchMode,
-
     submissionArticles,
     unSubmissionArticles,
+    dashboard,
   } = useSelector((state: RootState) => state.article);
 
   const { user } = useSelector((state: RootState) => state.user);
@@ -358,10 +359,33 @@ export const useArticle = () => {
     dispatch(setSearchMode(isSearchMode));
   };
 
+  const handleSetDashBoard = async (chosenRange: string) => {
+    dispatch(setLoadingArticle(true));
+
+    try {
+      if (!chosenRange) throw new Error("ChosenRange is required.");
+
+      const { data, status } = await axios.get(
+        GET_API(chosenRange).GET_DASHBOARD,
+      );
+
+      if (status !== 200) {
+        throw new Error("Error fetching submissions");
+      }
+
+      dispatch(setDashboard(data));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
+    }
+  };
+
   return {
     totalLength,
     isLoading,
     articles,
+    dashboard,
     submissionArticles,
     unSubmissionArticles,
     selectedArticles,
@@ -388,5 +412,7 @@ export const useArticle = () => {
     handleSetSearchMode,
     isSearchMode,
     updateSelectedArticleState,
+    handleSetDashBoard,
+    setDashboard,
   };
 };

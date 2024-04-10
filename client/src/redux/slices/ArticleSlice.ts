@@ -13,6 +13,15 @@ export interface Article {
   type: string;
 }
 
+export interface Dashboard {
+  totalArticles: number;
+  totalComments: number;
+  totalSubmissions: number;
+  totalSelectedSubmissions: number;
+  totalSubmissionsWithComments: number;
+  totalSubmissionsWithoutComments: number;
+}
+
 interface ArticleState {
   isLoading: boolean;
   currentPage: number;
@@ -27,6 +36,8 @@ interface ArticleState {
   keyword?: string;
   isFilterMode: boolean;
   isSearchMode: boolean;
+  // Dashboard info
+  dashboard: Dashboard;
 }
 
 const initialState: ArticleState = {
@@ -57,6 +68,15 @@ const initialState: ArticleState = {
   keyword: "",
   isFilterMode: false,
   isSearchMode: false,
+
+  dashboard: {
+    totalArticles: 0,
+    totalComments: 0,
+    totalSubmissions: 0,
+    totalSelectedSubmissions: 0,
+    totalSubmissionsWithComments: 0,
+    totalSubmissionsWithoutComments: 0,
+  },
 };
 
 const ArticleSlice = createSlice({
@@ -138,6 +158,9 @@ const ArticleSlice = createSlice({
         );
       }
     },
+    setDashboard(state, action: PayloadAction<Dashboard>) {
+      state.dashboard = action.payload;
+    },
   },
 });
 
@@ -159,6 +182,7 @@ export const {
   setSearchMode,
   setUnSubmissionArticles,
   updateSelectedArticle,
+  setDashboard,
 } = actions;
 
 export default reducer;

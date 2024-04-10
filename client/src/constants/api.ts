@@ -1,7 +1,12 @@
-const GET_API = (id: string, page = 1, year?: number) => {
+const GET_API = (
+  id: string,
+  page = 1,
+  year?: number,
+  chosenRange = "This month",
+) => {
   return {
     // article
-    GET_DASHBOARD: `/article/dashboard`,
+    GET_DASHBOARD: `/article/dashboard?chosenRange=${chosenRange}`,
     GET_ALL_STUDENT_ARTICLES: `/article/student?page=${page}`,
     GET_ARTICLE_BY_ID: `/article/${id}`,
     GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}?page=${page}`,

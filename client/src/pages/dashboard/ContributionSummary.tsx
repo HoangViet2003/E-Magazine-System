@@ -4,8 +4,13 @@ import ContributorsIcon from "../../assets/icons/summaryItem-icons/contributor.s
 import CommentIcon from "../../assets/icons/summaryItem-icons/comment.svg";
 
 import SummaryItem from "./SummaryItem";
+import { useArticle } from "../../redux/hooks";
 
 export default function ContributionSummary() {
+  const { dashboard } = useArticle();
+
+  console.log(dashboard);
+
   return (
     <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
       <h2 className="text-xl font-semibold">Contributions summary</h2>
@@ -15,7 +20,7 @@ export default function ContributionSummary() {
           icon={SaleIcon}
           iconBg="#0B5FFF"
           background="#C5D9FF"
-          data={136}
+          data={dashboard?.totalArticles}
           type="Articles Submitted"
           changePercentage={8}
         />
@@ -24,8 +29,8 @@ export default function ContributionSummary() {
           icon={CheckIcon}
           iconBg="#00AC4F"
           background="#DCFCE7"
-          data={50}
-          type="Articles Selected"
+          data={dashboard?.totalSelectedSubmissions}
+          type="Submission Selected"
           changePercentage={-8}
         />
 
@@ -42,7 +47,7 @@ export default function ContributionSummary() {
           icon={CommentIcon}
           iconBg="#A553FF"
           background="#F3E8FF"
-          data={1134}
+          data={dashboard?.totalComments}
           type="Comments"
           changePercentage={8}
         />

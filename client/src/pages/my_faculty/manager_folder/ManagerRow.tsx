@@ -4,11 +4,20 @@ import Table from "../../../ui/Table";
 const commonCell =
   "overflow-hidden text-ellipsis whitespace-nowrap cursor-default select-none";
 
-export default function ManagerRow({ data }) {
+interface FacultyId {
+  createdAt: string; // Assuming createdAt is a string, adjust the type as necessary
+  name: string;
+}
+
+interface Data {
+  facultyId: FacultyId;
+}
+
+export default function ManagerRow({ data }: { data: Data }) {
   const { facultyId } = data;
 
   const date = new Date(facultyId.createdAt);
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate() < 10 ? "0" : ""}${date.getDate()}/${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}/${date.getFullYear()}`;
 
   return (
     <Table.Row>

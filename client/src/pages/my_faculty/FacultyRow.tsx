@@ -11,7 +11,7 @@ const FacultyRow: React.FC<{ data: Article }> = ({ data }) => {
   const action = "test action";
 
   const date = new Date(updatedAt);
-  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  const formattedDate = `${date.getDate() < 10 ? "0" : ""}${date.getDate()}/${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}/${date.getFullYear()}`;
 
   const commonCell =
     "overflow-hidden text-ellipsis whitespace-nowrap cursor-default select-none";

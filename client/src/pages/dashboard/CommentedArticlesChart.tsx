@@ -6,6 +6,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { useArticle } from "../../redux/hooks";
 
 const fakeData = [
   {
@@ -18,15 +19,28 @@ const fakeData = [
     value: 59,
     color: "#0B5FFF",
   },
-  {
-    name: "Yup",
-    value: 5,
-    color: "#FFB200",
-  },
+  // {
+  //   name: "Yup",
+  //   value: 5,
+  //   color: "#FFB200",
+  // },
 ];
 
 export default function CommentedArticlesChart() {
-  const data = fakeData;
+  const { dashboard } = useArticle();
+
+  const data = [
+    {
+      name: "Commented",
+      value: dashboard.totalSubmissionsWithComments,
+      color: "#FF3A29",
+    },
+    {
+      name: "Not yet",
+      value: dashboard.totalSubmissionsWithoutComments,
+      color: "#0B5FFF",
+    },
+  ];
 
   return (
     <div className="border border-borderColor px-8 pb-[30px] pt-9 shadow-lg">

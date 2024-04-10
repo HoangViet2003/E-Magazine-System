@@ -22,6 +22,7 @@ import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 import AccountTable from "../pages/admin/AccountTable/AccountTable";
 import FacultyTable from "../pages/admin/FacultyTable/FacultyTable";
 import CreateFaculty from "../pages/admin/FacultyTable/CreateFaculty";
+import Guest from "../pages/guest_page/Guest";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,11 @@ const router = createBrowserRouter([
       {
         path: "/faculty/create",
         element: <CreateFaculty />,
+      },
+      {
+        path: "/myFaculty",
+        // element: <Guest />
+        element: <MyFaculty />,
       },
     ],
   },

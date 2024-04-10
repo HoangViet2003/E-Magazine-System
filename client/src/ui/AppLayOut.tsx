@@ -160,6 +160,18 @@ export default function AppLayOut() {
     },
   ];
 
+  const guestNavLinks = [
+    {
+      title: "Faculty",
+      link: "/myFaculty",
+      icon: (
+        <ChartpinIcon
+          fill={currentPath.includes("/myFaculty") ? "#004AD7" : "#6B6C7E"}
+        />
+      ),
+    },
+  ];
+
   return (
     <SidebarProvider>
       <CommentProvider>
@@ -176,6 +188,7 @@ export default function AppLayOut() {
             {user.role === "administrator" && (
               <Sidebar navLinks={adminNavLinks} />
             )}
+            {user.role === "guest" && <Sidebar navLinks={guestNavLinks} />}
 
             <Outlet />
           </div>

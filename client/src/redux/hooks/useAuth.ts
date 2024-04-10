@@ -28,10 +28,12 @@ export function useAuth() {
     dispatch(setLoadingUser(true));
 
     if (userToken) {
-      const { _id, name, email, role, createdAt, updatedAt } =
+      const { _id, name, email, facultyId, role, createdAt, updatedAt } =
         JSON.parse(userToken);
 
-      dispatch(setUser({ _id, name, email, role, createdAt, updatedAt }));
+      dispatch(
+        setUser({ _id, name, facultyId, email, role, createdAt, updatedAt }),
+      );
     }
     dispatch(setLoadingUser(false));
   };
