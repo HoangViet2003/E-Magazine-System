@@ -17,12 +17,12 @@ import ProtectedRoute from "../ui/ProtectedRoute";
 import Submission from "../pages/my_faculty/submission/Submission";
 import StudentHomepage from "../pages/Student_homepage/StudentHomepage";
 import SubmissionImage from "../pages/image_collection/ImageCollection";
-import CreateAccount from "../pages/admin/AccountTable/CreateAccount";
 import ManagerFolder from "../pages/my_faculty/manager_folder/ManagerFolder";
 import AccountTable from "../pages/admin/AccountTable";
 import FacultyTable from "../pages/admin/FacultyTable";
 import CreateFaculty from "../pages/admin/CreateFaculty";
 import CreateContribution from "../pages/admin/CreateContribution";
+import CreateAccount from "../pages/admin/CreateAccount";
 
 const router = createBrowserRouter([
   {
@@ -90,8 +90,11 @@ const router = createBrowserRouter([
         element: <CreateFaculty />,
       },
       {
+        path: "/contribution/create",
+        element: <CreateContribution />,
+      },
+      {
         path: "/myFaculty",
-        // element: <Guest />
         element: <MyFaculty />,
       },
     ],
@@ -145,11 +148,12 @@ const router = createBrowserRouter([
         element: <SubmissionImage />,
       },
       {
-        path:"/account/create",
-        element:<CreateAccount/>
-      },{
-        path:"/account",
-        element:<AccountTable/>
+        path: "/account/create",
+        element: <CreateAccount />,
+      },
+      {
+        path: "/account",
+        element: <AccountTable />,
       },
       {
         path: "/faculty",
@@ -158,10 +162,6 @@ const router = createBrowserRouter([
       {
         path: "/faculty/create",
         element: <CreateFaculty />,
-      },
-      {
-        path: "/contribution/create",
-        element: <CreateContribution />,
       },
     ],
   },

@@ -40,7 +40,8 @@ export default function TextEditor() {
   const { id: documentId } = useParams();
   const [socket, setSocket] = useState<Socket | undefined>();
   const [quill, setQuill] = useState<Quill | null>(null);
-  const { article, getArticleById, updateArticle, isLoading } = useArticle();
+  const { article, getArticleById, updateArticle } = useArticle();
+  const role = localStorage.getItem("role");
 
   const id = window.location.pathname.split("/")[2];
 
@@ -136,7 +137,9 @@ export default function TextEditor() {
         //show skeleton
         // <Sekeleton />;
       }
-      // q.disable();
+      if (role !== "student") {
+        q.disable();
+      }
       // q.setText("Loading...");
       setQuill(q);
     },
@@ -176,7 +179,6 @@ export default function TextEditor() {
       <TextEditorHeader
         title={article?.title || ""}
         handleUpdateDocument={handleUpdateDocument}
-        isLoading={isLoading}
       />
       <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>
     </div>

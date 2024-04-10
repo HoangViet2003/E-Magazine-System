@@ -11,22 +11,22 @@ import SpinnerMini from "../../ui/SpinnerMini";
 interface TextEditorHeaderProps {
   title: string;
   handleUpdateDocument: () => void;
-  isLoading?: boolean;
 }
 
-export default function TextEditorHeader({ title, handleUpdateDocument, isLoading }: TextEditorHeaderProps) {
-  const { updateArticle } = useArticle();
-  console.log(isLoading)
+export default function TextEditorHeader({
+  title,
+  handleUpdateDocument,
+}: TextEditorHeaderProps) {
+  const { updateArticle, isLoading } = useArticle();
   const { id } = useParams<{ id: string }>();
+  const role = localStorage.getItem("role");
 
-  const [docTitle, setDocTitle] = useState('');
+  const [docTitle, setDocTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-
 
   useEffect(() => {
     setDocTitle(title);
   }, [title]);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,7 +51,7 @@ export default function TextEditorHeader({ title, handleUpdateDocument, isLoadin
     (e.target as HTMLElement).blur();
     const form = new FormData();
     form.append("title", docTitle);
-    updateArticle(id ?? '', form);
+    updateArticle(id ?? "", form);
     toast.success("Document Saved");
   }
 
@@ -70,12 +70,17 @@ export default function TextEditorHeader({ title, handleUpdateDocument, isLoadin
                 handleSubmit(e);
               }
             }}
+            disabled={role !== "student"}
           />
         </form>
       </div>
-
       <img src={StarOutlineIcon} className="w-5" alt="" />
-
-      <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-md bg-blue-500 text-white" onClick={handleUpdateDocument}>{isLoading ? <SpinnerMini /> : "Save"}</button>    </div>
+      <button
+        className="btn btn-xs bg-blue-500 text-white sm:btn-sm md:btn-md lg:btn-md"
+        onClick={handleUpdateDocument}
+      >
+        {isLoading ? <SpinnerMini /> : "Save"}
+      </button>{" "}
+    </div>
   );
 }

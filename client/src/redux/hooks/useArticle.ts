@@ -282,6 +282,8 @@ export const useArticle = () => {
     } catch (error) {
       console.error(error);
       toast.error("Error updating article");
+    } finally {
+      dispatch(setLoadingArticle(false));
     }
   };
   const resetSubmissionArticlesState = () => {

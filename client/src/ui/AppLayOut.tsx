@@ -186,9 +186,7 @@ export default function AppLayOut() {
             {user.role === "marketing manager" && (
               <Sidebar navLinks={marketingManagerNavLinks} />
             )}
-            {user.role === "administrator" && (
-              <SidebarAdmin navLinks={adminNavLinks} />
-            )}
+            {user.role === "administrator" && <SidebarAdmin />}
             {user.role === "guest" && <Sidebar navLinks={guestNavLinks} />}
 
             <Outlet />
