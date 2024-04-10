@@ -523,6 +523,7 @@ const downloadSubmission = async (req, res) => {
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
 				)
+				await fs.mkdir(path.dirname(filePath), { recursive: true })
 				console.log("File path:", filePath)
 
 				await htmlPDF.writeFile(pdfBuffer, filePath)
