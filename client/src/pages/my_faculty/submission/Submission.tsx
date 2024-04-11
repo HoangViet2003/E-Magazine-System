@@ -148,22 +148,22 @@ export default function Submission() {
 
                 {isUnsubmittable && (
                   <Dropdowns.List id={`current ${submission._id}`}>
-                    <Dropdowns.Button icon={UnsubmitIcon}>
-                      <span
-                        className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100"
-                        onClick={() => toggleForSubmit(submissionId)}
-                      >
+                    <Dropdowns.Button
+                      icon={UnsubmitIcon}
+                      onClick={() => toggleForSubmit(submissionId)}
+                    >
+                      <span className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
                         {submission.unsubmitted ? "Submit" : "Unsubmit"}
                       </span>
                     </Dropdowns.Button>
 
-                    <Dropdowns.Button icon={DropdownIcon}>
-                      <span
-                        className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100"
-                        onClick={async () => {
-                          await deleteSubmission(submissionId);
-                        }}
-                      >
+                    <Dropdowns.Button
+                      icon={DropdownIcon}
+                      onClick={async () => {
+                        await deleteSubmission(submissionId);
+                      }}
+                    >
+                      <span className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
                         Remove
                       </span>
                     </Dropdowns.Button>
