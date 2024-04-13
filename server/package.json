@@ -41,6 +41,7 @@
 		"nodemo": "^1.0.0",
 		"nodemon": "^3.1.0",
 		"pino": "^8.19.0",
+		"puppeteer-core": "^22.6.4",
 		"puppeteer-html-pdf": "^4.0.1",
 		"sequelize": "^6.37.1",
 		"socket.io": "^4.7.5"
