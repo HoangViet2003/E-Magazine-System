@@ -261,6 +261,16 @@ const updateForPublication = async (req, res) => {
 			? false
 			: true
 
+		// Update the status of articles of the submission
+		await Article.updateMany(
+			{
+				_id: { $in: submission.articles },
+			},
+			{
+				status: submission.isSelectedForPublication ? "selected" : "submitted",
+			}
+		)
+
 		const updatedSubmission = await submission.save()
 
 		return res.status(200).json({
