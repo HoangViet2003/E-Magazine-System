@@ -14,7 +14,7 @@ const path = require("path")
 const fs = require("fs")
 const JSZip = require("jszip")
 const https = require("https")
-
+const puppeteer = require("puppeteer")
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
@@ -497,6 +497,7 @@ const removeArticlesFromSubmission = async (req, res) => {
 // download submission articles and zip them
 const downloadSubmission = async (req, res) => {
 	try {
+		// Now you can use PuppeteerHTMLPDF with the initialized browser
 		const { submissionId } = req.params
 
 		console.log("Submission ID:", submissionId)
@@ -514,9 +515,6 @@ const downloadSubmission = async (req, res) => {
 
 		console.log("Articles:", articles)
 
-		const htmlPDF = new PuppeteerHTMLPDF()
-		htmlPDF.setOptions({ format: "A4" })
-
 		let zip = new JSZip()
 
 		// Download and save articles
@@ -526,15 +524,31 @@ const downloadSubmission = async (req, res) => {
 			if (article.type === "word") {
 				console.log("Processing word article:", article.title)
 
-				const pdfBuffer = await htmlPDF.create(article.content)
-				console.log("PDF buffer:", pdfBuffer)
+				const browser = await puppeteer.launch({ headless: "new" })
+				const page = await browser.newPage()
+				await page.setContent(article.content)
+				const pdfBuffer = await page.pdf({
+					format: "A4",
+					printBackground: true,
+					margin: {
+						left: "0px",
+						top: "0px",
+						right: "0px",
+						bottom: "0px",
+					},
+				})
+
+				await browser.close()
 
 				const filePath = path.join(
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
 				)
-				await fs.mkdirSync(path.dirname(filePath), { recursive: true })
+				fs.mkdirSync(path.dirname(filePath), { recursive: true })
 				console.log("File path:", filePath)
+
+				const htmlPDF = new PuppeteerHTMLPDF()
+				htmlPDF.setOptions({ format: "A4" })
 
 				await htmlPDF.writeFile(pdfBuffer, filePath)
 				console.log("PDF written to file")
@@ -555,11 +569,7 @@ const downloadSubmission = async (req, res) => {
 				console.log("Article folder:", articleFolder)
 
 				// Create directories asynchronously
-				await fs.promises
-					.mkdirSync(articleFolder, { recursive: true })
-					.catch((err) => {
-						console.error("Error creating directory:", err)
-					})
+				await fs.promises.mkdir(articleFolder, { recursive: true })
 
 				let imagesFolder = zip.folder(articleTitle)
 
