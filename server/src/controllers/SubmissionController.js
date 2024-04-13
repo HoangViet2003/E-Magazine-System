@@ -8,16 +8,16 @@ const {
 	Comment,
 } = require("../models")
 
-const PuppeteerHTMLPDF = require("puppeteer-html-pdf")
-
 const path = require("path")
 const fs = require("fs")
 const JSZip = require("jszip")
 const https = require("https")
-const puppeteer = require("puppeteer")
 const ejs = require("ejs")
 const { handleSendEmail } = require("../utils/sendMail")
 const { emitNotification } = require("../utils/initSocket")
+
+const { PDFDocument } = require("pdf-lib")
+var html_to_pdf = require("html-pdf-node")
 
 const getSubmissionById = async (req, res) => {
 	try {
@@ -524,22 +524,6 @@ const downloadSubmission = async (req, res) => {
 			if (article.type === "word") {
 				console.log("Processing word article:", article.title)
 
-				const browser = await puppeteer.launch({ headless: "new" })
-				const page = await browser.newPage()
-				await page.setContent(article.content)
-				const pdfBuffer = await page.pdf({
-					format: "A4",
-					printBackground: true,
-					margin: {
-						left: "0px",
-						top: "0px",
-						right: "0px",
-						bottom: "0px",
-					},
-				})
-
-				await browser.close()
-
 				const filePath = path.join(
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
@@ -547,11 +531,19 @@ const downloadSubmission = async (req, res) => {
 				fs.mkdirSync(path.dirname(filePath), { recursive: true })
 				console.log("File path:", filePath)
 
-				const htmlPDF = new PuppeteerHTMLPDF()
-				htmlPDF.setOptions({ format: "A4" })
+				let options = { format: "A4" }
+				let file = { content: article.content }
 
-				await htmlPDF.writeFile(pdfBuffer, filePath)
-				console.log("PDF written to file")
+				html_to_pdf.generatePdf(file, options).then(async (pdfBuffer) => {
+					// write pdfBuffer to file
+					const pdfDoc = await PDFDocument.load(pdfBuffer)
+
+					const pdfBytes = await pdfDoc.save()
+
+					fs.writeFileSync(filePath, pdfBytes)
+
+					console.log("PDF written to file")
+				})
 
 				zip.file(`${article.title}.pdf`, fs.readFileSync(filePath))
 				console.log("PDF added to zip")

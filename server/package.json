@@ -12,9 +12,7 @@
 		"prettier:fix": "prettier --config .prettierrc.json --write .",
 		"clean:cache": "rimraf node_modules/.cache",
 		"clean:lib": "rimraf node_modules package-lock.json",
-		"reinstall": "npm run clean:lib && npm install",
-		"preinstall": "npm install puppeteer-core",
-		"postinstall": "npx @puppeteer/browsers install chrome"
+		"reinstall": "npm run clean:lib && npm install"
 	},
 	"author": "thang",
 	"license": "ISC",
@@ -26,6 +24,7 @@
 		"ejs": "^3.1.9",
 		"express": "^4.18.3",
 		"googleapis": "^134.0.0",
+		"html-pdf-node": "^1.0.8",
 		"http-status-codes": "^2.3.0",
 		"husky": "^5.2.0",
 		"joi": "^17.12.2",
@@ -39,9 +38,9 @@
 		"nodemailer": "^6.9.12",
 		"nodemo": "^1.0.0",
 		"nodemon": "^3.1.0",
+		"pdf-lib": "^1.17.1",
 		"pino": "^8.19.0",
 		"puppeteer-core": "^22.6.4",
-		"puppeteer-html-pdf": "^3.0.2",
 		"sequelize": "^6.37.1",
 		"socket.io": "^4.7.5"
 	},
