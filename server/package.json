@@ -14,7 +14,7 @@
 		"clean:lib": "rimraf node_modules package-lock.json",
 		"reinstall": "npm run clean:lib && npm install",
 		"preinstall": "npm install puppeteer-core",
-		"postinstall": "npx puppeteer install chrome"
+		"postinstall": "npx puppeteer browers install chrome"
 	},
 	"author": "thang",
 	"license": "ISC",
