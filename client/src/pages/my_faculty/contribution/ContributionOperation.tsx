@@ -66,6 +66,23 @@ export default function ContributionOperation() {
           />
         )}
       </div>
+
+      <div
+        className={ellipsis + " flex cursor-pointer select-none gap-1"}
+        onClick={() =>
+          sortBy === "owner-asc"
+            ? handleChange("owner-desc")
+            : handleChange("owner-asc")
+        }
+      >
+        Selected
+        {field === "selected" && (
+          <img
+            src={OrderArrowIcon}
+            className={direction === "desc" ? "rotate-180" : ""}
+          />
+        )}
+      </div>
     </>
   );
 }

@@ -6,9 +6,9 @@ import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
 import UpdateImages from "../../ui/UpdateImages";
 import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
-import plusIcon from './../../assets/icons/plusIcon.svg';
-import saveIcon from './../../assets/icons/saveIcon.svg';
-import trash from './../../assets/icons/trash.svg';
+import plusIcon from "./../../assets/icons/plusIcon.svg";
+import saveIcon from "./../../assets/icons/saveIcon.svg";
+import trash from "./../../assets/icons/trash.svg";
 
 const SubmissionImage = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,14 +18,14 @@ const SubmissionImage = () => {
   const [uploadImages, setUploadImages] = useState<File[]>([]);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [openImageUpload, setOpenImageUpload] = useState(false);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
 
   // const {
   //   // openImageUpload,
   //   setOpenImageUpload,
   // } = useSidebarContext();
 
-  const ref = useOutsideClick(() => setOpenImageUpload(false), false) as React.RefObject<HTMLDivElement>;
+  // const ref = useOutsideClick(() => setOpenImageUpload(false), false) as React.RefObject<HTMLDivElement>;
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -33,10 +33,9 @@ const SubmissionImage = () => {
         await getArticleById(id);
       }
     };
-    setTitle(article?.title || '');
+    setTitle(article?.title || "");
     fetchArticle();
   }, [id]);
-
 
   function getImgSize(
     imgSrc: string,
@@ -52,12 +51,13 @@ const SubmissionImage = () => {
     });
   }
 
-
   const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     // Create an array of Promises to get the sizes of uploaded images
-    const imagePromises = files.map((file) => getImgSize(URL.createObjectURL(file)));
+    const imagePromises = files.map((file) =>
+      getImgSize(URL.createObjectURL(file)),
+    );
 
     // Wait for all image sizes to be fetched
     const sizes = await Promise.all(imagePromises);
@@ -80,11 +80,15 @@ const SubmissionImage = () => {
     // setImageCollection(uploadImages.map((image, index) => ({ src: URL.createObjectURL(image), width: images[index].width, height: images[index].height })));
 
     //also set previos images
-    setImageCollection((prevImages) => [...prevImages, ...uploadImages.map((image, index) => ({ src: URL.createObjectURL(image), width: images[index].width, height: images[index].height }))]);
-  }
-
-  console.log("uploadImages", uploadImages)
-  console.log("imageCollection", imageCollection)
+    setImageCollection((prevImages) => [
+      ...prevImages,
+      ...uploadImages.map((image, index) => ({
+        src: URL.createObjectURL(image),
+        width: images[index].width,
+        height: images[index].height,
+      })),
+    ]);
+  };
 
   const handleRemoveImage = (index: number) => {
     setImageCollection((prevImages) => {
@@ -111,18 +115,15 @@ const SubmissionImage = () => {
     imageCollection.map((image) => formData.append("content", image.src));
     formData.append("title", title);
     updateArticle(id, formData);
-
-
-  }
+  };
 
   function handleUpdateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
     (e.target as HTMLElement).blur();
     const form = new FormData();
     form.append("title", title);
-    updateArticle(id ?? '', form);
+    updateArticle(id ?? "", form);
   }
-
 
   useEffect(() => {
     if (article) {
@@ -146,12 +147,12 @@ const SubmissionImage = () => {
 
   return (
     <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
-      <div className="flex flex-row mr-3 border-b-2 pb-3 max-md:flex-col max-md:gap-3 ">
-        <div >
+      <div className="mr-3 flex flex-row border-b-2 pb-3 max-md:flex-col max-md:gap-3 ">
+        <div>
           <input
             // ref={inputRef}
             className="w-fit rounded border border-transparent bg-transparent px-1 text-lg font-medium text-[#6B6C7E] outline-offset-2 outline-[#004AD7] hover:border-[#6B6C7E]"
-            value={title || ''}
+            value={title || ""}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -164,17 +165,42 @@ const SubmissionImage = () => {
           <div className="flex flex-row gap-2">
             <img src={plusIcon} alt="add" />
             <button onClick={() => setOpenImageUpload(true)}>Add</button>
-            {openImageUpload && <UpdateImages type="image" setOpenImageUpload={setOpenImageUpload} handleAddImage={handleAddImage} setImageCollection={setImageCollection} setUploadImages={setUploadImages} uploadImages={uploadImages} handleSetImageCollection={handleSetImageCollection} handleUpdateImages={handleUpdateImages} />}
+            {openImageUpload && (
+              <UpdateImages
+                type="image"
+                setOpenImageUpload={setOpenImageUpload}
+                handleAddImage={handleAddImage}
+                setImageCollection={setImageCollection}
+                setUploadImages={setUploadImages}
+                uploadImages={uploadImages}
+                handleSetImageCollection={handleSetImageCollection}
+                handleUpdateImages={handleUpdateImages}
+              />
+            )}
           </div>
 
           <div className="flex flex-row gap-2">
             <img src={trash} alt="add" />
-            <button className="text-[#CA3636]" onClick={() => setIsDeleteMode(!isDeleteMode)}>{isDeleteMode ? "Cancel" : "Delete"}</button>
+            <button
+              className="text-[#CA3636]"
+              onClick={() => setIsDeleteMode(!isDeleteMode)}
+            >
+              {isDeleteMode ? "Cancel" : "Delete"}
+            </button>
           </div>
         </div>
       </div>
 
-      {isLoading ? <Spinner /> : <ImageGridGallery images={imageCollection} handleRemoveImage={handleRemoveImage} isDeleteMode={isDeleteMode} handleUpdateImages={handleUpdateImages} />}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <ImageGridGallery
+          images={imageCollection}
+          handleRemoveImage={handleRemoveImage}
+          isDeleteMode={isDeleteMode}
+          handleUpdateImages={handleUpdateImages}
+        />
+      )}
     </div>
   );
 };

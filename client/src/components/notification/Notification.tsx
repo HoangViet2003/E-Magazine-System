@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useContribution } from "../../redux/hooks";
 import { useCommentContext } from "../../ui/CommentContext";
 import { Notification as NotificationType } from "../../redux/slices/NotiSlice";
+import BellIcon from "../../assets/icons/bell-svgrepo-com.svg";
 
 const Notification = ({
   setOpenNotification,
@@ -145,50 +146,62 @@ const Notification = ({
         <button className="text-blue-500 hover:text-blue-700">View all</button>
       </div>
       <div className="space-y-4">
-        <InfiniteScroll
-          style={{ height: "400px" }}
-          dataLength={notifications?.length}
-          next={() => {
-            getAllNotifications(currentPage + 1);
-            handleSetCurrentPage(currentPage + 1);
-          }}
-          hasMore={currentPage !== totalPage}
-          loader={
-            <div className="flex items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-gray-900"></div>
-            </div>
-          }
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>You have seen it all</b>
-            </p>
-          }
-        >
-          {notifications?.map((notification, index) => (
-            <div
-              key={index}
-              className="relative mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 hover:bg-slate-200"
-              onClick={() => handleNavigateNotification(notification)}
-            >
-              <img
-                src={profile}
-                alt="avatar"
-                className="h-10 w-10 rounded-full"
-              />
-              <div className="flex flex-col gap-1">
-                <h6 className="text-sm font-semibold">{notification?.title}</h6>
-                <p className="text-sm text-gray-600">{notification?.message}</p>
-                <p className="text-xs text-gray-500">
-                  {calculateDate(notification?.createdAt)}
-                </p>
+        {notifications && notifications.length > 0 ? (
+          <InfiniteScroll
+            style={{ height: "400px" }}
+            dataLength={notifications?.length}
+            next={() => {
+              getAllNotifications(currentPage + 1);
+              handleSetCurrentPage(currentPage + 1);
+            }}
+            hasMore={currentPage !== totalPage}
+            loader={
+              <div className="flex items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-gray-900"></div>
               </div>
+            }
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>You have seen it all</b>
+              </p>
+            }
+          >
+            {notifications?.map((notification, index) => (
+              <div
+                key={index}
+                className="relative mx-1 flex cursor-pointer items-center gap-3 rounded px-3 py-2 hover:bg-slate-200"
+                onClick={() => handleNavigateNotification(notification)}
+              >
+                <img
+                  src={profile}
+                  alt="avatar"
+                  className="h-10 w-10 rounded-full"
+                />
+                <div className="flex flex-col gap-1">
+                  <h6 className="text-sm font-semibold">
+                    {notification?.title}
+                  </h6>
+                  <p className="text-sm text-gray-600">
+                    {notification?.message}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {calculateDate(notification?.createdAt)}
+                  </p>
+                </div>
 
-              {!notification.isRead && (
-                <span className="absolute right-4 h-2 w-2 rounded-full bg-[#004AD7]"></span>
-              )}
-            </div>
-          ))}
-        </InfiniteScroll>
+                {!notification.isRead && (
+                  <span className="absolute right-4 h-2 w-2 rounded-full bg-[#004AD7]"></span>
+                )}
+              </div>
+            ))}
+          </InfiniteScroll>
+        ) : (
+          <div className="flex h-[400px] flex-col items-center justify-center gap-2">
+            <img src={BellIcon} className="w-20" />
+            <h4 className="font-semibold">No Notification Yet</h4>
+            <p>When you get notification, they'll show up here</p>
+          </div>
+        )}
       </div>
     </div>
   );

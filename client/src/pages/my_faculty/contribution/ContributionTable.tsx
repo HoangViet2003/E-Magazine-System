@@ -14,8 +14,10 @@ export default function ContributionTable() {
   } = useSubmission();
   const navigate = useNavigate();
   const { contributionId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
   // const role = localStorage.getItem("role");
+
+  console.log(submissions);
 
   useEffect(() => {
     if (contributionId) getSubmissionsByContributionId(contributionId);
@@ -32,7 +34,7 @@ export default function ContributionTable() {
       {loadingSubmission ? (
         <Spinner />
       ) : (
-        <Table columns="0.3fr 2.4fr 1fr 1fr">
+        <Table columns="0.3fr 2.4fr 1fr 1fr 0.3fr">
           <Table.Header>
             <ContributionOperation />
           </Table.Header>

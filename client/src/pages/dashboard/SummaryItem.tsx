@@ -29,7 +29,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
       <h3 className="text-[32px] font-semibold leading-none">{data}</h3>
       <p className="text-nowrap text-sm font-medium md:text-base">{type}</p>
 
-      {changePercentage !== 0 && (
+      {/* {changePercentage !== 0 && (
         <span
           className="text-nowrap text-xs font-medium"
           style={{ color: changePercentage > 0 ? "#00AC4F" : "#FA5A7D" }}
@@ -37,7 +37,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
           {changePercentage > 0 && <span>+</span>}
           {changePercentage}% from last month
         </span>
-      )}
+      )} */}
     </div>
   );
 };

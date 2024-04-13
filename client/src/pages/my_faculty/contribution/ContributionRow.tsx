@@ -4,7 +4,7 @@ import FolderIcon from "../../../assets/icons/folder.svg";
 import ProfileImg from "../../../assets/profile1.png";
 
 const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
-  const { student, updatedAt } = data;
+  const { student, updatedAt, isSelectedForPublication } = data;
 
   const date = new Date(updatedAt);
   const formattedDate = `${date.getDate() < 10 ? "0" : ""}${date.getDate()}/${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -21,7 +21,7 @@ const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
         className={commonCell + " font-semibold"}
         style={{ color: "#272833" }}
       >
-        {student.name}'s Submission
+        {student?.name}'s Submission
       </div>
       <div className={commonCell + " flex items-center gap-2"}>
         <img
@@ -29,9 +29,25 @@ const ContributionRow: React.FC<{ data: Submission }> = ({ data }) => {
           alt="profile-img"
           className="h-8 w-8 rounded-full object-cover"
         />
-        {student.name}
+        {student?.name}
       </div>
       <div className={commonCell}>{formattedDate}</div>
+
+      <div className={commonCell}>
+        {isSelectedForPublication ? (
+          <input
+            type="checkbox"
+            className="checkbox-success checkbox cursor-default"
+            checked
+          />
+        ) : (
+          <input
+            type="checkbox"
+            className="checkbox-success checkbox"
+            disabled={true}
+          />
+        )}
+      </div>
     </Table.Row>
   );
 };

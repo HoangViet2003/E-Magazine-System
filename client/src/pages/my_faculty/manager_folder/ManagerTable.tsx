@@ -13,8 +13,6 @@ export default function ManagerTable() {
     navigate(`/myFaculty/contributions/${id}`);
   }
 
-  console.log(managerContributions);
-
   return (
     <>
       {isLoading ? (

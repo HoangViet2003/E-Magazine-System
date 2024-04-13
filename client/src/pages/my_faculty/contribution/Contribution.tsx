@@ -21,6 +21,8 @@ export default function MyFaculty() {
     }
   }, []);
 
+  console.log(contribution);
+
   return (
     <div>
       {!isLoading && (

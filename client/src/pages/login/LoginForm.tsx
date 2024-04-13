@@ -9,9 +9,11 @@ export default function LoginForm() {
   // const [password, setPassword] = useState("student123");
   // const [email, setEmail] = useState("manager1@gmail.com");
   // const [password, setPassword] = useState("manager123");
-  // const [email, setEmail] = useState("guest1@gmail.com");
-  // const [password, setPassword] = useState("guest123");
-  const [email, setEmail] = useState("student1@gmail.com");
+  // coor
+  // const [email, setEmail] = useState("nguyenhoangviet10d1@gmail.com");
+  // const [password, setPassword] = useState("student123");
+  // student
+  const [email, setEmail] = useState("studentgrwacc1@gmail.com");
   const [password, setPassword] = useState("student123");
 
   const [emailError, setEmailError] = useState("");
@@ -45,7 +47,7 @@ export default function LoginForm() {
 
   return (
     <div
-      className="grid h-screen w-screen grid-rows-[auto_1fr]"
+      className="object-fit grid h-screen w-screen grid-rows-[auto_1fr] bg-cover bg-no-repeat"
       style={{ backgroundImage: `url(${LoginBackground})` }}
     >
       <a href="/" className="mx-6 my-4 text-2xl font-semibold text-white">

@@ -38,7 +38,7 @@ export default function ContributionSummary() {
           icon={ContributorsIcon}
           iconBg="#000000"
           background="#FCF9DC"
-          data={130}
+          data={dashboard?.totalSubmissions}
           type="Contributors"
           changePercentage={-8}
         />
@@ -52,14 +52,14 @@ export default function ContributionSummary() {
           changePercentage={8}
         />
 
-        <SummaryItem
+        {/* <SummaryItem
           icon={SaleIcon}
           iconBg="#FA5A7D"
           background="#DFE9FD"
           data={1000}
           type="Total Sales"
           changePercentage={8}
-        />
+        /> */}
       </div>
     </div>
   );
