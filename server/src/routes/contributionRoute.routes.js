@@ -10,7 +10,6 @@ router.get("/contribution/:id", ContributionController.getContributionById)
 router.get(
 	"/contributions",
 	authenticateToken,
-	authenticateMarketingManager,
 	ContributionController.getAllContributions
 )
 router.get(
