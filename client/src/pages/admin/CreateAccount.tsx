@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useFaculty } from "../../redux/hooks/useFaculty"
 import { useAuth } from "../../redux/hooks";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const CreateAccount = () => {
@@ -19,9 +19,9 @@ const CreateAccount = () => {
 
     const user = state && state.row;
 
+    const navigate = useNavigate();
 
-
-    console.log("facultyId",faculty)
+    console.log("facultyId", faculty)
 
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const CreateAccount = () => {
             if (matchFaculty) {
                 setFaculty(matchFaculty._id)
             }
-            
+
         }
 
     }, [user])
@@ -69,10 +69,18 @@ const CreateAccount = () => {
 
         console.log(data)
         createAccount(data)
-
     }
 
-    const handleSetFaculyId = (e:any) => {
+    useEffect(() => {
+        // Check if there is only one faculty and set the value
+        if (faculties && faculties.length === 1) {
+            setFaculty(faculties[0]._id);
+        }
+    }, []);
+
+
+
+    const handleSetFacultyId = (e: any) => {
         setFaculty(e.target.value)
     }
 
@@ -133,8 +141,8 @@ const CreateAccount = () => {
                                 Faculty
                             </label>
                             <div className="relative">
-                                <select value={faculty} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" onChange={handleSetFaculyId}>
-                                    {faculties.map(faculty => (
+                                <select value={faculty}  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" onChange={handleSetFacultyId}>
+                                    {faculties?.map(faculty => (
                                         <option key={faculty._id} value={faculty._id}>{faculty.name}</option>
 
                                     ))}
