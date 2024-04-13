@@ -9,11 +9,14 @@ import {
 import axios from "../../utils/axios.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const useContribution = () => {
   const dispatch = useDispatch();
   const { isLoading, contributions, contribution, managerContributions } =
     useSelector((state: RootState) => state.contribution);
+
+  const navigate = useNavigate();
 
   const fetchAllContribution = async () => {
     dispatch(setLoadingContribution(true));
@@ -99,12 +102,19 @@ export const useContribution = () => {
     try {
       const res = await axios.post(POST_API().CREATE_CONTRIBUTION, data);
       console.log(res);
-      if (res.status !== 200) {
+      if (res.status !== 201) {
         throw new Error(res.statusText);
       }
+
+      if(res.data.message === "All faculties already have contributions for the academic year."){
+        toast.error("All faculties already have contributions for the academic year.");
+        return;
+      }
+      
       toast.success("Contribution created successfully");
     } catch (error) {
       console.log(error);
+      
     }
   };
 

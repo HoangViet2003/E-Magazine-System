@@ -10,10 +10,12 @@ import {
   PATCH_API,
 } from "../../constants/api.js";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const useFaculty = () => {
   const dispatch = useDispatch();
   const { faculties } = useSelector((state: RootState) => state.faculty);
+  const navigate  = useNavigate();
 
   const getFaculties = async () => {
     try {
@@ -36,6 +38,7 @@ export const useFaculty = () => {
       if (res.status !== 201) {
         throw new Error(res.statusText);
       }
+      navigate('/account')
       toast.success("Account created successfully");
     } catch (error) {
       console.log(error);
@@ -52,6 +55,7 @@ export const useFaculty = () => {
         throw new Error(res.statusText);
       }
       toast.success("Faculty created successfully");
+      navigate('/faculty')
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -69,6 +73,7 @@ export const useFaculty = () => {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
+      navigate('/faculty')
       toast.success("Faculty deleted successfully");
       setIsLoading(false);
     } catch (error) {
@@ -86,6 +91,7 @@ export const useFaculty = () => {
         throw new Error(res.statusText);
       }
       toast.success("Faculty updated successfully");
+      navigate('/faculty')
       setIsLoading(false);
     } catch (error) {
       console.log(error);

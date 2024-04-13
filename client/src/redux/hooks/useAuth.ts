@@ -104,6 +104,7 @@ export function useAuth() {
         throw new Error(res.statusText);
       }
       toast.success("User updated successfully");
+      navigate("/account");
       dispatch(setIsLoadingTable(false));
     } catch (error) {
       console.log(error);
@@ -121,6 +122,8 @@ export function useAuth() {
       }
       console.log(res);
       toast.success("User deleted successfully");
+      navigate("/account");
+      getAllUser(1)
       dispatch(setIsLoadingTable(false));
     } catch (error) {
       console.log(error);

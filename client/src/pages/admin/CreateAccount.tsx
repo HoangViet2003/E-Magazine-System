@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useFaculty } from "../../redux/hooks/useFaculty";
 import { useAuth } from "../../redux/hooks";
@@ -35,8 +36,10 @@ const CreateAccount = () => {
       if (matchFaculty) {
         setFaculty(matchFaculty._id);
       }
+
     }
   }, [user]);
+
 
   useEffect(() => {
     if (role === "marketing manager") {
@@ -147,6 +150,7 @@ const CreateAccount = () => {
                   </svg>
                 </div>
               </div>
+
             </div>
 
             {isShowFaculty && (

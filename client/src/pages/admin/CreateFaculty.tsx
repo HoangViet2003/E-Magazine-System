@@ -13,7 +13,6 @@ const CreateFaculty = () => {
     const { state } = location;
 
     const faculty = state && state.row;
-    console.log(faculty)
 
     useEffect(() => {
         if (faculty) {
@@ -33,7 +32,6 @@ const CreateFaculty = () => {
             return
         }
         createFaculty(data)
-        navigate('/faculty')
     }
 
     return (
