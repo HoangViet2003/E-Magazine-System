@@ -82,16 +82,21 @@ export default function ContributionFolder() {
               <span className={ellipsis + " font-semibold leading-tight"}>
                 {contribution.academicYear + " Contributions"}
 
-                {contribution.status === "open" && (
-                  <div
-                    className={ellipsis + " text-left text-[10px] font-normal"}
-                    style={{ color: "#CA3636" }}
-                  >
-                    {calculateClosureDate(contribution.closureDate) < 0
-                      ? ""
-                      : `${calculateClosureDate(contribution.closureDate)} days until closure date`}
-                  </div>
-                )}
+                {contribution.status === "open" &&
+                  new Date(
+                    contribution?.closureDate || new Date().toISOString(),
+                  ).getTime() - new Date().getTime() && (
+                    <div
+                      className={
+                        ellipsis + " text-left text-[10px] font-normal"
+                      }
+                      style={{ color: "#CA3636" }}
+                    >
+                      {calculateClosureDate(contribution.closureDate) < 0
+                        ? ""
+                        : `${calculateClosureDate(contribution.closureDate)} days until closure date`}
+                    </div>
+                  )}
               </span>
             </div>
           </button>

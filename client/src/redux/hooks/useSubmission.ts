@@ -136,6 +136,8 @@ export const useSubmission = () => {
         throw new Error("Error creating submissions");
       }
 
+      console.log(data);
+
       dispatch(setSubmission(data));
       navigate(`${data?.newSubmission._id}`);
     } catch (error) {
@@ -375,7 +377,7 @@ export const useSubmission = () => {
 
   const downloadSubmission = async (submissionId?: string) => {
     dispatch(setLoadingSubmission(true));
-    
+
     try {
       if (!submissionId) throw new Error("SubmissionId is required");
 
