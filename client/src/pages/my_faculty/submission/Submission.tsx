@@ -29,6 +29,7 @@ export default function Submission() {
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
   const { openComment, setOpenComment } = useCommentContext();
+  const [isOver14Days, setIsOver14Days] = useState(false);
 
   const { contribution, getContributionById } = useContribution();
   const {
@@ -44,6 +45,20 @@ export default function Submission() {
     getArticlesBySubmissionId,
     resetSubmissionArticlesState,
   } = useArticle();
+
+  console.log(submission);
+
+  const checkIfOver14Days = () => {
+    const today = new Date();
+    const createdAt = new Date(submission?.createdAt);
+
+    const differenceInTime = today.getTime() - createdAt.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+    if (differenceInDays > 14) {
+      setIsOver14Days(true);
+    }
+  };
 
   function formattedDate(date: string) {
     return format(date, "HH:mm dd/MM/yyyy");
@@ -69,6 +84,8 @@ export default function Submission() {
       getContributionById(contributionId);
     };
     fetchContributionById();
+
+    checkIfOver14Days();
   }, []);
 
   useEffect(() => {
@@ -229,9 +246,8 @@ export default function Submission() {
             )}
 
           {submissionId &&
-            (role === "student" || role === "marketing coordinator") && (
-              <Comment />
-            )}
+            (role === "student" || role === "marketing coordinator") &&
+            isOver14Days && <Comment />}
         </div>
       )}
     </div>
