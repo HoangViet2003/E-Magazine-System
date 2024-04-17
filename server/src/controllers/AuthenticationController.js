@@ -220,7 +220,7 @@ const resetPassword = catchAsync(async (req, res) => {
 	try {
 		const { token } = req.query
 
-		const { oldPassword, newPassword } = req.body
+		const { newPassword } = req.body
 
 		if (!token) {
 			return res.status(400).send({ error: "Token is not provided" })
@@ -233,9 +233,6 @@ const resetPassword = catchAsync(async (req, res) => {
 
 		// check if the old password is correct
 		const user = await User.findById(payload._id)
-		if (!(await argon2.verify(user.password, oldPassword))) {
-			return res.status(400).send({ error: "Incorrect old password" })
-		}
 
 		// update the user password
 		const newHashPassword = await argon2.hash(newPassword)
