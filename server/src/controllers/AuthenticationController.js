@@ -205,7 +205,7 @@ const confirmResetPassword = async (req, res) => {
 			}
 		)
 
-		return res.status(500).send({
+		return res.status(200).send({
 			message:
 				"Email sent successfully. The email with reset password link has been sent to your email.",
 		})
