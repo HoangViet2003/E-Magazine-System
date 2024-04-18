@@ -5,7 +5,6 @@ const { User, Faculty } = require("../models")
 const ejs = require("ejs")
 const path = require("path")
 const { handleSendEmail } = require("../utils/sendMail")
-const { KeyObject } = require("crypto")
 
 //sign up for student and staff
 const register = catchAsync(async (req, res) => {
