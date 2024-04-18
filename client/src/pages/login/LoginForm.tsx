@@ -17,7 +17,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("student123");
 
   const [emailError, setEmailError] = useState("");
-  const { login, isLoading, setUserFromToken } = useAuth();
+  const { login, isLoading, setUserFromToken,handleForgotPassword } = useAuth();
   const userToken = localStorage.getItem("user");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
@@ -31,10 +31,15 @@ export default function LoginForm() {
     setPassword("");
   }
 
-  function handleForgotPassword() {
+  const handleSendEmailForgotPassword = () => {
     if (email === "") {
       setEmailError("This field is required");
-    }
+      return
+      
+    } 
+      handleForgotPassword(email);
+      navigate("/forgot-password");
+    
   }
 
   useEffect(() => {
@@ -86,7 +91,7 @@ export default function LoginForm() {
           />
 
           <a
-            onClick={handleForgotPassword}
+            onClick={() => handleSendEmailForgotPassword()}
             className="ms-auto cursor-pointer text-white"
           >
             Forgot your password?

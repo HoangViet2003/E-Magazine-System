@@ -1,6 +1,12 @@
 import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
-import { setFaculties, setIsLoading } from "../slices/FacultySlice.js";
+import {
+  setFaculties,
+  setIsLoading,
+  setTotalPage,
+  setTotalLength,
+  setCurrentPage,
+} from "../slices/FacultySlice.js";
 import axios from "../../utils/axios.js";
 import {
   GET_API,
@@ -14,19 +20,24 @@ import { useNavigate } from "react-router-dom";
 
 export const useFaculty = () => {
   const dispatch = useDispatch();
-  const { faculties } = useSelector((state: RootState) => state.faculty);
+  const { faculties,totalPages,totalLength,currentPage,isLoading } = useSelector((state: RootState) => state.faculty);
   const navigate  = useNavigate();
 
-  const getFaculties = async () => {
+  const getFaculties = async (page = 1) => {
+    dispatch(setIsLoading(true));
     try {
-      const res = await axios.get(GET_API("").GET_ALL_FACULTIES);
+      const res = await axios.get(GET_API("",page).GET_ALL_FACULTIES);
       console.log(res.data.faculties);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
       dispatch(setFaculties(res.data.faculties));
+       dispatch(setTotalPage(res.data.totalPage));
+       dispatch(setTotalLength(res.data.totalLength));
+       dispatch(setIsLoading(false));
     } catch (error) {
       console.log(error);
+      dispatch(setIsLoading(false));
     }
   };
 
@@ -99,6 +110,27 @@ export const useFaculty = () => {
     }
   };
 
+  const handleSearchFaculty = async (keyword: string) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`${GET_API("",currentPage).SEARCH_FACULTY}&keyword=${keyword}`);
+      console.log(res);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      dispatch(setFaculties(res.data.faculties));
+      dispatch(setTotalLength(res.data.totalLength));
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
+
+    const handleCurrentPage = (page: number) => {
+      dispatch(setCurrentPage(page));
+    };
+
   return {
     getFaculties,
     faculties,
@@ -106,5 +138,11 @@ export const useFaculty = () => {
     createFaculty,
     deleteFaculty,
     updateFaculty,
+    totalPages,
+    totalLength,
+    handleCurrentPage,
+    currentPage,
+    isLoading,
+    handleSearchFaculty
   };
 };

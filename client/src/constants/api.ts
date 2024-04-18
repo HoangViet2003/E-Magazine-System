@@ -19,12 +19,17 @@ const GET_API = (
     GET_COMMENTS_BY_SUBMISSION_ID: `/submission/${id}/comments?page=${page}`,
     // contributions
     GET_CONTRIBUTION_BY_ID: `/contribution/${id}`,
-    GET_ALL_CONTRIBUTIONS: `/contributions`,
+    GET_ALL_CONTRIBUTIONS: `/contributions?page=${page}`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
     GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR: `/contributions/academic-year?academicYear=${year}`,
+    GET_ALL_CONTRIBUTIONS_FOR_ADMIN: `/contributions/admin?page=${page}`,
+    SEARCH_CONTRIBUTION: `/search-contribution?page=${page}`,
+
     // faculties
-    GET_ALL_FACULTIES: `/faculties`,
+    GET_ALL_FACULTIES: `/faculties?page=${page}`,
     GET_FACULTY_BY_ID: `/faculty/${id}`,
+    SEARCH_FACULTY: `/search-faculty?page=${page}`,
+
     // submissions
     GET_SUBMISSION_BY_SUBMISSION_ID: `/submission/${id}`,
     GET_SUBMISSION_BY_CONTRIBUTION_ID: `/submissions/contribution/${id}`,
@@ -38,14 +43,18 @@ const GET_API = (
 
     //users
     GET_ALL_USERS: `/users?page=${page}`,
+    SEARCH_USERS: `/search-user?page=${page}`,
   };
 };
 
-const POST_API = (id?: string) => {
+const POST_API = (id?: string,token?:any) => {
   return {
     // authenticate
     LOGIN: "/login",
     SIGNUP: `/user`,
+    FORGOT_PASSWORD: "/confirm-reset-password",
+    RESET_PASSWORD: `/reset-password?token=${token}`,
+
     // article
     UPLOAD_ARTICLE: "/article",
     CREATE_BLANK_WORD_FILE: "/article/create-doc",
@@ -72,7 +81,7 @@ const PUT_API = (id: string) => {
     UPDATE_ARTICLES_FOR_PUBLICATION: `/article/publication`,
 
     // contributions
-    UPDATE_CONTRIBUTION: `/contribution/${id}`,
+    UPDATE_CONTRIBUTION: `/contributions`,
 
     ADD_MARKETING_COORDINATOR: `/faculty/${id}/add-marketing-coordinator`,
     // submissions
@@ -91,7 +100,8 @@ const DELETE_API = (id: string) => {
     // comments
     DELETE_COMMENT: `/comment/${id}`,
     // contributions
-    DELETE_CONTRIBUTION: `/contribution/${id}`,
+    DELETE_CONTRIBUTION: '/contributions',
+
     // faculties
     DELETE_FACULTY: `/faculty/${id}`,
     // submissions
@@ -99,6 +109,7 @@ const DELETE_API = (id: string) => {
 
     //user
     DELETE_USER: `/user/${id}`,
+    
   };
 };
 

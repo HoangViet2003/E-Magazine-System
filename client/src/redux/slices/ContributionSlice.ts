@@ -18,6 +18,9 @@ interface ContributionState {
   contributions: Contribution[];
   managerContributions: Contribution[];
   contribution: Contribution;
+  totalPage: number;
+  totalLength: number;
+  currentPage: number;
 }
 
 const initialState: ContributionState = {
@@ -35,6 +38,9 @@ const initialState: ContributionState = {
     createdAt: "",
     updatedAt: "",
   },
+  totalPage: 0,
+  totalLength: 0,
+  currentPage: 1,
 };
 
 const ContributionSlice = createSlice({
@@ -53,6 +59,15 @@ const ContributionSlice = createSlice({
     setContribution(state, action: PayloadAction<Contribution>) {
       state.contribution = action.payload;
     },
+    setTotalPage(state, action: PayloadAction<number>) {
+      state.totalPage = action.payload;
+    },
+    setTotalLength(state, action: PayloadAction<number>) {
+      state.totalLength = action.payload;
+    },
+    setCurrentPage(state, action: PayloadAction<number>) {
+      state.currentPage = action.payload;
+    },
   },
 });
 
@@ -63,6 +78,9 @@ export const {
   setAllContribution,
   setAllManagerContribution,
   setContribution,
+  setTotalPage,
+  setTotalLength,
+  setCurrentPage,
 } = actions;
 
 export default reducer;

@@ -5,10 +5,10 @@ import DataTables from './DataTables';
 
 const FacultyTable = () => {
 
-    const { faculties, getFaculties,deleteFaculty } = useFaculty()
+    const { faculties, getFaculties,deleteFaculty,totalPages,totalLength,handleCurrentPage,currentPage ,isLoading,handleSearchFaculty} = useFaculty()
     const navigate = useNavigate();
     useEffect(() => {
-        getFaculties()
+        getFaculties(currentPage)
     },[])
 
     const handleDeleteFaculty = (id: string) => {
@@ -18,6 +18,14 @@ const FacultyTable = () => {
         }
     }
 
+
+    const handlePageChange = () => {
+        if (currentPage + 1 > totalPages) return;
+        handleCurrentPage(currentPage + 1);
+
+        getFaculties(currentPage);
+    };
+
   return (
       <div>
           <button className="btn btn-xs sm:btn-md md:btn-md lg:btn-md mb-8" onClick={() => navigate('/faculty/create')}>Create New Faculty</button>
@@ -25,10 +33,10 @@ const FacultyTable = () => {
             <DataTables
                 tableName='faculty'
                 data={faculties}
-                totalLength={faculties?.length}
-                loading={false}
-                onPageChange={() => {}}
-                handleSearch={() => {}}
+                totalLength={totalLength}
+                loading={isLoading}
+                onPageChange={handlePageChange}
+                handleSearch={handleSearchFaculty}
                 handleDeleteClick={handleDeleteFaculty}
             />
          
