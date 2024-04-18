@@ -6,6 +6,7 @@ const {
 	Notification,
 	Article,
 	Comment,
+	History,
 } = require("../models")
 
 const path = require("path")
@@ -152,6 +153,16 @@ const createSubmission = async (req, res) => {
 
 		emitNotification(marketingCoordinator._id.toString(), newNotification)
 
+		// create history
+		const history = {
+			submissionId: newSubmission._id,
+			userId: req.user._id,
+			action: "create",
+			content: `Student ${req.user.name} created a new submission`,
+		}
+
+		await History.create(history)
+
 		return res.status(201).json({ newSubmission })
 	} catch (error) {
 		return res.status(500).json({ error })
@@ -273,6 +284,16 @@ const updateForPublication = async (req, res) => {
 
 		const updatedSubmission = await submission.save()
 
+		// create history
+		const history = {
+			submissionId: submission._id,
+			userId: req.user._id,
+			action: "update",
+			content: `Marketing Coordinator ${req.user.name} has ${submission.isSelectedForPublication ? "selected" : "unselected"} the submission`,
+		}
+
+		await History.create(history)
+
 		return res.status(200).json({
 			updatedSubmission,
 		})
@@ -369,6 +390,16 @@ const toggleSubmissionStatus = async (req, res) => {
 
 		emitNotification(marketingCoordinator._id.toString(), newNotification)
 
+		// create history
+		const history = {
+			submissionId: submission._id,
+			userId: req.user._id,
+			action: "update",
+			content: `Student has ${submission.unsubmitted ? "unsubmitted" : "submitted"} the submission`,
+		}
+
+		await history.create(history)
+
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
@@ -448,6 +479,16 @@ const addArticlesToSubmission = async (req, res) => {
 			{ new: true }
 		)
 
+		// create history
+		const history = {
+			submissionId: submission._id,
+			userId: req.user._id,
+			action: "update",
+			content: `Student added ${addedArticles.length} articles to the submission`,
+		}
+
+		await history.create(history)
+
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
@@ -488,6 +529,15 @@ const removeArticlesFromSubmission = async (req, res) => {
 			},
 			{ new: true }
 		)
+
+		// create history
+		const history = {
+			submissionId: submission._id,
+			userId: req.user._id,
+			action: "update",
+			content: `Student has remove ${articleIds.length} articles from the submission`,
+		}
+		await History.create(history)
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
@@ -500,36 +550,24 @@ const downloadSubmission = async (req, res) => {
 		// Now you can use PuppeteerHTMLPDF with the initialized browser
 		const { submissionId } = req.params
 
-		console.log("Submission ID:", submissionId)
-
 		const submission = await Submission.findById(submissionId)
 
-		console.log("Submission:", submission)
-
 		if (!submission) {
-			console.log("Submission not found")
 			return res.status(404).json({ message: "Submission not found" })
 		}
 
 		const articles = await Article.find({ _id: { $in: submission.articles } })
 
-		console.log("Articles:", articles)
-
 		let zip = new JSZip()
 
 		// Download and save articles
 		for (let article of articles) {
-			console.log("Processing article:", article)
-
 			if (article.type === "word") {
-				console.log("Processing word article:", article.title)
-
 				const filePath = path.join(
 					__dirname,
 					`../../public/uploads/${article.title}.pdf`
 				)
 				fs.mkdirSync(path.dirname(filePath), { recursive: true })
-				console.log("File path:", filePath)
 
 				let options = { format: "A4" }
 				let file = { content: article.content }
@@ -541,25 +579,18 @@ const downloadSubmission = async (req, res) => {
 					const pdfBytes = await pdfDoc.save()
 
 					fs.writeFileSync(filePath, pdfBytes)
-
-					console.log("PDF written to file")
 				})
 
 				zip.file(`${article.title}.pdf`, fs.readFileSync(filePath))
-				console.log("PDF added to zip")
 
 				// delete the pdf after zipping
 			} else {
-				console.log("Processing image article:", article.title)
-
 				const articleTitle = article.title
 				const articleImages = article.content
 				const articleFolder = path.join(
 					__dirname,
 					`../../public/uploads/${articleTitle}`
 				)
-				console.log("Article folder:", articleFolder)
-
 				// Create directories asynchronously
 				await fs.promises.mkdir(articleFolder, { recursive: true })
 
@@ -569,11 +600,9 @@ const downloadSubmission = async (req, res) => {
 					if (image.startsWith("http")) {
 						await new Promise((resolve, reject) => {
 							const imagePath = path.join(articleFolder, `${imageIndex}.png`)
-							console.log("Image path:", imagePath)
 
 							const fileStream = fs.createWriteStream(imagePath)
 							fileStream.on("error", (err) => {
-								console.error("Error writing image:", err)
 								reject(err)
 							})
 
@@ -583,12 +612,10 @@ const downloadSubmission = async (req, res) => {
 									fileStream.on("finish", () => {
 										const imageData = fs.readFileSync(imagePath)
 										imagesFolder.file(`${imageIndex}.png`, imageData)
-										console.log("Image added to zip:", `${imageIndex}.png`)
 										resolve()
 									})
 								})
 								.on("error", (e) => {
-									console.error("Error downloading image:", e)
 									reject(e)
 								})
 						})
@@ -602,10 +629,8 @@ const downloadSubmission = async (req, res) => {
 		res.setHeader("Content-Disposition", `attachment; filename=${zipFileName}`)
 		res.setHeader("Content-Type", "application/zip")
 
-		console.log("Sending zip buffer")
 		return res.send(zipBuffer)
 	} catch (error) {
-		console.log("Error:", error)
 		return res.status(500).json({ error: error.message })
 	}
 }

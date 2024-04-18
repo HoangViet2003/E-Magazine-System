@@ -16,6 +16,10 @@ const historySchema = new mongoose.Schema(
 			enum: ["create", "update", "delete", "submit", "comment", "reply"],
 			required: true,
 		},
+		content: {
+			type: String,
+			required: true,
+		},
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt

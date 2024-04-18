@@ -8,6 +8,7 @@ const {
 	commentRoute,
 	submissionRoute,
 	notificationRoute,
+	historyRoute,
 } = require("../routes")
 
 /**
@@ -29,6 +30,7 @@ const routes = (app) => {
 	app.use("/api/v1", commentRoute)
 	app.use("/api/v1", submissionRoute)
 	app.use("/api/v1", notificationRoute)
+	app.use("/api/v1", historyRoute)
 }
 
 module.exports = routes

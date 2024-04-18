@@ -7,4 +7,5 @@ module.exports = {
 	commentRoute: require("./commentRoute.routes"),
 	submissionRoute: require("./submissionRoute.routes"),
 	notificationRoute: require("./notificationRoute.routes"),
+	historyRoute: require("./historyRoute.routes"),
 }

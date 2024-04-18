@@ -6,6 +6,7 @@ const FacultyController = require("../controllers/FacultyController")
 const CommentController = require("../controllers/CommentController")
 const SubmissionController = require("../controllers/SubmissionController")
 const NotificationController = require("../controllers/NotificationController")
+const HistoryController = require("../controllers/HistoryController")
 
 module.exports = {
 	UserController,
@@ -16,4 +17,5 @@ module.exports = {
 	CommentController,
 	SubmissionController,
 	NotificationController,
+	HistoryController,
 }
