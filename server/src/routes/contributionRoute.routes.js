@@ -12,6 +12,15 @@ router.get(
 	authenticateToken,
 	ContributionController.getAllContributions
 )
+
+
+router.get(
+	"/search-contribution",
+	authenticateToken,
+	authenticateAdministrator,
+	ContributionController.searchContribution
+)
+
 router.get(
 	"/contributions/coordinator",
 	authenticateToken,

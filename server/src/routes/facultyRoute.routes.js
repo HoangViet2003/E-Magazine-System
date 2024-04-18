@@ -21,6 +21,13 @@ router.get(
 	authenticateAdministrator,
 	FacultyController.getAllFaculties
 )
+
+router.get(
+	"/search-faculty",
+	authenticateToken,
+	authenticateAdministrator,
+	FacultyController.searchFaculty
+)
 router.get("/faculty/:id", FacultyController.getFacultyById)
 router.patch("/faculty/:id", FacultyController.editFaculty)
 router.patch(
