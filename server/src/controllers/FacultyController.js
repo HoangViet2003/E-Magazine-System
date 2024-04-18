@@ -89,7 +89,7 @@ const getFacultyById = async (req, res) => {
 }
 
 const editFaculty = async (req, res) => {
-	const { name, marketingCoordinatorId } = req.body
+	const { marketingCoordinatorId } = req.body
 
 	try {
 		const faculty = await Faculty.findById(req.params.id)

@@ -13,6 +13,7 @@ const facultySchema = new mongoose.Schema(
 			unique: true,
 			sparse: true,
 		},
+		selectedReports: [String],
 	},
 	{
 		timestamps: true, // Automatically manages createdAt and updatedAt
