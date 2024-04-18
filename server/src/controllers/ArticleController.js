@@ -549,28 +549,13 @@ const downloadAllArticleSelected = async (req, res) => {
 const getDashboard = async (req, res) => {
 	try {
 		// If the user role is student or guest, return 403
-		if (req.user.role == "guest" || req.user.role == "student") {
+		if (req.user.role == "student") {
 			return res
 				.status(403)
 				.json({ error: "You are not allowed to perform this action" })
 		}
 
-		let { chosenRange } = req.query
-
-		// the chosenRange could be: "This week", "This month", "This year"
-		let startDate = new Date()
-		let endDate = new Date()
-
-		if (chosenRange == "This month") {
-			startDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
-			endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0)
-		} else if (chosenRange == "This year") {
-			startDate = new Date(startDate.getFullYear(), 0, 1)
-			endDate = new Date(endDate.getFullYear(), 11, 31)
-		} else {
-			startDate.setDate(startDate.getDate() - startDate.getDay())
-			endDate.setDate(endDate.getDate() + (6 - endDate.getDay()))
-		}
+		let { academicYear, facultyId } = req.query
 
 		let query = {}
 
@@ -585,6 +570,28 @@ const getDashboard = async (req, res) => {
 			})
 
 			// add contributionId to the query
+			query["contributionId"] = contribution._id
+		} else if (req.user.role == "marketing manager") {
+			if (academicYear) {
+				query["academicYear"] = academicYear
+			} else if (facultyId) {
+				const faculty = await Faculty.findById(facultyId)
+
+				const contribution = await Contribution.findOne({
+					facultyId: faculty._id,
+				})
+
+				query["contributionId"] = contribution._id
+			}
+		} else {
+			if (academicYear) {
+				query["academicYear"] = academicYear
+			}
+
+			const faculty = await Faculty.findById(req.user.facultyId)
+			const contribution = await Contribution.findOne({
+				facultyId: faculty._id,
+			})
 			query["contributionId"] = contribution._id
 		}
 
