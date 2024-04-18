@@ -9,8 +9,9 @@ import CloseIcon from "../assets/icons/cross-svgrepo-com.svg";
 import PlusIcon from "../assets/icons/sidebar-icons/plusIcon";
 import PlayIcon from "../assets/icons/play-1003-svgrepo-com.svg";
 import { useCommentContext } from "./CommentContext";
+import LockIcon from "../assets/icons/lock-alt.svg";
 
-export default function Comment() {
+export default function Comment({ allowComment }) {
   const {
     comments,
     fetchAllComment,
@@ -62,71 +63,83 @@ export default function Comment() {
       className={`fixed right-4 z-10 flex flex-col justify-between gap-5 bg-gray-100 p-5 duration-300 ${openComment ? "bottom-0 opacity-100" : "-bottom-[100%] opacity-0"}`}
       ref={ref}
     >
-      <div className="flex h-[700px] w-[400px] flex-col justify-between gap-5">
-        <div className="flex items-center gap-5">
+      <div className="flex w-[360px] flex-col justify-between gap-5">
+        <div className="flex items-center gap-2">
           <h4>Comments</h4>
           <button
-            className="rounded-full p-2 hover:bg-slate-200"
+            className={`rounded-full p-2 ${allowComment ? "hover:bg-slate-200" : ""} `}
             onClick={() => {
               setOpenCommentInput(true);
               setOpenReply("");
             }}
+            disabled={!allowComment}
           >
-            <PlusIcon fill="#6B6C7E" />
+            {allowComment ? (
+              <PlusIcon fill="#6B6C7E" />
+            ) : (
+              <div className="flex gap-2 rounded-full bg-red-500 p-1 px-2">
+                <img src={LockIcon} className="w-5" />
+                <p className="text-sm text-white">Lock comment</p>
+              </div>
+            )}
           </button>
         </div>
 
-        {comments && comments.length > 0 && (
-          <div
-            id="scrollableDiv"
-            className="flex  flex-col-reverse overflow-auto scroll-smooth bg-white p-5"
-          >
-            <span className="flex justify-end text-xs">
-              {isLoading ? "Sending..." : "Sent"}
-            </span>
-            <InfiniteScroll
-              dataLength={comments.length}
-              next={fetchMoreData}
-              style={{}} //To put endMessage and loader to the top.
-              className="flex flex-col-reverse gap-5 scroll-smooth"
-              inverse={true} //
-              hasMore={comments.length < totalLength}
-              loader={
-                <div className="overflow-hidden">
-                  <SpinnerMini />
-                </div>
-              }
-              scrollableTarget="scrollableDiv"
+        <div>
+          {comments && comments.length > 0 && (
+            <div
+              id="scrollableDiv"
+              className="flex h-[400px] flex-col-reverse overflow-auto scroll-smooth bg-white p-5"
             >
-              {comments.map((comment, index) => (
-                <CommentComponent
-                  comment={comment}
-                  key={index}
-                  openReply={openReply}
-                  setOpenReply={setOpenReply}
-                  setOpenCommentInput={setOpenCommentInput}
-                />
-              ))}
-            </InfiniteScroll>
-          </div>
-        )}
-
-        {openCommentInput && (
-          <form onClick={handleSubmit}>
-            <div className="flex items-center bg-white">
-              <input
-                type="text"
-                className="w-full p-2"
-                placeholder="Type your comment here..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-              <button type="submit" className="p-3">
-                <img src={PlayIcon} className="w-4" />
-              </button>
+              <span className="mt-1 flex justify-end text-xs">
+                {!isLoading && "Sent"}
+              </span>
+              <InfiniteScroll
+                dataLength={comments.length}
+                next={fetchMoreData}
+                style={{}}
+                className="flex flex-col-reverse gap-5 scroll-smooth"
+                inverse={true} //
+                hasMore={comments.length < totalLength}
+                loader={
+                  <div className="overflow-hidden">
+                    <SpinnerMini />
+                  </div>
+                }
+                scrollableTarget="scrollableDiv"
+              >
+                {comments.map((comment, index) => (
+                  <CommentComponent
+                    comment={comment}
+                    key={index}
+                    openReply={openReply}
+                    setOpenReply={setOpenReply}
+                    setOpenCommentInput={setOpenCommentInput}
+                    allowComment={allowComment}
+                  />
+                ))}
+              </InfiniteScroll>
             </div>
-          </form>
-        )}
+          )}
+
+          {(openCommentInput || totalLength === 0) && allowComment && (
+            <form onClick={handleSubmit}>
+              <div className="mt-3 flex items-center bg-white">
+                <input
+                  type="text"
+                  className="w-full p-2"
+                  placeholder="Type your comment here..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  disabled={true}
+                />
+                <button type="submit" className="p-3">
+                  <img src={PlayIcon} className="w-4" />
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
       <button
         className="absolute right-5"

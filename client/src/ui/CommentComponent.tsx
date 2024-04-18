@@ -17,6 +17,7 @@ export default function CommentComponent({
   openReply,
   setOpenReply,
   setOpenCommentInput,
+  allowComment,
 }: CommentComponentProps) {
   const selectedRef = useRef(null);
   const { _id, content, createdAt, replies, userId: user } = comment;
@@ -53,7 +54,7 @@ export default function CommentComponent({
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (content === "") return;
+    if (replyContent === "") return;
     replyComment(replyContent, _id, submissionId);
     setReplyContent("");
   }
@@ -114,13 +115,13 @@ export default function CommentComponent({
             </div>
           ))}
 
-        {openReply === _id && (
+        {openReply === _id && allowComment && (
           <form onSubmit={handleSubmit}>
             <div className="flex items-center bg-white">
               <input
                 type="text"
                 className="w-full p-1 outline-none"
-                placeholder="Type your comment here..."
+                placeholder="Reply comment..."
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
               />

@@ -99,8 +99,6 @@ export const useComment = () => {
         },
       );
 
-      console.log(data.newComment._id);
-
       dispatch(replaceTempId({ tempId, newId: data?.newComment?._id }));
 
       if (status !== 201) throw new Error("Error sending comments");
