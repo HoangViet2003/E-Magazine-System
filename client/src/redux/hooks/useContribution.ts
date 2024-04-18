@@ -56,14 +56,14 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(false));
   };
 
-  const fetchAllContributionByAcademicYear = async (year?: number) => {
+  const fetchAllContributionByAcademicYear = async (academicYear?: number) => {
     dispatch(setLoadingContribution(true));
 
     try {
-      if (!year) throw new Error("Year value is required");
+      if (!academicYear) throw new Error("academicYear value is required");
 
       const { data, status } = await axios.get(
-        GET_API("", 1, year).GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR,
+        GET_API("", 1, academicYear).GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR,
       );
 
       if (status !== 200) throw new Error("Error fetching contributions");
@@ -106,15 +106,19 @@ export const useContribution = () => {
         throw new Error(res.statusText);
       }
 
-      if(res.data.message === "All faculties already have contributions for the academic year."){
-        toast.error("All faculties already have contributions for the academic year.");
+      if (
+        res.data.message ===
+        "All faculties already have contributions for the academic year."
+      ) {
+        toast.error(
+          "All faculties already have contributions for the academic year.",
+        );
         return;
       }
-      
+
       toast.success("Contribution created successfully");
     } catch (error) {
       console.log(error);
-      
     }
   };
 

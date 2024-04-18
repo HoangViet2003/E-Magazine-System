@@ -10,11 +10,14 @@ export default function LoginForm() {
   // const [email, setEmail] = useState("manager1@gmail.com");
   // const [password, setPassword] = useState("manager123");
   // coor
-  // const [email, setEmail] = useState("nguyenhoangviet10d1@gmail.com");
-  // const [password, setPassword] = useState("student123");
-  // student
-  const [email, setEmail] = useState("studentgrwacc1@gmail.com");
+  const [email, setEmail] = useState("nguyenhoangviet10d1@gmail.com");
   const [password, setPassword] = useState("student123");
+  // student
+  // const [email, setEmail] = useState("studentgrwacc1@gmail.com");
+  // const [password, setPassword] = useState("student123");
+  // guest
+  // const [email, setEmail] = useState("guest@gmail.com");
+  // const [password, setPassword] = useState("guest123");
 
   const [emailError, setEmailError] = useState("");
   const { login, isLoading, setUserFromToken } = useAuth();
