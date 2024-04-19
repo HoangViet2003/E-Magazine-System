@@ -40,36 +40,15 @@ export default function AppLayOut() {
         />
       ),
     },
-    {
-      title: "Selected Article",
-      link: "/selectedArticle",
-      icon: (
-        <CheckCircleIcon
-          fill={currentPath === "/selectedArticle" ? "#004AD7" : "#6B6C7E"}
-        />
-      ),
-    },
-    {
-      title: "Recent",
-      link: "/recent",
-      icon: (
-        <TimeIcon fill={currentPath === "/recent" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Starred",
-      link: "/starred",
-      icon: (
-        <StarIcon fill={currentPath === "/starred" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Trash",
-      link: "/trash",
-      icon: (
-        <TrashIcon fill={currentPath === "/trash" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
+    // {
+    //   title: "Selected Article",
+    //   link: "/selectedArticle",
+    //   icon: (
+    //     <CheckCircleIcon
+    //       fill={currentPath === "/selectedArticle" ? "#004AD7" : "#6B6C7E"}
+    //     />
+    //   ),
+    // },
   ];
 
   const marketingManagerNavLinks = [
@@ -93,36 +72,6 @@ export default function AppLayOut() {
         <DriveIcon
           fill={currentPath === "/myFaculty" ? "#004AD7" : "#6B6C7E"}
         />
-      ),
-    },
-    {
-      title: "Selected Article",
-      link: "/selectedArticle",
-      icon: (
-        <CheckCircleIcon
-          fill={currentPath === "/selectedArticle" ? "#004AD7" : "#6B6C7E"}
-        />
-      ),
-    },
-    {
-      title: "Recent",
-      link: "/recent",
-      icon: (
-        <TimeIcon fill={currentPath === "/recent" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Starred",
-      link: "/starred",
-      icon: (
-        <StarIcon fill={currentPath === "/starred" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Trash",
-      link: "/trash",
-      icon: (
-        <TrashIcon fill={currentPath === "/trash" ? "#004AD7" : "#6B6C7E"} />
       ),
     },
   ];

@@ -21,9 +21,9 @@ export default function DashboardOperation() {
     }
   }
 
-  useEffect(()=> {
-    getFaculties()
-  },[])
+  useEffect(() => {
+    if (role === "marketing manager") getFaculties();
+  }, []);
 
   console.log(faculties);
 
@@ -54,45 +54,47 @@ export default function DashboardOperation() {
         </Dropdowns>
 
         {/* {role === "marketing manager" && ( */}
-          <Dropdowns>
-            <Dropdowns.Dropdown>
-              <Dropdowns.Toggle id="department">
-                <span className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100">
-                  <span>Faculty: </span>
-                  <span className="font-medium">{department}</span>
-                  <img src={DropdownIcon} alt="" />
-                </span>
-              </Dropdowns.Toggle>
+        <Dropdowns>
+          <Dropdowns.Dropdown>
+            <Dropdowns.Toggle id="department">
+              <span className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100">
+                <span>Faculty: </span>
+                <span className="font-medium">{department}</span>
+                <img src={DropdownIcon} alt="" />
+              </span>
+            </Dropdowns.Toggle>
 
-              <Dropdowns.List id="department">
-                <Dropdowns.Button>
-                  <span className="font-bold">Profile</span>
-                </Dropdowns.Button>
-                <Dropdowns.Button>
-                  <span className="font-bold">Sign out</span>
-                </Dropdowns.Button>
-              </Dropdowns.List>
-            </Dropdowns.Dropdown>
-          </Dropdowns>
+            <Dropdowns.List id="department">
+              <Dropdowns.Button>
+                <span className="font-bold">Profile</span>
+              </Dropdowns.Button>
+              <Dropdowns.Button>
+                <span className="font-bold">Sign out</span>
+              </Dropdowns.Button>
+            </Dropdowns.List>
+          </Dropdowns.Dropdown>
+        </Dropdowns>
         {/* )} */}
       </div>
 
-      <button
-        className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100"
-        onClick={() => {
-          const modal = document.getElementById(
-            "guest_report_selection",
-          ) as HTMLDialogElement | null;
-          if (modal) {
-            modal.showModal();
-          } else {
-            console.error("Modal not found");
-          }
-        }}
-      >
-        <img src={CheckIcon} alt="" />
-        <span>Select guest report</span>
-      </button>
+      {role === "marketing coordinator" && (
+        <button
+          className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100"
+          onClick={() => {
+            const modal = document.getElementById(
+              "guest_report_selection",
+            ) as HTMLDialogElement | null;
+            if (modal) {
+              modal.showModal();
+            } else {
+              console.error("Modal not found");
+            }
+          }}
+        >
+          <img src={CheckIcon} alt="" />
+          <span>Select guest report</span>
+        </button>
+      )}
 
       {/* Guest report modal */}
       <SelectedGuestModal />
