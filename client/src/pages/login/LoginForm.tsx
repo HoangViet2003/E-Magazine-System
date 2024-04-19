@@ -11,7 +11,7 @@ export default function LoginForm() {
   // const [password, setPassword] = useState("manager123");
   // coor
   const [email, setEmail] = useState("nguyenhoangviet10d1@gmail.com");
-  const [password, setPassword] = useState("student123");
+  const [password, setPassword] = useState("coordinator123");
   // student
   // const [email, setEmail] = useState("studentgrwacc1@gmail.com");
   // const [password, setPassword] = useState("student123");
