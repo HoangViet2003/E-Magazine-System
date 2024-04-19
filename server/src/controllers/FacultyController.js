@@ -61,10 +61,15 @@ const getAllFaculties = async (req, res) => {
 			.populate("marketingCoordinatorId", "name")
 			.sort({
 				createdAt: -1,
-			})
+			}).limit(10).skip((req.query.page - 1) * 10)
+
+		const totalPage = Math.ceil((await Faculty.countDocuments()) / 10)
+		const totalLength = await Faculty.countDocuments()
 
 		res.status(StatusCodes.OK).json({
 			faculties,
+			totalPage,
+			totalLength,
 		})
 	} catch (error) {
 		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
@@ -201,6 +206,33 @@ const deleteFaculty = async (req, res) => {
 	}
 }
 
+const searchFaculty = async (req, res) => {
+	const { keyword } = req.query
+	try {
+		const faculties = await Faculty.find({
+			name: {
+				$regex: new RegExp(keyword),
+				$options: "i",
+			},
+		}).limit(10).skip((req.query.page - 1) * 10)
+
+		const totalPage = faculties.length === 0 ? 1 : Math.ceil(faculties.length / 10)
+		const totalLength = faculties.length
+		
+
+		return res.status(StatusCodes.OK).json({
+			faculties,
+			totalPage,
+			totalLength,
+		
+		})
+	} catch (error) {
+		return res
+			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+			.json({ error: error.message })
+	}
+}
+
 module.exports = {
 	editFaculty,
 	getAllFaculties,
@@ -208,4 +240,5 @@ module.exports = {
 	deleteFaculty,
 	getFacultyById,
 	addMarketingCoordinator,
+	searchFaculty
 }

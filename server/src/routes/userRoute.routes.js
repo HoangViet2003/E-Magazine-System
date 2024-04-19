@@ -11,6 +11,14 @@ router.get(
 	authenticateAdministrator,
 	UserController.getAllUsers
 )
+
+router.get(
+	"/search-user",
+	authenticateToken,
+	authenticateAdministrator,
+	UserController.searchUser
+)
+
 router.post(
 	"/user",
 	authenticateToken,

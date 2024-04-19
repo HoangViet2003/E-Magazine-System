@@ -124,6 +124,8 @@ const createContributions = async (req, res) => {
 
 const getAllContributions = async (req, res) => {
 	try {
+
+		const {page} = req.query || 1
 		// get contribtuion object with the academic year, only one for each academic year
 		const contributions = await Contribution.aggregate([
 			{
@@ -142,10 +144,25 @@ const getAllContributions = async (req, res) => {
 					academicYear: -1,
 				},
 			},
+			// limit to 10
+			{
+				$limit: 10,
+			},
+			//skip to the next page
+			{
+				$skip: (page - 1) * 10,
+			},
 		])
+
+		// get the total page
+		const totalPage =
+			contributions.length === 0 ? 1 : Math.ceil(contributions.length / 10)
+		const totalLength = contributions.length
 
 		res.status(200).json({
 			contributions,
+			totalPage,
+			totalLength,
 		})
 	} catch (error) {
 		res.status(500).json({ error: error.message })
@@ -301,6 +318,31 @@ const deleteContributions = async (req, res) => {
 	}
 }
 
+const searchContribution = async (req, res) => {
+	const { keyword } = req.query
+	try {
+		const contributions = await Contribution.find({
+			academicYear: {
+				$regex: new RegExp(keyword, "i"),
+			},
+		})
+			.limit(10)
+			.skip((req.query.page - 1) * 10)
+
+		const totalPage =
+			contributions.length === 0 ? 1 : Math.ceil(contributions.length / 10)
+		const totalLength = contributions.length
+
+		return res.status(200).json({
+			contributions,
+			totalPage,
+			totalLength,
+		})
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+}
+
 module.exports = {
 	createContributions,
 	getAllContributions,
@@ -309,4 +351,5 @@ module.exports = {
 	getContributionById,
 	updateContributions,
 	deleteContributions,
+	searchContribution,
 }

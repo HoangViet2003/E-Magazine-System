@@ -9,10 +9,13 @@ const getAllUsers = async (req, res) => {
 			.sort({
 				createdAt: -1,
 			})
-			.limit(5)
-			.skip((page - 1) * 5)
+			.limit(10)
+			.skip((page - 1) * 10)
 
-		return res.status(200).json(users)
+		const totalPage = Math.ceil((await User.countDocuments()) / 10)
+		const totalLength = await User.countDocuments()
+
+		return res.status(200).json({users,totalPage, totalLength})
 	} catch (error) {
 		return res.status(500).json({ error: error.message })
 	}
@@ -123,4 +126,31 @@ const deleteUser = async (req, res) => {
 	}
 }
 
-module.exports = { getAllUsers, createUser, editUser, deleteUser }
+
+const searchUser = async (req, res) => {
+	try {
+		const { page, keyword } = req.query
+
+		const users = await User.find({
+			email: {
+				$regex: keyword,
+				$options: "i",
+			},
+		})
+			.sort({
+				createdAt: -1,
+			})
+			.limit(10)
+			.skip((page - 1) * 10)
+
+		const totalPage = users.length === 0 ? 1 : Math.ceil(users.length / 10)
+		const totalLength = users.length
+
+		return res.status(200).json({users,totalPage, totalLength})
+	} catch (error) {
+		return res.status(500).json({ error: error.message })
+	}
+
+}
+
+module.exports = { getAllUsers, createUser, editUser, deleteUser,searchUser }
