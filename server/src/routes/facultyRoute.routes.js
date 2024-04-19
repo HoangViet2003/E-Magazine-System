@@ -15,12 +15,7 @@ router.post(
 	authenticateAdministrator,
 	FacultyController.createFaculty
 )
-router.get(
-	"/faculties",
-	authenticateToken,
-	authenticateAdministrator,
-	FacultyController.getAllFaculties
-)
+router.get("/faculties", authenticateToken, FacultyController.getAllFaculties)
 router.get("/faculty/:id", FacultyController.getFacultyById)
 router.patch("/faculty/:id", FacultyController.editFaculty)
 router.patch(
