@@ -1,21 +1,23 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
+import { useCommentContext } from "../../../ui/CommentContext";
+import { useArticle, useContribution } from "../../../redux/hooks";
+import { format } from "date-fns";
 
+import useWindowWidth from "../../../redux/hooks/useWindowWidth";
+import SubmissionTable from "./SubmissionTable";
+import SubmissionEmpty from "./SubmissionEmpty";
 import MainHeader from "../../../ui/MainHeader";
 import Dropdowns from "../../../ui/Dropdowns";
+import Spinner from "../../../ui/Spinner";
+import Comment from "../../../ui/Comment";
+
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
-import SubmissionTable from "./SubmissionTable";
-import { useArticle, useContribution } from "../../../redux/hooks";
-import SubmissionEmpty from "./SubmissionEmpty";
-import Spinner from "../../../ui/Spinner";
-import { format } from "date-fns";
-import useWindowWidth from "../../../redux/hooks/useWindowWidth";
 import CommentIcon from "../../../assets/icons/comment_duotone.svg";
-import Comment from "../../../ui/Comment";
 import UnsubmitIcon from "../../../assets/icons/Refresh_light.svg";
-import { useCommentContext } from "../../../ui/CommentContext";
+import TrashIcon from "../../../assets/icons/trash.svg";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -160,19 +162,19 @@ export default function Submission() {
                   </span>
                 </Dropdowns.Toggle>
 
-                {isUnsubmittable && (
+                {isUnsubmittable && role === "student" && (
                   <Dropdowns.List id={`current ${submission._id}`}>
                     <Dropdowns.Button
                       icon={UnsubmitIcon}
                       onClick={() => toggleForSubmit(submissionId)}
                     >
-                      <span className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
+                      <span className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
                         {submission.unsubmitted ? "Submit" : "Unsubmit"}
                       </span>
                     </Dropdowns.Button>
 
                     <Dropdowns.Button
-                      icon={DropdownIcon}
+                      icon={TrashIcon}
                       onClick={async () => {
                         await deleteSubmission(submissionId);
                       }}

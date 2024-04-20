@@ -112,11 +112,11 @@ export default function AppLayOut() {
 
   const guestNavLinks = [
     {
-      title: "Faculty",
-      link: "/myFaculty",
+      title: "Dashboard",
+      link: "/dashboard",
       icon: (
         <ChartpinIcon
-          fill={currentPath.includes("/myFaculty") ? "#004AD7" : "#6B6C7E"}
+          fill={currentPath.includes("/dashboard") ? "#004AD7" : "#6B6C7E"}
         />
       ),
     },

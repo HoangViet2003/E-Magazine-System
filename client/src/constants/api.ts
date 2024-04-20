@@ -1,7 +1,7 @@
-const GET_API = (id?: string, page = 1, academicYear = 2024) => {
+const GET_API = (id?: string, page = 1, academicYear = new Date().getFullYear()) => {
   return {
     // article
-    GET_DASHBOARD: `/article/dashboard?academicYear=${academicYear}`,
+    GET_DASHBOARD: `/article/dashboard?academicYear=${academicYear}&facultyId=${id}`,
     GET_ALL_STUDENT_ARTICLES: `/article/student?page=${page}`,
     GET_ARTICLE_BY_ID: `/article/${id}`,
     GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}?page=${page}`,
@@ -14,7 +14,7 @@ const GET_API = (id?: string, page = 1, academicYear = 2024) => {
     GET_COMMENTS_BY_SUBMISSION_ID: `/submission/${id}/comments?page=${page}`,
     // contributions
     GET_CONTRIBUTION_BY_ID: `/contribution/${id}`,
-    GET_ALL_CONTRIBUTIONS: `/contributions`,
+    GET_ALL_CONTRIBUTIONS: `/contributions?page=${page}`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
     GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR: `/contributions/academic-year?academicYear=${academicYear}`,
     // faculties

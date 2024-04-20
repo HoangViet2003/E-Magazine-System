@@ -1,31 +1,45 @@
 import { useEffect, useState } from "react";
-import { useArticle } from "../../redux/hooks";
+import { useArticle, useContribution } from "../../redux/hooks";
+import { useFaculty } from "../../redux/hooks/useFaculty";
+import { Faculty } from "../../redux/slices/FacultySlice";
+
 import Dropdowns from "../../ui/Dropdowns";
 import CheckIcon from "../../assets/icons/check_ring_round_light.svg";
 import DropdownIcon from "../../assets/icons/arrow_drop_down_24px.svg";
 
 import SelectedGuestModal from "./SelectedGuest/SelectedGuestModal";
-import { useFaculty } from "../../redux/hooks/useFaculty";
+import useWindowWidth from "../../redux/hooks/useWindowWidth";
 
 export default function DashboardOperation() {
-  const [academicYear, setAcademicYear] = useState(2024);
+  const [academicYear, setAcademicYear] = useState(new Date().getFullYear());
   const [department, setDepartment] = useState("IT Department");
   const { handleSetDashBoard } = useArticle();
   const { getFaculties, faculties } = useFaculty();
+  const { fetchAllContributionByManager, contributions } = useContribution();
   const role = localStorage.getItem("role");
+  const windowWidth = useWindowWidth();
 
-  function handleChangeAcademicYear(year: number) {
-    if (academicYear !== year) {
-      setAcademicYear(year);
-      handleSetDashBoard(year);
+  function handleChangeAcademicYear(year?: number) {
+    if (year) {
+      if (academicYear != year) {
+        setAcademicYear(year);
+        handleSetDashBoard(year);
+      }
+    }
+  }
+
+  function handleChangeFaculty(faculty: Faculty) {
+    if (faculty.name != department) {
+      setDepartment(faculty.name);
+      handleSetDashBoard(academicYear, faculty._id);
     }
   }
 
   useEffect(() => {
-    if (role === "marketing manager") getFaculties();
+    if (role === "marketing manager" || role === "marketing coordinator")
+      getFaculties();
+    fetchAllContributionByManager();
   }, []);
-
-  console.log(faculties);
 
   return (
     <div className="flex justify-between">
@@ -34,8 +48,13 @@ export default function DashboardOperation() {
           <Dropdowns.Dropdown>
             <Dropdowns.Toggle id="dashboard_year">
               <span className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100">
-                <span>Academic Year: </span>
-                <span className="font-medium">{academicYear}</span>
+                <span className="text-xs md:text-base">
+                  Academic Year{windowWidth > 576 && ":"}
+                </span>
+                {windowWidth > 576 && (
+                  <span className="font-medium">{academicYear}</span>
+                )}
+
                 <span>
                   <img src={DropdownIcon} />
                 </span>
@@ -43,43 +62,53 @@ export default function DashboardOperation() {
             </Dropdowns.Toggle>
 
             <Dropdowns.List id="dashboard_year">
-              <Dropdowns.Button onClick={() => handleChangeAcademicYear(2024)}>
-                <span className="font-bold">2024</span>
-              </Dropdowns.Button>
-              <Dropdowns.Button onClick={() => handleChangeAcademicYear(2023)}>
-                <span className="font-bold">2023</span>
-              </Dropdowns.Button>
+              {contributions.map((contribution) => (
+                <span key={contribution._id}>
+                  <Dropdowns.Button
+                    onClick={() =>
+                      handleChangeAcademicYear(contribution.academicYear)
+                    }
+                    key={contribution._id}
+                  >
+                    <span className="font-bold">
+                      {contribution.academicYear}
+                    </span>
+                  </Dropdowns.Button>
+                </span>
+              ))}
             </Dropdowns.List>
           </Dropdowns.Dropdown>
         </Dropdowns>
 
-        {/* {role === "marketing manager" && ( */}
-        <Dropdowns>
-          <Dropdowns.Dropdown>
-            <Dropdowns.Toggle id="department">
-              <span className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100">
-                <span>Faculty: </span>
-                <span className="font-medium">{department}</span>
-                <img src={DropdownIcon} alt="" />
-              </span>
-            </Dropdowns.Toggle>
+        {role === "marketing manager" && (
+          <Dropdowns>
+            <Dropdowns.Dropdown>
+              <Dropdowns.Toggle id="department">
+                <span className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100">
+                  <span>Faculty: </span>
+                  <span className="font-medium">{department}</span>
+                  <img src={DropdownIcon} alt="" />
+                </span>
+              </Dropdowns.Toggle>
 
-            <Dropdowns.List id="department">
-              <Dropdowns.Button>
-                <span className="font-bold">Profile</span>
-              </Dropdowns.Button>
-              <Dropdowns.Button>
-                <span className="font-bold">Sign out</span>
-              </Dropdowns.Button>
-            </Dropdowns.List>
-          </Dropdowns.Dropdown>
-        </Dropdowns>
-        {/* )} */}
+              <Dropdowns.List id="department">
+                {faculties.map((faculty) => (
+                  <Dropdowns.Button
+                    onClick={() => handleChangeFaculty(faculty)}
+                    key={faculty._id}
+                  >
+                    <span className="font-bold">{faculty.name}</span>
+                  </Dropdowns.Button>
+                ))}
+              </Dropdowns.List>
+            </Dropdowns.Dropdown>
+          </Dropdowns>
+        )}
       </div>
 
       {role === "marketing coordinator" && (
         <button
-          className="flex items-center gap-2 rounded border border-borderColor px-2 py-3 hover:bg-slate-100"
+          className="flex items-center gap-2 rounded border border-borderColor px-2 py-3  hover:bg-slate-100"
           onClick={() => {
             const modal = document.getElementById(
               "guest_report_selection",
@@ -91,12 +120,11 @@ export default function DashboardOperation() {
             }
           }}
         >
-          <img src={CheckIcon} alt="" />
-          <span>Select guest report</span>
+          {windowWidth > 576 && <img src={CheckIcon} />}
+          <span className="text-xs md:text-base">Select guest report</span>
         </button>
       )}
 
-      {/* Guest report modal */}
       <SelectedGuestModal />
     </div>
   );

@@ -364,12 +364,15 @@ export const useArticle = () => {
     dispatch(setSearchMode(isSearchMode));
   };
 
-  const handleSetDashBoard = async (academicYear?: number) => {
+  const handleSetDashBoard = async (
+    academicYear?: number,
+    facultyId?: string,
+  ) => {
     dispatch(setLoadingArticle(true));
 
     try {
       const { data, status } = await axios.get(
-        GET_API("", 1, academicYear).GET_DASHBOARD,
+        GET_API(facultyId, 1, academicYear).GET_DASHBOARD,
       );
 
       if (status !== 200) {

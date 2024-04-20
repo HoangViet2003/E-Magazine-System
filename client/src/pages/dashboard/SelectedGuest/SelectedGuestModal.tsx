@@ -6,13 +6,15 @@ import Button from "../../../ui/Button";
 export default function SelectedGuestModal() {
   const { faculty, getFacultyById, handleSelectedReport } = useFaculty();
   const [selectedReports, setSelectedReports] = useState<string[]>([]);
+  const role = localStorage.getItem("role");
 
   // Get selectedReports from api
   useEffect(() => {
     const fetchData = () => {
       getFacultyById();
     };
-    fetchData();
+
+    if (role === "marketing coordinator") fetchData();
   }, []);
   useEffect(() => {
     setSelectedReports(faculty.selectedReports);
@@ -66,13 +68,17 @@ export default function SelectedGuestModal() {
           />
         </div>
 
-        <div className="mt-3 flex justify-end">
+        <div className="mt-3 flex justify-end gap-4">
           <form method="dialog">
-            <Button type="light">Cancel</Button>
+            <Button type="light" className="px-6">
+              Cancel
+            </Button>
           </form>
 
           <form method="dialog">
-            <Button onClick={handleUpdateSelectedReports}>Save</Button>
+            <Button onClick={handleUpdateSelectedReports} className="px-6">
+              Save
+            </Button>
           </form>
         </div>
       </div>
