@@ -398,7 +398,7 @@ const toggleSubmissionStatus = async (req, res) => {
 			content: `Student has ${submission.unsubmitted ? "unsubmitted" : "submitted"} the submission`,
 		}
 
-		await history.create(history)
+		await History.create(history)
 
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
@@ -487,7 +487,7 @@ const addArticlesToSubmission = async (req, res) => {
 			content: `Student added ${addedArticles.length} articles to the submission`,
 		}
 
-		await history.create(history)
+		await History.create(history)
 
 		return res.status(200).json({ updatedSubmission })
 	} catch (error) {
