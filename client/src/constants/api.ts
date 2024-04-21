@@ -12,7 +12,7 @@ const GET_API = (
     GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}?page=${page}`,
     GET_ARTICLES_BY_SUBMISSION_ID: `/article/submission/${id}?page=${page}`,
     GET_SUGGESTION_ARTICLES: `/article/suggestions`,
-    GET_FILTERED_ARTICLES: `/article/filter`,
+    GET_FILTERED_ARTICLES: `/article/filter?page=${page}`,
 
     // comments
     // GET_COMMENTS_BY_ARTICLE_ID: `/article/${id}/comments`,

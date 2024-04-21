@@ -153,7 +153,7 @@ export function useAuth() {
 
   const handleResetPassword = async (newPassword: string, token: string) => {
       try{
-        const res = await axios.post(POST_API(token).RESET_PASSWORD, {newPassword})
+        const res = await axios.post(POST_API("",token).RESET_PASSWORD, {newPassword})
 
         if(res.status === 200){
           toast.success("Password reset successfully")

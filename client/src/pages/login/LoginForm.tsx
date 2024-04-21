@@ -38,7 +38,6 @@ export default function LoginForm() {
       
     } 
       handleForgotPassword(email);
-      navigate("/forgot-password");
     
   }
 
