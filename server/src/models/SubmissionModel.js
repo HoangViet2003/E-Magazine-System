@@ -22,7 +22,7 @@ const submissionSchema = new mongoose.Schema(
 		},
 		unsubmitted: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		articles: {
 			type: [mongoose.Schema.Types.ObjectId],
