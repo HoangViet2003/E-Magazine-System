@@ -69,14 +69,14 @@ export const useContribution = () => {
     dispatch(setLoadingContribution(false));
   };
 
-  const fetchAllContributionByAcademicYear = async (year?: number) => {
+  const fetchAllContributionByAcademicYear = async (academicYear?: number) => {
     dispatch(setLoadingContribution(true));
 
     try {
-      if (!year) throw new Error("Year value is required");
+      if (!academicYear) throw new Error("academicYear value is required");
 
       const { data, status } = await axios.get(
-        GET_API("", 1, year).GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR,
+        GET_API("", 1, academicYear).GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR,
       );
 
       if (status !== 200) throw new Error("Error fetching contributions");

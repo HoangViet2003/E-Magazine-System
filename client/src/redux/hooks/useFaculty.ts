@@ -6,6 +6,8 @@ import {
   setTotalPage,
   setTotalLength,
   setCurrentPage,
+  setFaculty,
+
 } from "../slices/FacultySlice.js";
 import axios from "../../utils/axios.js";
 import {
@@ -20,8 +22,12 @@ import { useNavigate } from "react-router-dom";
 
 export const useFaculty = () => {
   const dispatch = useDispatch();
-  const { faculties,totalPages,totalLength,currentPage,isLoading } = useSelector((state: RootState) => state.faculty);
-  const navigate  = useNavigate();
+
+  const navigate = useNavigate();
+  const { facultyId } = JSON.parse(localStorage.getItem("user") || "{}");
+  const { faculties, faculty,totalPages,totalLength,currentPage,isLoading } = useSelector(
+    (state: RootState) => state.faculty,
+  );
 
   const getFaculties = async (page = 1) => {
     dispatch(setIsLoading(true));
@@ -41,15 +47,31 @@ export const useFaculty = () => {
     }
   };
 
+  const getFacultyById = async () => {
+    setIsLoading(true);
+
+    try {
+      const { data, status } = await axios.get(
+        GET_API(facultyId).GET_FACULTY_BY_ID,
+      );
+
+      if (status !== 200) throw new Error("Error fetching faculty");
+
+      dispatch(setFaculty(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const createAccount = async (data: any) => {
-    console.log(data)
+    console.log(data);
     try {
       const res = await axios.post(POST_API().SIGNUP, data);
       console.log(res);
       if (res.status !== 201) {
         throw new Error(res.statusText);
       }
-      navigate('/account')
+      navigate("/account");
       toast.success("Account created successfully");
     } catch (error) {
       console.log(error);
@@ -61,18 +83,17 @@ export const useFaculty = () => {
     setIsLoading(true);
     try {
       const res = await axios.post(POST_API().CREATE_FACULTY, data);
-      console.log(res)
+      console.log(res);
       if (res.status !== 201) {
         throw new Error(res.statusText);
       }
       toast.success("Faculty created successfully");
-      navigate('/faculty')
+      navigate("/faculty");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Faculty creation failed");
       setIsLoading(false);
-
     }
   };
 
@@ -84,7 +105,7 @@ export const useFaculty = () => {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      navigate('/faculty')
+      navigate("/faculty");
       toast.success("Faculty deleted successfully");
       setIsLoading(false);
     } catch (error) {
@@ -95,6 +116,7 @@ export const useFaculty = () => {
 
   const updateFaculty = async (id: string, data: any) => {
     setIsLoading(true);
+
     try {
       const res = await axios.patch(PATCH_API(id).EDIT_FACULTY, data);
       console.log(res);
@@ -102,7 +124,36 @@ export const useFaculty = () => {
         throw new Error(res.statusText);
       }
       toast.success("Faculty updated successfully");
-      navigate('/faculty')
+      navigate("/faculty");
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectedReport = async (selectedReports: string[]) => {
+    setIsLoading(true);
+
+    try {
+      const { data, status } = await axios.patch(
+        PATCH_API(facultyId).EDIT_FACULTY,
+        {
+          selectedReports: selectedReports,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (status !== 200) {
+        throw new Error("Unable to set selected report");
+      }
+
+      console.log(data);
+
+      toast.success("Faculty updated successfully");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -132,8 +183,10 @@ export const useFaculty = () => {
     };
 
   return {
-    getFaculties,
+    faculty,
     faculties,
+    getFaculties,
+    getFacultyById,
     createAccount,
     createFaculty,
     deleteFaculty,
@@ -143,6 +196,8 @@ export const useFaculty = () => {
     handleCurrentPage,
     currentPage,
     isLoading,
-    handleSearchFaculty
+    handleSearchFaculty,
+    handleSelectedReport
+
   };
 };

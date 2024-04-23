@@ -44,7 +44,7 @@ export default function Pagination({ count }: { count: number }) {
         <button
           onClick={prevPage}
           disabled={currentPage === 1}
-          className="disabled:hover:bg-transparentdisabled:hover:text-[#6B6C7E] flex items-center rounded p-2 font-medium text-[#6B6C7E] duration-300 hover:bg-[#004AD7] hover:text-white  disabled:cursor-not-allowed"
+          className="flex items-center rounded p-2 font-medium text-[#6B6C7E] duration-300 hover:bg-[#004AD7] hover:text-white disabled:cursor-not-allowed disabled:hover:bg-transparent  disabled:hover:text-[#6B6C7E]"
           onMouseEnter={() => setFillColorPrev("#FFF")}
           onMouseLeave={() => setFillColorPrev("#6B6C7E")}
         >

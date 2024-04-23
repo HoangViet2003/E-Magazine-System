@@ -4,6 +4,7 @@ interface Faculty {
   _id: string;
   name: string;
   marketingCoordinatorId?: Object;
+  selectedReports: string[];
 }
 
 interface FacultyState {
@@ -28,6 +29,7 @@ const initialState: FacultyState = {
       name: "",
       _id: "",
     },
+    selectedReports: [],
   },
 };
 
@@ -41,6 +43,7 @@ const slice = createSlice({
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+
     setTotalPage(state, action: PayloadAction<number>) {
       state.totalPages = action.payload;
     },
@@ -50,10 +53,14 @@ const slice = createSlice({
     setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
     },
+    setFaculty: (state, action: PayloadAction<Faculty>) => {
+      state.faculty = action.payload;
+    }
   },
 });
 
 const { reducer, actions } = slice;
+
 
 export const {
   setFaculties,
@@ -61,7 +68,9 @@ export const {
   setTotalPage,
   setTotalLength,
   setCurrentPage,
+  setFaculty
 } = actions;
+
 
 export type { FacultyState, Faculty };
 

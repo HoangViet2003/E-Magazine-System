@@ -1,12 +1,7 @@
-const GET_API = (
-  id: string,
-  page = 1,
-  year?: number,
-  chosenRange = "This month",
-) => {
+const GET_API = (id?: string, page = 1, academicYear = new Date().getFullYear()) => {
   return {
     // article
-    GET_DASHBOARD: `/article/dashboard?chosenRange=${chosenRange}`,
+    GET_DASHBOARD: `/article/dashboard?academicYear=${academicYear}&facultyId=${id}`,
     GET_ALL_STUDENT_ARTICLES: `/article/student?page=${page}`,
     GET_ARTICLE_BY_ID: `/article/${id}`,
     GET_ARTICLES_BY_FACULTY_ID: `/article/faculty/${id}?page=${page}`,
@@ -21,9 +16,12 @@ const GET_API = (
     GET_CONTRIBUTION_BY_ID: `/contribution/${id}`,
     GET_ALL_CONTRIBUTIONS: `/contributions?page=${page}`,
     GET_ALL_CONTRIBUTIONS_BY_COORDINATOR: `/contributions/coordinator`,
-    GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR: `/contributions/academic-year?academicYear=${year}`,
+
     GET_ALL_CONTRIBUTIONS_FOR_ADMIN: `/contributions/admin?page=${page}`,
     SEARCH_CONTRIBUTION: `/search-contribution?page=${page}`,
+
+
+    GET_ALL_CONTRIBUTIONS_BY_ACADEMIC_YEAR: `/contributions/academic-year?academicYear=${academicYear}`,
 
     // faculties
     GET_ALL_FACULTIES: `/faculties?page=${page}`,

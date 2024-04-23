@@ -1,21 +1,23 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
+import { useCommentContext } from "../../../ui/CommentContext";
+import { useArticle, useContribution } from "../../../redux/hooks";
+import { format } from "date-fns";
 
+import useWindowWidth from "../../../redux/hooks/useWindowWidth";
+import SubmissionTable from "./SubmissionTable";
+import SubmissionEmpty from "./SubmissionEmpty";
 import MainHeader from "../../../ui/MainHeader";
 import Dropdowns from "../../../ui/Dropdowns";
+import Spinner from "../../../ui/Spinner";
+import Comment from "../../../ui/Comment";
+
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import DropdownIcon from "../../../assets/icons/caret-bottom.svg";
-import SubmissionTable from "./SubmissionTable";
-import { useArticle, useContribution } from "../../../redux/hooks";
-import SubmissionEmpty from "./SubmissionEmpty";
-import Spinner from "../../../ui/Spinner";
-import { format } from "date-fns";
-import useWindowWidth from "../../../redux/hooks/useWindowWidth";
 import CommentIcon from "../../../assets/icons/comment_duotone.svg";
-import Comment from "../../../ui/Comment";
 import UnsubmitIcon from "../../../assets/icons/Refresh_light.svg";
-import { useCommentContext } from "../../../ui/CommentContext";
+import TrashIcon from "../../../assets/icons/trash.svg";
 
 export default function Submission() {
   const windowWidth = useWindowWidth();
@@ -29,7 +31,7 @@ export default function Submission() {
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
   const { openComment, setOpenComment } = useCommentContext();
-  const [isOver14Days, setIsOver14Days] = useState(false);
+  const [allowComment, setAllowComment] = useState(false);
 
   const { contribution, getContributionById } = useContribution();
   const {
@@ -46,7 +48,9 @@ export default function Submission() {
     resetSubmissionArticlesState,
   } = useArticle();
 
-  console.log(submission);
+  function formattedDate(date: string) {
+    return format(date, "HH:mm dd/MM/yyyy");
+  }
 
   const checkIfOver14Days = () => {
     const today = new Date();
@@ -56,13 +60,9 @@ export default function Submission() {
     const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
     if (differenceInDays > 14) {
-      setIsOver14Days(true);
+      setAllowComment(false);
     }
   };
-
-  function formattedDate(date: string) {
-    return format(date, "HH:mm dd/MM/yyyy");
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +73,7 @@ export default function Submission() {
       }
 
       if (submissionId) getArticlesBySubmissionId(submissionId, page);
+      checkIfOver14Days();
 
       return () => resetSubmissionArticlesState();
     };
@@ -84,8 +85,6 @@ export default function Submission() {
       getContributionById(contributionId);
     };
     fetchContributionById();
-
-    checkIfOver14Days();
   }, []);
 
   useEffect(() => {
@@ -163,19 +162,19 @@ export default function Submission() {
                   </span>
                 </Dropdowns.Toggle>
 
-                {isUnsubmittable && (
+                {isUnsubmittable && role === "student" && (
                   <Dropdowns.List id={`current ${submission._id}`}>
                     <Dropdowns.Button
                       icon={UnsubmitIcon}
                       onClick={() => toggleForSubmit(submissionId)}
                     >
-                      <span className="flex items-center gap-3 px-2 py-1 text-[#CA3636] hover:bg-slate-100">
+                      <span className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
                         {submission.unsubmitted ? "Submit" : "Unsubmit"}
                       </span>
                     </Dropdowns.Button>
 
                     <Dropdowns.Button
-                      icon={DropdownIcon}
+                      icon={TrashIcon}
                       onClick={async () => {
                         await deleteSubmission(submissionId);
                       }}
@@ -246,8 +245,9 @@ export default function Submission() {
             )}
 
           {submissionId &&
-            (role === "student" || role === "marketing coordinator") &&
-            isOver14Days && <Comment />}
+            (role === "student" || role === "marketing coordinator") && (
+              <Comment allowComment={allowComment} />
+            )}
         </div>
       )}
     </div>

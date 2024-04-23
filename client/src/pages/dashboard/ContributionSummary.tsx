@@ -9,8 +9,6 @@ import { useArticle } from "../../redux/hooks";
 export default function ContributionSummary() {
   const { dashboard } = useArticle();
 
-  console.log(dashboard);
-
   return (
     <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
       <h2 className="text-xl font-semibold">Contributions summary</h2>

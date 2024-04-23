@@ -93,7 +93,7 @@ export default function MyFacultyTable() {
           )}
         />
       </Table>
-      
+
       {!loadingArticle && <Pagination count={articleLength} />}
     </>
   );

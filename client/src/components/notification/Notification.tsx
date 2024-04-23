@@ -177,7 +177,7 @@ const Notification = ({
                   alt="avatar"
                   className="h-10 w-10 rounded-full"
                 />
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 me-6">
                   <h6 className="text-sm font-semibold">
                     {notification?.title}
                   </h6>
@@ -189,7 +189,7 @@ const Notification = ({
                   </p>
                 </div>
 
-                {!notification.isRead && (
+                {notification.isRead && (
                   <span className="absolute right-4 h-2 w-2 rounded-full bg-[#004AD7]"></span>
                 )}
               </div>

@@ -28,6 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const useArticle = () => {
   const dispatch = useDispatch();
+  const { facultyId } = JSON.parse(localStorage.getItem("user") || "{}");
 
   const {
     isLoading,
@@ -49,14 +50,15 @@ export const useArticle = () => {
   const fetchAllArticle = async (page: number) => {
     dispatch(setLoadingArticle(true));
     try {
-      const id = "65ffed86f65b006fda7d0c9a";
       const { data, status } = await axios.get(
-        GET_API(id, page).GET_ARTICLES_BY_FACULTY_ID,
+        GET_API(facultyId, page).GET_ARTICLES_BY_FACULTY_ID,
       );
 
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
+
+      console.log(data);
 
       dispatch(setAllArticles(data));
     } catch (error) {
@@ -361,14 +363,15 @@ export const useArticle = () => {
     dispatch(setSearchMode(isSearchMode));
   };
 
-  const handleSetDashBoard = async (chosenRange: string) => {
+  const handleSetDashBoard = async (
+    academicYear?: number,
+    facultyId?: string,
+  ) => {
     dispatch(setLoadingArticle(true));
 
     try {
-      if (!chosenRange) throw new Error("ChosenRange is required.");
-
       const { data, status } = await axios.get(
-        GET_API(chosenRange).GET_DASHBOARD,
+        GET_API(facultyId, 1, academicYear).GET_DASHBOARD,
       );
 
       if (status !== 200) {

@@ -8,24 +8,6 @@ import {
 } from "recharts";
 import { useArticle } from "../../redux/hooks";
 
-const fakeData = [
-  {
-    name: "Commented",
-    value: 27,
-    color: "#FF3A29",
-  },
-  {
-    name: "Not yet",
-    value: 59,
-    color: "#0B5FFF",
-  },
-  // {
-  //   name: "Yup",
-  //   value: 5,
-  //   color: "#FFB200",
-  // },
-];
-
 export default function CommentedArticlesChart() {
   const { dashboard } = useArticle();
 
@@ -44,7 +26,7 @@ export default function CommentedArticlesChart() {
 
   return (
     <div className="border border-borderColor px-8 pb-[30px] pt-9 shadow-lg">
-      <h2 className="text-[22px] font-medium">Commented Articles</h2>
+      <h2 className="text-[22px] font-medium">Commented Submissions</h2>
       <div className="relative">
         <ResponsiveContainer width="100%" height={300}>
           <PieChart className="test">
