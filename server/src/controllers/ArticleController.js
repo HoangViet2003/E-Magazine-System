@@ -1,4 +1,5 @@
 const fs = require("fs")
+const mongoose = require("mongoose")
 const { uploadFiles, deleteFiles } = require("../services/fileS3.services")
 
 const mammoth = require("mammoth")
@@ -284,7 +285,7 @@ const getArticleById = async (req, res) => {
 
 		const article = await Article.findOne({ _id: articleId }).populate(
 			"student",
-			"name email facultyId"
+			"name email facultyId submissionId"
 		)
 
 		if (!article) {
@@ -321,9 +322,11 @@ const getArticleById = async (req, res) => {
 		}
 
 		// find submission by submission id
-		const submission = await Submission.findById(article.submissionId)
-		article["submissionStatus"] = submission.unsubmitted ? "unsubmitted" : "submitted"
-		res.status(200).json({ article })
+		const articleObjectId = new mongoose.Types.ObjectId(articleId);
+    const submission = await Submission.findOne({ articles: { $in: [articleObjectId] } });
+
+		const submissionStatus = submission.unsubmitted ? "unsubmitted" : "submitted"
+		res.status(200).json({ article, submissionStatus })
 	} catch (error) {
 		res.status(500).json({ error: error.message })
 	}
