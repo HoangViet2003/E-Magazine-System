@@ -38,8 +38,6 @@ const uploadArticle = async (req, res) => {
 
 				const filePath = file.path
 				const result = await mammoth.convertToHtml({ path: filePath })
-				console.log("html: ", result)
-				console.log("html2: ", result.value)
 				const html = result.value // The generated HTML
 
 				return {
@@ -137,7 +135,6 @@ const updateArticle = async (req, res) => {
 		}
 
 		if (files && files.length > 0 && article.type === "image") {
-			console.log("files: ", files)
 			const uploadPromises = files.map(async (file) => {
 				// Assuming uploadFiles and deleteFiles functions are defined
 				// Upload new images
@@ -322,6 +319,10 @@ const getArticleById = async (req, res) => {
 				.status(403)
 				.json({ error: "You are not allowed to perform this action" })
 		}
+
+		// find submission by submission id
+		const submission = await Submission.findById(article.submissionId)
+		article["submissionStatus"] = submission.unsubmitted ? "unsubmitted" : "submitted"
 		res.status(200).json({ article })
 	} catch (error) {
 		res.status(500).json({ error: error.message })
