@@ -134,6 +134,7 @@ const updateArticle = async (req, res) => {
 		}
 
 		if (files && files.length > 0 && article.type === "image") {
+			console.log("files: ", files)
 			const uploadPromises = files.map(async (file) => {
 				// Assuming uploadFiles and deleteFiles functions are defined
 				// Upload new images
@@ -155,7 +156,7 @@ const updateArticle = async (req, res) => {
 			article.content = content
 				? [...content, ...uploadedImages]
 				: uploadedImages
-		} else if (content) {
+		} else if (content && article.type === "image") {
 			// Delete images not kept
 			const imagesToDelete = article.content.filter(
 				(image) => !content.includes(image)
