@@ -325,6 +325,10 @@ const getArticleById = async (req, res) => {
 		const articleObjectId = new mongoose.Types.ObjectId(articleId);
     const submission = await Submission.findOne({ articles: { $in: [articleObjectId] } });
 
+    if (!submission) {
+      return res.status(200).json({ article, submissionStatus: "unsubmitted" });
+    }
+
 		const submissionStatus = submission.unsubmitted ? "unsubmitted" : "submitted"
 		res.status(200).json({ article, submissionStatus })
 	} catch (error) {
