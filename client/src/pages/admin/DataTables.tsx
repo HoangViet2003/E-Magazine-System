@@ -105,24 +105,49 @@ const DataTables = (props: {
           }),
       },
     ];
-  } else if (tableName === "users") {
+  } else if (tableName === "contribution") {
     columns = [
       {
-        name: "id",
-        selector: (row) => row.id,
+        name: "academicYear",
+        selector: (row) => row.academicYear,
+      },{
+        name: "status",
+        selector: (row) => row.status,
+      },{
+        name: "closure date",
+        selector: (row) =>
+          new Date(row.closureDate).toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+      },{
+        name:"final closure date",
+        selector:(row)=>new Date(row.finalClosureDate).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      } , {
+        name: "Action",
+        selector: (row) => (
+          <button
+            onClick={() => {
+              handleDeleteClick(row.academicYear);
+            }}
+          >
+            Delete
+          </button>
+        ),
       },
-      {
-        name: "name",
-        selector: (row) => row.fullname,
-      },
-      {
-        name: "email",
-        selector: (row) => row.email,
-      },
-      {
-        name: "role",
-        selector: (row) => (row.isAdmin ? "admin" : "user"),
-      },
+
+  
     ];
   }
 
@@ -131,37 +156,22 @@ const DataTables = (props: {
 
     handleSearch(e.target.value);
   };
-  // const handleSearchData = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const searchText = e.target.value.toLowerCase();
-  //     setSearchText(searchText);
 
-  //     const filteredData = props.data.filter((item: any) => {
-  //         // Check if any column's value contains the search text
-  //         return Object.values(item).some(
-  //             (value) => typeof value === 'string' && value.toLowerCase().includes(searchText)
-  //         );
-  //     });
-
-  //     // Call the handleSearch function with the filtered data
-  //     handleSearch(filteredData);
-  // };
 
   return (
     <div
       className="dashboard-table-area section-padding-100"
       style={{
-        width: "70%",
+        width: "100%",
       }}
     >
       <div className="cart-title mt-50">
         <h2>
           {tableName === "account"
-            ? "Accounts"
+            ? "Accounts "
             : tableName === "faculty"
-              ? "Faculty"
-              : tableName === "users"
-                ? "Users"
-                : "Transaction"}{" "}
+              ? "Faculty "
+                : "Contribution "}
           Dashboard
         </h2>
 

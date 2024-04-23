@@ -2,8 +2,12 @@ import { RootState } from "../index";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setFaculties,
-  setFaculty,
   setIsLoading,
+  setTotalPage,
+  setTotalLength,
+  setCurrentPage,
+  setFaculty,
+
 } from "../slices/FacultySlice.js";
 import axios from "../../utils/axios.js";
 import {
@@ -18,22 +22,28 @@ import { useNavigate } from "react-router-dom";
 
 export const useFaculty = () => {
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { facultyId } = JSON.parse(localStorage.getItem("user") || "{}");
-  const { faculties, faculty } = useSelector(
+  const { faculties, faculty,totalPages,totalLength,currentPage,isLoading } = useSelector(
     (state: RootState) => state.faculty,
   );
 
-  const getFaculties = async () => {
+  const getFaculties = async (page = 1) => {
+    dispatch(setIsLoading(true));
     try {
-      const res = await axios.get(GET_API("").GET_ALL_FACULTIES);
+      const res = await axios.get(GET_API("",page).GET_ALL_FACULTIES);
       console.log(res.data.faculties);
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
       dispatch(setFaculties(res.data.faculties));
+       dispatch(setTotalPage(res.data.totalPage));
+       dispatch(setTotalLength(res.data.totalLength));
+       dispatch(setIsLoading(false));
     } catch (error) {
       console.log(error);
+      dispatch(setIsLoading(false));
     }
   };
 
@@ -151,6 +161,27 @@ export const useFaculty = () => {
     }
   };
 
+  const handleSearchFaculty = async (keyword: string) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`${GET_API("",currentPage).SEARCH_FACULTY}&keyword=${keyword}`);
+      console.log(res);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      dispatch(setFaculties(res.data.faculties));
+      dispatch(setTotalLength(res.data.totalLength));
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
+
+    const handleCurrentPage = (page: number) => {
+      dispatch(setCurrentPage(page));
+    };
+
   return {
     faculty,
     faculties,
@@ -160,6 +191,13 @@ export const useFaculty = () => {
     createFaculty,
     deleteFaculty,
     updateFaculty,
-    handleSelectedReport,
+    totalPages,
+    totalLength,
+    handleCurrentPage,
+    currentPage,
+    isLoading,
+    handleSearchFaculty,
+    handleSelectedReport
+
   };
 };

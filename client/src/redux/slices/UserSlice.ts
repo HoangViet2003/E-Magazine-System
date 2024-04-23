@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { setToTalPage } from "./NotiSlice";
 
 export interface User {
   _id: string;
@@ -16,6 +17,9 @@ interface UserState {
   isAuth: boolean;
   isLoading: boolean;
   isLoadingTable: boolean;
+  totalPage: number;
+  totalLength: number;
+  currentPage: number;
 }
 
 const initialState: UserState = {
@@ -31,6 +35,9 @@ const initialState: UserState = {
   isAuth: false,
   isLoading: false,
   isLoadingTable: false,
+  totalPage: 0,
+  totalLength: 0,
+  currentPage: 1,
 };
 
 const UserSlice = createSlice({
@@ -49,13 +56,21 @@ const UserSlice = createSlice({
     },
     setIsLoadingTable(state, action: PayloadAction<boolean>) {
       state.isLoadingTable = action.payload;
-    
+    },
+    setTotalPage(state, action: PayloadAction<number>) {
+      state.totalPage = action.payload;
+    },
+    setTotalLength(state, action: PayloadAction<number>) {
+      state.totalLength = action.payload;
+    },
+    setCurrentPage(state, action: PayloadAction<number>) {
+      state.currentPage = action.payload;
     }
   },
 });
 
 const { reducer, actions } = UserSlice;
 
-export const { setLoadingUser, setUser,setUsers,setIsLoadingTable } = actions;
+export const { setLoadingUser, setUser, setUsers, setIsLoadingTable,setTotalPage,setTotalLength,setCurrentPage } = actions;
 
 export default reducer;
