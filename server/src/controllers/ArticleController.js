@@ -38,6 +38,8 @@ const uploadArticle = async (req, res) => {
 
 				const filePath = file.path
 				const result = await mammoth.convertToHtml({ path: filePath })
+				console.log("html: ", result)
+				console.log("html2: ", result.value)
 				const html = result.value // The generated HTML
 
 				return {
@@ -95,6 +97,7 @@ const uploadArticle = async (req, res) => {
 		const history = await History.create({
 			action: "create",
 			userId: student._id,
+			content: "Student has uploaded an article."
 		})
 
 		//TODO: Delete the files from the server
