@@ -23,8 +23,8 @@ import {
 } from "../slices/ArticleSlice";
 import { setSubmission } from "../slices/SubmissionSlice.js";
 import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
-import { toast } from "react-toastify";
 import { URL } from "../../utils/constant.js";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const useArticle = () => {
@@ -58,8 +58,6 @@ export const useArticle = () => {
       if (status !== 200) {
         throw new Error("Error fetching articles");
       }
-
-      console.log(data);
 
       dispatch(setAllArticles(data));
     } catch (error) {
@@ -140,20 +138,20 @@ export const useArticle = () => {
   };
 
   const getArticleById = async (id: string) => {
+    dispatch(setLoadingArticle(true));
     try {
-      dispatch(setLoadingArticle(true));
-
       const { data, status } = await axios.get(GET_API(id).GET_ARTICLE_BY_ID);
+
       if (status !== 200) {
         throw new Error("Error fetching article");
       }
-      console.log(data);
 
       dispatch(setArticle(data?.article));
     } catch (error) {
       console.error(error);
+    } finally {
+      dispatch(setLoadingArticle(false));
     }
-    dispatch(setLoadingArticle(false));
   };
 
   const uploadArticle = async (formData: FormData) => {
@@ -171,8 +169,11 @@ export const useArticle = () => {
       );
 
       if (status !== 200 && status !== 201) {
+        toast.error("Error upload article");
         throw new Error("Error upload article");
       }
+      toast.success("New article is created");
+
       dispatch(addNewArticle({ article: data?.article, user }));
     } catch (error) {
       console.log(error);
@@ -248,10 +249,12 @@ export const useArticle = () => {
       );
 
       if (status !== 200 && status !== 201) {
+        toast.error("Error create article");
         throw new Error("Error create article");
       }
 
       dispatch(addNewArticle({ article: data?.article, user }));
+      toast.success("Blank document created");
       window.open(`${URL}/documents/${data?.article._id}`, "_blank");
     } catch (error) {
       console.log(error);
@@ -281,10 +284,10 @@ export const useArticle = () => {
       console.log(data);
 
       dispatch(setLoadingArticle(false));
-      toast.success("Article updated successfully");
+      // toast.success("Article updated successfully");
     } catch (error) {
       console.error(error);
-      toast.error("Error updating article");
+      // toast.error("Error updating article");
     } finally {
       dispatch(setLoadingArticle(false));
     }

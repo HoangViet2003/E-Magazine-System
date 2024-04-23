@@ -45,7 +45,7 @@ const MainHeader: React.FC<MainHeaderProps> = ({
         <div className="relative inline-block">
           {params.submissionId && role === "student" && (
             <div className="flex flex-row-reverse items-center gap-2">
-              {isEditable && (
+              {isEditable && submission.unsubmitted && (
                 <label className="label cursor-pointer gap-5">
                   {!isEditableOn && (
                     <span className="label-text text-base">Edit</span>

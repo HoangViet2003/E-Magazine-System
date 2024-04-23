@@ -18,7 +18,7 @@ const Header = () => {
   const { user } = useAuth();
   const { disconnectSocket } = useSocket();
   const {handleReadNotification} = useNotifications()
-  const ENDPOINT = "https://e-magazine.onrender.com"
+  const ENDPOINT = "https://e-magazine-system-g8xo.onrender.com"
 
   useEffect(() => {
     const socket = io(ENDPOINT);

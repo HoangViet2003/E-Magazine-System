@@ -48,6 +48,7 @@ export default function TextEditor() {
   useEffect(() => {
     getArticleById(id);
   }, []);
+  // console.log(article);
 
   //   const s = io("http://localhost:3001");
   //   setSocket(s);
@@ -146,7 +147,7 @@ export default function TextEditor() {
     [article.content],
   );
 
-  const handleUpdateDocument = () => {
+  const handleUpdateDocument = useCallback(() => {
     if (!quill || !quill.root) {
       toast.error("Quill editor not initialized");
       return;
@@ -157,9 +158,31 @@ export default function TextEditor() {
     formData.append("content", updatedContent);
     formData.append("type", String(article.type));
     formData.append("title", String(article.title));
-
     updateArticle(article._id, formData);
-  };
+  }, [quill, article, updateArticle]);
+
+  useEffect(() => {
+    if (!quill || !quill.root) {
+      return;
+    }
+
+    let timeoutId: number;
+
+    const handleTextChange = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        handleUpdateDocument();
+      }, 2000);
+    };
+
+    quill.on("text-change", handleTextChange);
+
+    return () => {
+      quill.off("text-change", handleTextChange);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [handleUpdateDocument, quill]);
 
   return (
     <div>
@@ -180,7 +203,10 @@ export default function TextEditor() {
         title={article?.title || ""}
         handleUpdateDocument={handleUpdateDocument}
       />
-      <div className="editor-container bg-[#f4f6fc]" ref={wrapperRef}></div>
+      <div
+        className="editor-container flex-nowrap bg-[#f4f6fc]"
+        ref={wrapperRef}
+      ></div>
     </div>
   );
 }

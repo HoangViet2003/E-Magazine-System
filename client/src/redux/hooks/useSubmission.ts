@@ -21,6 +21,8 @@ import {
   addNewSubmissionArticle,
   removeSubmissionArticle,
 } from "../slices/ArticleSlice.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const useSubmission = () => {
   const dispatch = useDispatch();
@@ -133,10 +135,10 @@ export const useSubmission = () => {
       const { data, status } = await axios.post(POST_API("").CREATE_SUBMISSION);
 
       if (status !== 200 && status !== 201) {
-        throw new Error("Error creating submissions");
+        toast.error("Error creating submission");
+        throw new Error("Error creating submission");
       }
-
-      console.log(data);
+      toast.success("Submission is created");
 
       dispatch(setSubmission(data));
       navigate(`${data?.newSubmission._id}`);
@@ -206,58 +208,11 @@ export const useSubmission = () => {
       articles?.map((article) => {
         dispatch(addNewSubmissionArticle(article));
       });
+
       dispatch(setSubmission(data?.updatedSubmission));
     } catch (error) {
       console.log(error);
     } finally {
-      dispatch(setLoadingSubmission(false));
-    }
-  };
-
-  const createSubmissionForStudentThenAddSelectedArticles = async (
-    contributionId: string,
-    articles: Article[],
-  ) => {
-    dispatch(setLoadingSubmission(true));
-
-    const articlesId: string[] = articles.map((article) => article._id);
-
-    try {
-      if (!articlesId || articlesId.length === 0)
-        throw new Error("Articles Id is required.");
-
-      const { data: createData, status: createSubmissionStatus } =
-        await axios.post(POST_API("").CREATE_SUBMISSION);
-
-      if (createSubmissionStatus !== 200 && createSubmissionStatus !== 201) {
-        throw new Error("Error creating submissions");
-      }
-
-      dispatch(setSubmission(createData));
-
-      const { status: addArticleStatus } = await axios.put(
-        PUT_API(createData?.newSubmission._id).ADD_ARTICLES_TO_SUBMISSION,
-        {
-          newArticleIds: articlesId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      if (addArticleStatus !== 200) {
-        throw new Error("Error adding articles to submission");
-      }
-
-      navigate(`${createData?.newSubmission._id}`);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      searchParams.set("contributionId", contributionId);
-      setSearchParams(searchParams);
-
       dispatch(setLoadingSubmission(false));
     }
   };
@@ -299,9 +254,11 @@ export const useSubmission = () => {
       );
 
       if (status !== 200) {
+        toast.error("Error deleting submission");
         throw new Error("Error deleting submission");
       }
 
+      toast.success("Submission is deleted");
       dispatch(resetSubmission());
       navigate("/");
     } catch (error) {
@@ -362,7 +319,6 @@ export const useSubmission = () => {
       const { data, status } = await axios.patch(
         PATCH_API(submissionId).TOGGLE_PUBLICATION,
       );
-      console.log(data);
 
       if (status !== 200)
         throw new Error("Error toggle submission for publication");
@@ -404,7 +360,6 @@ export const useSubmission = () => {
     createSubmissionForStudent,
     getSubmissionByContributionStudent,
     addSelectedArticlesToSubmission,
-    createSubmissionForStudentThenAddSelectedArticles,
     toggleForSubmit,
     deleteSubmission,
     removeArticlesFromSubmission,

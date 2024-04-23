@@ -26,9 +26,13 @@ const ImageGridGallery: React.FC<{
   const handleClick = (index: number) => {
     if (isDeleteMode) {
       //alert yes or no to delete
-      alert("Are you sure you want to delete this image?");
-      OnRemove(index);
-      handleUpdateImages();
+      const result = window.confirm(
+        "Are you sure you want to delete this image?",
+      );
+      if (result) {
+        OnRemove(index);
+        handleUpdateImages();
+      }
       return;
     }
     console.log("selected image", images[index]);
@@ -42,7 +46,7 @@ const ImageGridGallery: React.FC<{
     <div>
       <Gallery
         images={images}
-        enableImageSelection={true}
+        enableImageSelection={false}
         rowHeight={windowWidth > 768 ? 300 : 200}
         onClick={handleClick}
       />

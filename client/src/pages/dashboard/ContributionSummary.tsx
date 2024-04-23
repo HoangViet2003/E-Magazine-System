@@ -5,60 +5,121 @@ import CommentIcon from "../../assets/icons/summaryItem-icons/comment.svg";
 
 import SummaryItem from "./SummaryItem";
 import { useArticle } from "../../redux/hooks";
+import { useFaculty } from "../../redux/hooks/useFaculty";
+import { useEffect } from "react";
 
 export default function ContributionSummary() {
   const { dashboard } = useArticle();
+  const { faculty, getFacultyById } = useFaculty();
+  const role = localStorage.getItem("role");
 
-  return (
-    <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
-      <h2 className="text-xl font-semibold">Contributions summary</h2>
+  useEffect(() => {
+    if (role === "guest") getFacultyById();
+  }, []);
 
-      <div className="flex flex-wrap gap-5">
-        <SummaryItem
-          icon={SaleIcon}
-          iconBg="#0B5FFF"
-          background="#C5D9FF"
-          data={dashboard?.totalArticles}
-          type="Articles Submitted"
-          changePercentage={8}
-        />
+  if (role === "guest")
+    return (
+      <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
+        <h2 className="text-xl font-semibold">Contributions summary</h2>
 
-        <SummaryItem
-          icon={CheckIcon}
-          iconBg="#00AC4F"
-          background="#DCFCE7"
-          data={dashboard?.totalSelectedSubmissions}
-          type="Submission Selected"
-          changePercentage={-8}
-        />
+        <div className="flex flex-wrap gap-5">
+          {faculty?.selectedReports.includes("articlesSubmitted") && (
+            <SummaryItem
+              icon={SaleIcon}
+              iconBg="#0B5FFF"
+              background="#C5D9FF"
+              data={dashboard?.totalArticles}
+              type="Articles Submitted"
+              changePercentage={8}
+            />
+          )}
 
-        <SummaryItem
-          icon={ContributorsIcon}
-          iconBg="#000000"
-          background="#FCF9DC"
-          data={dashboard?.totalSubmissions}
-          type="Contributors"
-          changePercentage={-8}
-        />
+          {faculty?.selectedReports.includes("submissionSelected") && (
+            <SummaryItem
+              icon={CheckIcon}
+              iconBg="#00AC4F"
+              background="#DCFCE7"
+              data={dashboard?.totalSelectedSubmissions}
+              type="Submission Selected"
+              changePercentage={-8}
+            />
+          )}
 
-        <SummaryItem
-          icon={CommentIcon}
-          iconBg="#A553FF"
-          background="#F3E8FF"
-          data={dashboard?.totalComments}
-          type="Comments"
-          changePercentage={8}
-        />
+          {faculty?.selectedReports.includes("contributionNo") && (
+            <SummaryItem
+              icon={ContributorsIcon}
+              iconBg="#000000"
+              background="#FCF9DC"
+              data={dashboard?.totalSubmissions}
+              type="Contributors"
+              changePercentage={-8}
+            />
+          )}
 
-        {/* <SummaryItem
-          icon={SaleIcon}
-          iconBg="#FA5A7D"
-          background="#DFE9FD"
-          data={1000}
-          type="Total Sales"
-          changePercentage={8}
-        /> */}
+          {faculty?.selectedReports.includes("commentNo") && (
+            <SummaryItem
+              icon={CommentIcon}
+              iconBg="#A553FF"
+              background="#F3E8FF"
+              data={dashboard?.totalComments}
+              type="Comments"
+              changePercentage={8}
+            />
+          )}
+
+          {/* <SummaryItem
+              icon={SaleIcon}
+              iconBg="#FA5A7D"
+              background="#DFE9FD"
+              data={1000}
+              type="Total Sales"
+              changePercentage={8}
+            /> */}
+        </div>
       </div>
-    </div>
-  );
+    );
+  else
+    return (
+      <div className="flex flex-col gap-[30px] border border-borderColor p-5 shadow-md">
+        <h2 className="text-xl font-semibold">Contributions summary</h2>
+
+        <div className="flex flex-wrap gap-5">
+          <SummaryItem
+            icon={SaleIcon}
+            iconBg="#0B5FFF"
+            background="#C5D9FF"
+            data={dashboard?.totalArticles}
+            type="Articles Submitted"
+            changePercentage={8}
+          />
+
+          <SummaryItem
+            icon={CheckIcon}
+            iconBg="#00AC4F"
+            background="#DCFCE7"
+            data={dashboard?.totalSelectedSubmissions}
+            type="Submission Selected"
+            changePercentage={-8}
+          />
+
+          <SummaryItem
+            icon={ContributorsIcon}
+            iconBg="#000000"
+            background="#FCF9DC"
+            data={dashboard?.totalSubmissions}
+            type="Contributors"
+            changePercentage={-8}
+          />
+
+          <SummaryItem
+            icon={CommentIcon}
+            iconBg="#A553FF"
+            background="#F3E8FF"
+            data={dashboard?.totalComments}
+            type="Comments"
+            changePercentage={8}
+          />
+        </div>
+      </div>
+    );
 }

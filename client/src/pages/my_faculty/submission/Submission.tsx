@@ -31,7 +31,7 @@ export default function Submission() {
   const today = new Date();
   const [isEditableOn, setIsEditableOn] = useState(false);
   const { openComment, setOpenComment } = useCommentContext();
-  const [allowComment, setAllowComment] = useState(false);
+  const [allowComment, setAllowComment] = useState(true);
 
   const { contribution, getContributionById } = useContribution();
   const {
@@ -66,7 +66,7 @@ export default function Submission() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (role === "student" && contributionId) {
+      if (role === "student" && contributionId && submissionId) {
         getSubmissionByContributionStudent(contributionId);
       } else if (submissionId) {
         getSubmissionById(submissionId);
@@ -103,8 +103,21 @@ export default function Submission() {
       ? true
       : false;
 
+  function handleToggleSubmit() {
+    if (submission.isSelectedForPublication) {
+      alert("Submission is selected for submission");
+      return;
+    }
+
+    if (submissionArticles.some((article) => article.type === "word"))
+      toggleForSubmit(submissionId);
+    else {
+      alert("Submission require at least 1 document file.");
+    }
+  }
+
   return (
-    <div className="grid grid-rows-[auto_1fr]">
+    <div className="grid grid-rows-[auto_auto_1fr]">
       {!loadingSubmission && (
         <MainHeader
           isEditable={isEditable}
@@ -166,7 +179,7 @@ export default function Submission() {
                   <Dropdowns.List id={`current ${submission._id}`}>
                     <Dropdowns.Button
                       icon={UnsubmitIcon}
-                      onClick={() => toggleForSubmit(submissionId)}
+                      onClick={handleToggleSubmit}
                     >
                       <span className="flex items-center gap-3 px-2 py-1 hover:bg-slate-100">
                         {submission.unsubmitted ? "Submit" : "Unsubmit"}
@@ -200,6 +213,14 @@ export default function Submission() {
             )}
           </div>
         </MainHeader>
+      )}
+
+      {role === "student" && !loadingSubmission && submission._id && (
+        <div
+          className={`mt-4 rounded-md p-4 ${submission.unsubmitted ? "bg-red-100" : "bg-green-100"} `}
+        >
+          {`Status: ${submission.unsubmitted ? "Not submitted" : "Submitted"}`}
+        </div>
       )}
 
       {loadingSubmission ? (

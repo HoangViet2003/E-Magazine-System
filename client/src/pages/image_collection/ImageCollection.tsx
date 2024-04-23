@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image } from "react-grid-gallery";
 import ImageGridGallery from "./ImageGridGallery";
 import { useParams } from "react-router-dom";
 import { useArticle } from "../../redux/hooks/useArticle";
 import Spinner from "../../ui/Spinner";
 import UpdateImages from "../../ui/UpdateImages";
-import { useOutsideClick } from "../../redux/hooks/useOutsideClick";
 import plusIcon from "./../../assets/icons/plusIcon.svg";
-import saveIcon from "./../../assets/icons/saveIcon.svg";
 import trash from "./../../assets/icons/trash.svg";
 
 const SubmissionImage = () => {
@@ -19,13 +17,8 @@ const SubmissionImage = () => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [openImageUpload, setOpenImageUpload] = useState(false);
   const [title, setTitle] = useState("");
-
-  // const {
-  //   // openImageUpload,
-  //   setOpenImageUpload,
-  // } = useSidebarContext();
-
-  // const ref = useOutsideClick(() => setOpenImageUpload(false), false) as React.RefObject<HTMLDivElement>;
+  const role = localStorage.getItem("role");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -33,9 +26,12 @@ const SubmissionImage = () => {
         await getArticleById(id);
       }
     };
-    setTitle(article?.title || "");
     fetchArticle();
-  }, [id]);
+  }, []);
+  // Set title again if page refresh
+  useEffect(() => {
+    setTitle(article?.title || "");
+  }, [article]);
 
   function getImgSize(
     imgSrc: string,
@@ -79,7 +75,7 @@ const SubmissionImage = () => {
   const handleSetImageCollection = (images: any) => {
     // setImageCollection(uploadImages.map((image, index) => ({ src: URL.createObjectURL(image), width: images[index].width, height: images[index].height })));
 
-    //also set previos images
+    //also set previous images
     setImageCollection((prevImages) => [
       ...prevImages,
       ...uploadImages.map((image, index) => ({
@@ -117,13 +113,18 @@ const SubmissionImage = () => {
     updateArticle(id, formData);
   };
 
-  function handleUpdateTitle(e: React.SyntheticEvent) {
-    e.preventDefault();
-    (e.target as HTMLElement).blur();
-    const form = new FormData();
-    form.append("title", title);
-    updateArticle(id ?? "", form);
-  }
+  useEffect(() => {
+    function handleUpdateTitle() {
+      const form = new FormData();
+      form.append("title", title);
+      updateArticle(id ?? "", form);
+    }
+    const timeoutId = setTimeout(() => {
+      if (title !== article?.title) handleUpdateTitle();
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [title]);
 
   useEffect(() => {
     if (article) {
@@ -145,64 +146,73 @@ const SubmissionImage = () => {
     }
   }, [article]);
 
-  return (
-    <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
-      <div className="mr-3 flex flex-row border-b-2 pb-3 max-md:flex-col max-md:gap-3 ">
-        <div>
-          <input
-            // ref={inputRef}
-            className="w-fit rounded border border-transparent bg-transparent px-1 text-lg font-medium text-[#6B6C7E] outline-offset-2 outline-[#004AD7] hover:border-[#6B6C7E]"
-            value={title || ""}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleUpdateTitle(e);
-              }
-            }}
-          />
-        </div>
-        <div className="ml-auto flex flex-row gap-7 max-md:ml-0">
-          <div className="flex flex-row gap-2">
-            <img src={plusIcon} alt="add" />
-            <button onClick={() => setOpenImageUpload(true)}>Add</button>
-            {openImageUpload && (
-              <UpdateImages
-                type="image"
-                setOpenImageUpload={setOpenImageUpload}
-                handleAddImage={handleAddImage}
-                setImageCollection={setImageCollection}
-                setUploadImages={setUploadImages}
-                uploadImages={uploadImages}
-                handleSetImageCollection={handleSetImageCollection}
-                handleUpdateImages={handleUpdateImages}
-              />
-            )}
+  if (isLoading) return <Spinner />;
+  else
+    return (
+      <div className="flex flex-col gap-4" style={{ color: "#272833" }}>
+        <div className="mr-3 flex flex-row border-b-2 pb-3 max-md:flex-col max-md:gap-3 ">
+          <div>
+            <input
+              className="w-fit rounded border border-transparent bg-transparent px-1 text-lg font-medium text-[#6B6C7E] outline-offset-2 outline-[#004AD7] hover:border-[#6B6C7E] disabled:border-none disabled:bg-slate-200"
+              value={title || ""}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (inputRef.current) {
+                    inputRef.current.blur();
+                  }
+                }
+              }}
+              disabled={role !== "student"}
+              ref={inputRef}
+            />
           </div>
+          <div className="ml-auto flex flex-row gap-7 max-md:ml-0">
+            <div className="flex flex-row gap-2">
+              <button
+                onClick={() => setOpenImageUpload(true)}
+                className="flex flex-row gap-2"
+              >
+                <img src={plusIcon} alt="add" />
+                Add
+              </button>
+              {openImageUpload && (
+                <UpdateImages
+                  type="image"
+                  setOpenImageUpload={setOpenImageUpload}
+                  handleAddImage={handleAddImage}
+                  setImageCollection={setImageCollection}
+                  setUploadImages={setUploadImages}
+                  uploadImages={uploadImages}
+                  handleSetImageCollection={handleSetImageCollection}
+                  handleUpdateImages={handleUpdateImages}
+                />
+              )}
+            </div>
 
-          <div className="flex flex-row gap-2">
-            <img src={trash} alt="add" />
-            <button
-              className="text-[#CA3636]"
-              onClick={() => setIsDeleteMode(!isDeleteMode)}
-            >
-              {isDeleteMode ? "Cancel" : "Delete"}
-            </button>
+            <div className="flex flex-row gap-2">
+              <button
+                className="flex flex-row gap-2 text-[#CA3636]"
+                onClick={() => setIsDeleteMode(!isDeleteMode)}
+              >
+                <img src={trash} alt="add" />
+                {isDeleteMode ? "Cancel" : "Delete"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {isLoading ? (
-        <Spinner />
-      ) : (
         <ImageGridGallery
           images={imageCollection}
           handleRemoveImage={handleRemoveImage}
           isDeleteMode={isDeleteMode}
           handleUpdateImages={handleUpdateImages}
         />
-      )}
-    </div>
-  );
+      </div>
+    );
 };
 
 export default SubmissionImage;

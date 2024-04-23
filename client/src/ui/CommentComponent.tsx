@@ -10,6 +10,7 @@ interface CommentComponentProps {
   openReply: string;
   setOpenReply: (id: string) => void;
   setOpenCommentInput: (input: boolean) => void;
+  allowComment: boolean;
 }
 
 export default function CommentComponent({

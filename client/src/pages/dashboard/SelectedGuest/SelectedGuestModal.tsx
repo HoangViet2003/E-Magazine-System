@@ -42,8 +42,8 @@ export default function SelectedGuestModal() {
           <SelectedGuestToggle
             selectedReports={selectedReports}
             setSelectedReports={setSelectedReports}
-            value="articlesSelected"
-            label="Article Selected"
+            value="submissionSelected"
+            label="Submission Selected"
           />
 
           <SelectedGuestToggle
@@ -60,12 +60,12 @@ export default function SelectedGuestModal() {
             label="Number of commented articles"
           />
 
-          <SelectedGuestToggle
+          {/* <SelectedGuestToggle
             selectedReports={selectedReports}
             setSelectedReports={setSelectedReports}
             value="uncommentNo"
             label="Number of uncommented articles"
-          />
+          /> */}
         </div>
 
         <div className="mt-3 flex justify-end gap-4">
