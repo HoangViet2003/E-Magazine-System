@@ -51,7 +51,7 @@ export default function SidebarAdmin() {
         },
         {
             title: "Contribution",
-            link: "/contribution/create",
+            link: "/contribution",
             icon: (
                 <CheckCircleIcon
                     fill={currentPath === "/contribution/create" ? "#004AD7" : "#6B6C7E"}

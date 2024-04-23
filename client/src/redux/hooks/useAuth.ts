@@ -7,6 +7,9 @@ import {
   setUser,
   setUsers,
   setIsLoadingTable,
+  setTotalPage,
+  setTotalLength,
+  setCurrentPage
 } from "../slices/UserSlice";
 import {
   GET_API,
@@ -20,7 +23,7 @@ import { toast } from "react-toastify";
 export function useAuth() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuth, isLoading, user, users, isLoadingTable } = useSelector(
+  const { isAuth, isLoading, user, users, isLoadingTable,totalPage,totalLength } = useSelector(
     (state: RootState) => state.user,
   );
 
@@ -86,9 +89,11 @@ export function useAuth() {
       if (res.status !== 200) {
         throw new Error(res.statusText);
       }
-      dispatch(setUsers(res.data));
+      dispatch(setUsers(res.data.users));
+         dispatch(setTotalPage(res.data.totalPage));
+         dispatch(setTotalLength(res.data.totalLength));
       dispatch(setIsLoadingTable(false));
-      console.log(res);
+   
     } catch (error) {
       console.log(error);
       dispatch(setIsLoadingTable(false));
@@ -132,6 +137,58 @@ export function useAuth() {
     }
   };
 
+  const handleForgotPassword = async (email:string) => {
+    try{
+      const res = await axios.post(POST_API().FORGOT_PASSWORD, {email})
+      console.log(res)
+      if(res.status === 200){
+        toast.success("Email confirmation was sent to you successfully")
+      }
+
+    }catch(error: any){
+        console.log(error)
+      toast.error(error.response.data.error)
+    }
+  }
+
+  const handleResetPassword = async (newPassword: string, token: string) => {
+      try{
+        const res = await axios.post(POST_API("",token).RESET_PASSWORD, {newPassword})
+
+        if(res.status === 200){
+          toast.success("Password reset successfully")
+          navigate("/login")
+        }
+      }catch(error:any){
+        console.log(error)
+        toast.error(error.response.data.error)
+      }
+  }
+
+  const handleSearchUser = async (keyword: string) => {
+    dispatch(setIsLoadingTable(true));
+    try {
+      const res = await axios.get(`${GET_API("", 1).SEARCH_USERS}&keyword=${keyword}`);
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
+      dispatch(setUsers(res.data.users));
+      dispatch(setTotalPage(res.data.totalPage));
+      dispatch(setTotalLength(res.data.totalLength));
+      dispatch(setIsLoadingTable(false));
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      dispatch(setIsLoadingTable(false));
+    }
+  }
+
+   const handleCurrentPage = (page: number) => {
+     dispatch(setCurrentPage(page));
+   };
+
+
+
   return {
     user,
     isLoading,
@@ -144,5 +201,12 @@ export function useAuth() {
     isLoadingTable,
     updateUser,
     deleteUser,
+    handleForgotPassword,
+    handleResetPassword,
+    totalPage,
+    totalLength,
+    handleCurrentPage,
+    handleSearchUser
+    
   };
 }

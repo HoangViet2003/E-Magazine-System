@@ -12,24 +12,26 @@ const CreateContribution = () => {
     const [closureDate, setClosureDate] = useState<Dayjs | null>(null);
     const [finalClosureDate, setFinalClosureDate] = useState<Dayjs | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const {createContributionForAllFaculty} = useContribution()
+    const {createContributionForAllFaculty,updateContribution} = useContribution()
 
     // console.log(finalClosureDate?.getFullYear())
 
-    // const navigate = useNavigate();
-    // const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    // const { state } = location;
+    const { state } = location;
 
-    // const faculty = state && state.row;
-    // console.log(faculty)
+    const contribution = state && state.row;
+    console.log(contribution)
 
-    // useEffect(() => {
-    //     if (faculty) {
-    //         setName(faculty.name || '')
-    //     }
+    useEffect(() => {
+        if (contribution) {
+            setAcademicYear(contribution.academicYear.toString());
+            setClosureDate(dayjs(contribution.closureDate));
+            setFinalClosureDate(dayjs(contribution.finalClosureDate));
+        }
 
-    // }, [faculty])
+    }, [])
 
     const handleSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -87,6 +89,10 @@ const CreateContribution = () => {
             closureDate: closureDate.toISOString(),
             finalClosureDate: finalClosureDate.toISOString(),
         };
+        if (contribution) {
+            updateContribution(data);
+            return;
+        }
         createContributionForAllFaculty(data);
     }
 
@@ -106,7 +112,7 @@ const CreateContribution = () => {
                                 Academic Year
                             </label>
                             <input
-                                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={academicYear} type="text" placeholder="Jane" onChange={(e) => setAcademicYear(e.target.value)} />
+                                className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" value={academicYear} type="text" placeholder="Academic Year" onChange={(e) => setAcademicYear(e.target.value)} />
                             {/* <p className="text-red-500 text-xs italic">Please fill out this field.</p> */}
                         </div>
 
@@ -143,7 +149,7 @@ const CreateContribution = () => {
 
 
 
-                    <button className="btn btn-xs sm:btn-md md:btn-md lg:btn-md mt-3" >Create</button>
+                    <button className="btn btn-xs sm:btn-md md:btn-md lg:btn-md mt-3" >{contribution ? 'Update' :'Create'}</button>
 
                 </form>
 

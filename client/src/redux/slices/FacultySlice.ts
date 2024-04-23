@@ -43,15 +43,34 @@ const slice = createSlice({
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+
+    setTotalPage(state, action: PayloadAction<number>) {
+      state.totalPages = action.payload;
+    },
+    setTotalLength(state, action: PayloadAction<number>) {
+      state.totalLength = action.payload;
+    },
+    setCurrentPage(state, action: PayloadAction<number>) {
+      state.currentPage = action.payload;
+    },
     setFaculty: (state, action: PayloadAction<Faculty>) => {
       state.faculty = action.payload;
-    },
+    }
   },
 });
 
 const { reducer, actions } = slice;
 
-export const { setFaculties, setIsLoading, setFaculty } = actions;
+
+export const {
+  setFaculties,
+  setIsLoading,
+  setTotalPage,
+  setTotalLength,
+  setCurrentPage,
+  setFaculty
+} = actions;
+
 
 export type { FacultyState, Faculty };
 

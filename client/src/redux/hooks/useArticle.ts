@@ -12,7 +12,6 @@ import {
   setIsFilterMode,
   addNewSubmissionArticle,
   Article,
-  setSelectedArticles,
   setSuggestionArticles,
   setSearchMode,
   setUnSubmissionArticles,
@@ -118,14 +117,15 @@ export const useArticle = () => {
   ) => {
     dispatch(setLoadingArticle(true));
     console.log(query);
+    console.log(type);
     try {
       if (type) {
         dispatch(setIsFilterMode(true));
       }
       const { data, status } = await axios.get(
-        `${GET_API("", page).GET_FILTERED_ARTICLES}?keyword=${query}`,
+        `${GET_API("", page).GET_FILTERED_ARTICLES}&keyword=${query}&type=${type? type : ""}`,
       );
-
+      console.log("search",data );
       if (status !== 200) {
         throw new Error("Error fetching Articles");
       }
@@ -307,7 +307,6 @@ export const useArticle = () => {
       if (status !== 200) {
         throw new Error("Error fetching suggestions");
       }
-      console.log(data.articles, "suggestion");
       dispatch(setSuggestionArticles(data.articles));
     } catch (error) {
       console.error(error);

@@ -4,20 +4,27 @@ import { useNavigate } from "react-router-dom";
 import DataTables from "./DataTables";
 
 const FacultyTable = () => {
-  const { faculties, getFaculties, deleteFaculty } = useFaculty();
-  const navigate = useNavigate();
-  useEffect(() => {
-    getFaculties();
-  }, []);
 
-  const handleDeleteFaculty = (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this faculty?",
-    );
-    if (confirmed) {
-      deleteFaculty(id);
+    const { faculties, getFaculties,deleteFaculty,totalPages,totalLength,handleCurrentPage,currentPage ,isLoading,handleSearchFaculty} = useFaculty()
+    const navigate = useNavigate();
+    useEffect(() => {
+        getFaculties(currentPage)
+    },[])
+
+    const handleDeleteFaculty = (id: string) => {
+        const confirmed = window.confirm('Are you sure you want to delete this faculty?');
+        if (confirmed) {
+            deleteFaculty(id);
+        }
     }
-  };
+
+
+    const handlePageChange = () => {
+        if (currentPage + 1 > totalPages) return;
+        handleCurrentPage(currentPage + 1);
+
+        getFaculties(currentPage);
+    };
 
   return (
     <div>
@@ -28,17 +35,16 @@ const FacultyTable = () => {
         Create New Faculty
       </button>
 
-      <DataTables
-        tableName="faculty"
-        data={faculties}
-        totalLength={faculties?.length}
-        loading={false}
-        onPageChange={() => {}}
-        handleSearch={() => {}}
-        handleDeleteClick={handleDeleteFaculty}
-      />
-    </div>
-  );
-};
-
-export default FacultyTable;
+            <DataTables
+                tableName='faculty'
+                data={faculties}
+                totalLength={totalLength}
+                loading={isLoading}
+                onPageChange={handlePageChange}
+                handleSearch={handleSearchFaculty}
+                handleDeleteClick={handleDeleteFaculty}
+            />
+         
+      </div>
+  )
+}

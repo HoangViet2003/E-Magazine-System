@@ -23,6 +23,8 @@ import FacultyTable from "../pages/admin/FacultyTable";
 import CreateFaculty from "../pages/admin/CreateFaculty";
 import CreateContribution from "../pages/admin/CreateContribution";
 import CreateAccount from "../pages/admin/CreateAccount";
+import ForgetPassword from "../pages/login/ForgetPassword";
+import ContributionTable from "../pages/admin/ContributionTable";
 
 const router = createBrowserRouter([
   {
@@ -92,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "/contribution/create",
         element: <CreateContribution />,
+      },
+      {
+        path: "/contribution",
+        element: <ContributionTable />,
       },
       {
         path: "/myFaculty",
@@ -177,6 +183,10 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/reset-password/:token",
+    element: <ForgetPassword />,
+  }
 ]);
 
 export default function Router() {
