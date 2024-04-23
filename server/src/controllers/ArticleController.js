@@ -128,7 +128,7 @@ const updateArticle = async (req, res) => {
 			article.title = title
 		}
 
-		if (article.type === "word" && files.length > 0) {
+		if (article.type === "word" && content) {
 			//update content in article to new content
 			article.content[0] = content
 		}
