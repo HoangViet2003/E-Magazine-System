@@ -3,7 +3,9 @@ import { createContext, useState, useContext, ReactNode } from "react";
 const CommentContext = createContext({
   openComment: false,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setOpenComment: (value: boolean) => {},
+  setOpenComment: (value: boolean) => {
+    console.log(value);
+  },
 });
 
 export const useCommentContext = () => useContext(CommentContext);

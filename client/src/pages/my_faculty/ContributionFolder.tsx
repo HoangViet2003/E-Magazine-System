@@ -12,7 +12,6 @@ export default function ContributionFolder() {
   const navigate = useNavigate();
   const {
     contributions,
-    isLoading: loadingContribution,
     fetchAllContribution,
     fetchAllContributionByManager,
   } = useContribution();

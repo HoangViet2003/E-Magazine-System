@@ -3,14 +3,17 @@ import useAddNoScrollClass from "../../redux/hooks/useAddNoScrollClass";
 
 const SidebarContext = createContext({
   openSidebar: false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setOpenSidebar: (value: boolean) => {},
+  setOpenSidebar: (value: boolean) => {
+    console.log(value);
+  },
   openImageUpload: false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setOpenImageUpload: (value: boolean) => {},
+  setOpenImageUpload: (value: boolean) => {
+    console.log(value);
+  },
   openDocUpload: false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setOpenDocUpload: (value: boolean) => {},
+  setOpenDocUpload: (value: boolean) => {
+    console.log(value);
+  },
 });
 
 export const useSidebarContext = () => useContext(SidebarContext);
