@@ -38,7 +38,7 @@ export default function DashboardOperation() {
   useEffect(() => {
     if (role === "marketing manager" || role === "marketing coordinator")
       getFaculties();
-    fetchAllContributionByManager();
+    fetchAllContributionByManager(1);
   }, []);
 
   return (

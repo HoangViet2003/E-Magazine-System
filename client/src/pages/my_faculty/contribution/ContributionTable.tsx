@@ -3,7 +3,7 @@ import ContributionOperation from "./ContributionOperation";
 import { useSubmission } from "../../../redux/hooks/useSubmission";
 import ContributionRow from "./ContributionRow";
 import Spinner from "../../../ui/Spinner";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function ContributionTable() {

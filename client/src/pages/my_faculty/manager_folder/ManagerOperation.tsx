@@ -1,9 +1,9 @@
-import { useSearchParams } from "react-router-dom";
-import OrderArrowIcon from "../../../assets/icons/order-arrow-up.svg";
+// import { useSearchParams } from "react-router-dom";
+// import OrderArrowIcon from "../../../assets/icons/order-arrow-up.svg";
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
 
 export default function ManagerOperation() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <>

@@ -75,7 +75,7 @@ const CreateAccount = () => {
     <div className="">
       <h1 className="mb-6 font-bold">Create Account</h1>
       <div className="flex items-center justify-center">
-        <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+        <form className="w-full max-w-lg" onSubmit={() => handleSubmit}>
           <div className="-mx-3 mb-6 flex flex-wrap">
             <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
               <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700">

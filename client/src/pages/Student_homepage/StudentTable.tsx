@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useArticle } from "../../redux/hooks/useArticle";
+import Spinner from "../../ui/Spinner";
 
 export default function StudentTable() {
   const [searchParams] = useSearchParams();

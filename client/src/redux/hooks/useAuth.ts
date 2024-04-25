@@ -13,7 +13,6 @@ import {
 } from "../slices/UserSlice";
 import {
   GET_API,
-  PUT_API,
   DELETE_API,
   POST_API,
   PATCH_API,

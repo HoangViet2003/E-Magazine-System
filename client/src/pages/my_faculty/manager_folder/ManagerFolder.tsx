@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useContribution, useSubmission } from "../../../redux/hooks";
+import { useContribution } from "../../../redux/hooks";
 import MainHeader from "../../../ui/MainHeader";
 import BreadcrumbPointer from "../../../assets/icons/breadcrumb-pointer.svg";
 import Dropdowns from "../../../ui/Dropdowns";

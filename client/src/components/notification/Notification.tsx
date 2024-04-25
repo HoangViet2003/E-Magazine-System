@@ -80,7 +80,6 @@ const Notification = ({
     getAllNotifications,
     notifications,
     totalPage,
-    totalNotification,
     currentPage,
     handleSetCurrentPage,
   } = useNotifications();

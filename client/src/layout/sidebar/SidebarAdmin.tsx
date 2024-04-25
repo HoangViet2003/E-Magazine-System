@@ -7,9 +7,6 @@ import MainNav from "./MainNav";
 import ChartpinIcon from "../../assets/icons/sidebar-icons/chartPin";
 import DriveIcon from "../../assets/icons/sidebar-icons/googleDrive";
 import CheckCircleIcon from "../../assets/icons/sidebar-icons/checkCircle";
-import TimeIcon from "../../assets/icons/sidebar-icons/time";
-import StarIcon from "../../assets/icons/sidebar-icons/star";
-import TrashIcon from "../../assets/icons/sidebar-icons/trash";
 import Logo from "../../assets/Logo.png";
 
 export default function SidebarAdmin() {

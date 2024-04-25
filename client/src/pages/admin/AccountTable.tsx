@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import profile from '../../assets/profile1.png';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../redux/hooks';
 // import Spinner from '../../ui/Spinner';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +28,7 @@ const AccountTable = () => {
     const handlePageChange = () => {
         if (currentPage + 1 > totalPage) return;
         handleCurrentPage(currentPage + 1);
-
+        setCurrentPage(currentPage + 1);
         getAllUser(currentPage);
     };
 

@@ -7,10 +7,7 @@ import SidebarStudent from "../layout/sidebar/SidebarStudent";
 
 import ChartpinIcon from "../assets/icons/sidebar-icons/chartPin";
 import DriveIcon from "../assets/icons/sidebar-icons/googleDrive";
-import CheckCircleIcon from "../assets/icons/sidebar-icons/checkCircle";
-import TimeIcon from "../assets/icons/sidebar-icons/time";
-import StarIcon from "../assets/icons/sidebar-icons/star";
-import TrashIcon from "../assets/icons/sidebar-icons/trash";
+
 import { CommentProvider } from "./CommentContext";
 import SidebarAdmin from "../layout/sidebar/SidebarAdmin";
 
@@ -76,39 +73,39 @@ export default function AppLayOut() {
     },
   ];
 
-  const adminNavLinks = [
-    {
-      title: "Dashboard",
-      link: "/dashboard",
-      icon: (
-        <ChartpinIcon
-          fill={
-            currentPath.includes("/dashboard") || currentPath === "/"
-              ? "#004AD7"
-              : "#6B6C7E"
-          }
-        />
-      ),
-    },
-    {
-      title: "Faculty",
-      link: "/faculty",
-      icon: (
-        <DriveIcon
-          fill={currentPath === "/myFaculty" ? "#004AD7" : "#6B6C7E"}
-        />
-      ),
-    },
-    {
-      title: "Account",
-      link: "/account",
-      icon: (
-        <DriveIcon
-          fill={currentPath === "/myFaculty" ? "#004AD7" : "#6B6C7E"}
-        />
-      ),
-    },
-  ];
+  // const adminNavLinks = [
+  //   {
+  //     title: "Dashboard",
+  //     link: "/dashboard",
+  //     icon: (
+  //       <ChartpinIcon
+  //         fill={
+  //           currentPath.includes("/dashboard") || currentPath === "/"
+  //             ? "#004AD7"
+  //             : "#6B6C7E"
+  //         }
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Faculty",
+  //     link: "/faculty",
+  //     icon: (
+  //       <DriveIcon
+  //         fill={currentPath === "/myFaculty" ? "#004AD7" : "#6B6C7E"}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Account",
+  //     link: "/account",
+  //     icon: (
+  //       <DriveIcon
+  //         fill={currentPath === "/myFaculty" ? "#004AD7" : "#6B6C7E"}
+  //       />
+  //     ),
+  //   },
+  // ];
 
   const guestNavLinks = [
     {

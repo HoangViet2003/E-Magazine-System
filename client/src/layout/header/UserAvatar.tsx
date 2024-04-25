@@ -20,7 +20,6 @@ export default function UserAvatar() {
     handleUpdateUnSeenNotification,
     getAllNotifications,
     currentPage,
-    notifications,
   } = useNotifications();
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { setToTalPage } from "./NotiSlice";
 
 export interface User {
   _id: string;

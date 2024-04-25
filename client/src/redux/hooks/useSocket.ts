@@ -21,6 +21,7 @@ export default function useSocket() {
     if (!socket) return true;
     socket.on(`notification`, (msg: any) => {
       console.log("Websocket event sendNotification received!", msg);
+      console.log(id)
     });
   };
 

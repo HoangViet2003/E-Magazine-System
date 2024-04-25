@@ -4,15 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setAllComments,
   setLoadingComment,
-  setComment,
   addNewComment,
   getMoreComment,
   Comment,
   addNewReply,
   replaceTempId,
 } from "../slices/CommentSlice";
-import { GET_API, PUT_API, DELETE_API, POST_API } from "../../constants/api.js";
-import { toast } from "react-toastify";
+import { GET_API, POST_API } from "../../constants/api.js";
 import "react-toastify/dist/ReactToastify.css";
 import { v4 as uuidv4 } from "uuid";
 
@@ -144,7 +142,7 @@ export const useComment = () => {
           },
         },
       );
-
+      console.log(data)
       if (status !== 201) throw new Error("Error sending comments");
     } catch (error) {
       console.log(error);

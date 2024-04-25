@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContribution } from "../../../redux/hooks";
 import Spinner from "../../../ui/Spinner";
 import Table from "../../../ui/Table";

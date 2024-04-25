@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useArticle } from "../redux/hooks";
 
-import { useSidebarContext } from "../layout/sidebar/SidebarContext";
 import DropComponent from "./DropComponent";
 import SpinnerMini from "./SpinnerMini";
 

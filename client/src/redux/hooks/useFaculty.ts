@@ -12,7 +12,6 @@ import {
 import axios from "../../utils/axios.js";
 import {
   GET_API,
-  PUT_API,
   DELETE_API,
   POST_API,
   PATCH_API,

@@ -10,7 +10,6 @@ export const useCommentContext = () => useContext(CommentContext);
 
 export const CommentProvider = ({ children }: { children: ReactNode }) => {
   const [openComment, setOpenComment] = useState(false);
-
   return (
     <CommentContext.Provider
       value={{

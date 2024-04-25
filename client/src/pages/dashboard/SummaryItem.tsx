@@ -13,7 +13,6 @@ const SummaryItem: React.FC<SummaryItemProps> = ({
   background,
   data,
   type,
-  changePercentage,
 }) => {
   return (
     <div

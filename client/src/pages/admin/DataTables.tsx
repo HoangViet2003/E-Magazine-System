@@ -29,7 +29,7 @@ const DataTables = (props: {
   } = props;
 
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+  // const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const navigate = useNavigate();
 

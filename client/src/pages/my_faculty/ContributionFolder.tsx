@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useContribution } from "../../redux/hooks/useContribution";
 
 import FolderIcon from "../../assets/icons/folder.svg";
-import Spinner from "../../ui/Spinner";
 import { useSubmission } from "../../redux/hooks/useSubmission";
 
 const ellipsis = "overflow-hidden text-ellipsis whitespace-nowrap";
@@ -35,7 +34,7 @@ export default function ContributionFolder() {
 
   useEffect(() => {
     if (role === "marketing manager") {
-      fetchAllContributionByManager();
+      fetchAllContributionByManager(1);
     } else {
       fetchAllContribution();
     }

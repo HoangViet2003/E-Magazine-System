@@ -6,9 +6,9 @@ import { useArticle } from "../../../redux/hooks/useArticle";
 import Spinner from "../../../ui/Spinner";
 import Pagination from "../../../ui/Pagination";
 import MyFacultyOperation from "../MyFacultyOperation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SubmissionRow from "./SubmissionRow";
-import { Article } from "../../../redux/slices/ArticleSlice";
+// import { Article } from "../../../redux/slices/ArticleSlice";
 
 interface SubmissionTableProps {
   isEditableOn: boolean;

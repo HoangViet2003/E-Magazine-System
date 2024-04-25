@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import io, { Socket } from "socket.io-client";
+// import io, { Socket } from "socket.io-client";
 import "./textEditor.css";
 import TextEditorHeader from "./TextEditorHeader";
 import { useArticle } from "../../redux/hooks";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import Spinner from "../../ui/Spinner";
-import Sekeleton from "../../components/sekeleton/Sekeleton";
-import ReactDOM from "react-dom";
+// import Spinner from "../../ui/Spinner";
+// import Sekeleton from "../../components/sekeleton/Sekeleton";
+// import ReactDOM from "react-dom";
 
-const SAVE_INTERVAL_MS = 2000;
+// const SAVE_INTERVAL_MS = 2000;
 
 const TOOLBAR_OPTION = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -37,8 +37,8 @@ const TOOLBAR_OPTION = [
 ];
 
 export default function TextEditor() {
-  const { id: documentId } = useParams();
-  const [socket, setSocket] = useState<Socket | undefined>();
+  // const { id: documentId } = useParams();
+  // const [socket, setSocket] = useState<Socket | undefined>();
   const [quill, setQuill] = useState<Quill | null>(null);
   const { article, getArticleById, updateArticle } = useArticle();
   const role = localStorage.getItem("role");
