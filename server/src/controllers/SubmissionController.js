@@ -500,9 +500,10 @@ const removeArticlesFromSubmission = async (req, res) => {
 	try {
 		const { submissionId } = req.params
 		const { articleIds } = req.body
+		
 		//check if articleIds is empty
 		if (!articleIds) {
-			return res.status(400).json({ error: "Article Ids are required" })
+			return res.status(400).json({ error: "Article Ids are required",articleIds })
 		}
 		// Check if the submission exists
 		const submission = await Submission.findById(submissionId)

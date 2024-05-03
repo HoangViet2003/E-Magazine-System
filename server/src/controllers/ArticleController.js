@@ -96,7 +96,7 @@ const uploadArticle = async (req, res) => {
 		const history = await History.create({
 			action: "create",
 			userId: student._id,
-			content: "Student has uploaded an article."
+			content: "Student has uploaded an article.",
 		})
 
 		//TODO: Delete the files from the server
@@ -322,14 +322,18 @@ const getArticleById = async (req, res) => {
 		}
 
 		// find submission by submission id
-		const articleObjectId = new mongoose.Types.ObjectId(articleId);
-    const submission = await Submission.findOne({ articles: { $in: [articleObjectId] } });
+		const articleObjectId = new mongoose.Types.ObjectId(articleId)
+		const submission = await Submission.findOne({
+			articles: { $in: [articleObjectId] },
+		})
 
-    if (!submission) {
-      return res.status(200).json({ article, submissionStatus: "unsubmitted" });
-    }
+		if (!submission) {
+			return res.status(200).json({ article, submissionStatus: "unsubmitted" })
+		}
 
-		const submissionStatus = submission.unsubmitted ? "unsubmitted" : "submitted"
+		const submissionStatus = submission.unsubmitted
+			? "unsubmitted"
+			: "submitted"
 		res.status(200).json({ article, submissionStatus })
 	} catch (error) {
 		res.status(500).json({ error: error.message })
@@ -560,7 +564,7 @@ const downloadAllArticleSelected = async (req, res) => {
 
 const getDashboard = async (req, res) => {
 	try {
-		// If the user role is student or guest, return 403
+		// If the user role is student, return 403
 		if (req.user.role == "student") {
 			return res
 				.status(403)
@@ -576,6 +580,7 @@ const getDashboard = async (req, res) => {
 			const faculty = await Faculty.findOne({
 				marketingCoordinatorId: req.user._id,
 			})
+			console.log("faculty: ", faculty)
 
 			const contribution = await Contribution.findOne({
 				facultyId: faculty._id,
@@ -584,29 +589,28 @@ const getDashboard = async (req, res) => {
 			// add contributionId to the query
 			query["contributionId"] = contribution._id
 		} else if (req.user.role == "marketing manager") {
-			if (academicYear) {
-				query["academicYear"] = academicYear
-			} else if (facultyId) {
+			 if (facultyId) {
 				const faculty = await Faculty.findById(facultyId)
 
 				const contribution = await Contribution.findOne({
 					facultyId: faculty._id,
+					academicYear: academicYear,
 				})
 
 				query["contributionId"] = contribution._id
 			}
 		} else {
-			if (academicYear) {
-				query["academicYear"] = academicYear
-			}
+			
 
-			const faculty = await Faculty.findById(req.user.facultyId)
+			const faculty = await Faculty.findById(facultyId)
 			const contribution = await Contribution.findOne({
 				facultyId: faculty._id,
+				academicYear: academicYear,
 			})
 			query["contributionId"] = contribution._id
 		}
 
+	
 		// total submission
 		const submissions = await Submission.find(query).populate("student", "_id")
 
@@ -639,6 +643,8 @@ const getDashboard = async (req, res) => {
 
 		const totalSubmissionsWithoutComments =
 			totalSubmissions - totalSubmissionsWithComments
+
+	
 
 		return res.status(200).json({
 			totalArticles,
