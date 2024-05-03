@@ -602,7 +602,7 @@ const getDashboard = async (req, res) => {
 		} else {
 			
 
-			const faculty = await Faculty.findById(facultyId)
+			const faculty = await Faculty.findById(req.user.facultyId)
 			const contribution = await Contribution.findOne({
 				facultyId: faculty._id,
 				academicYear: academicYear,
@@ -644,7 +644,33 @@ const getDashboard = async (req, res) => {
 		const totalSubmissionsWithoutComments =
 			totalSubmissions - totalSubmissionsWithComments
 
-	
+		if (req.user.role == "guest"){
+			  let report = {}
+				const faculty = await Faculty.findById(req.user.facultyId)
+				const selectedReports = faculty.selectedReports
+
+				selectedReports.forEach((selectedReport) => {
+					if (selectedReport === "commentNo") {
+						report["totalComments"] = totalComments
+					}
+					if (selectedReport === "contributionNo") {
+						report["totalSubmission"] = totalSubmissions
+					}
+					if (selectedReport === "submissionSelected") {
+						report["totalSelectedSubmissions"] = totalSelectedSubmissions
+					}
+					if (selectedReport === "articlesSubmitted") {
+						report["totalArticles"] = totalArticles
+					}
+				})
+
+				return res.status(200).json(
+					report
+				)
+
+
+
+		}
 
 		return res.status(200).json({
 			totalArticles,
