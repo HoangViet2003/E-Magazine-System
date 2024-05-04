@@ -654,7 +654,7 @@ const getDashboard = async (req, res) => {
 						report["totalComments"] = totalComments
 					}
 					if (selectedReport === "contributionNo") {
-						report["totalSubmission"] = totalSubmissions
+						report["totalSubmissions"] = totalSubmissions
 					}
 					if (selectedReport === "submissionSelected") {
 						report["totalSelectedSubmissions"] = totalSelectedSubmissions
