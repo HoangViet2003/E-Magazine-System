@@ -49,6 +49,8 @@ export const useArticle = () => {
 
   const fetchAllArticle = async (page: number) => {
     dispatch(setLoadingArticle(true));
+
+    console.log(page);
     try {
       const { data, status } = await axios.get(
         GET_API(facultyId, page).GET_ARTICLES_BY_FACULTY_ID,
@@ -63,6 +65,7 @@ export const useArticle = () => {
       console.log(error);
     }
     dispatch(setLoadingArticle(false));
+    
   };
 
   const getArticleByStudentId = async (page: number) => {

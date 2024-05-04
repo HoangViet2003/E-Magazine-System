@@ -32,7 +32,7 @@ export default function MyFacultyTable() {
   useEffect(() => {
     const page = parseInt(searchParams.get("page") || "1");
 
-    if (isSearchMode ) {
+    if (isSearchMode) {
       searchArticleQuery(keyword as string);
     } else if (role === "student") {
       // If the role is "student", fetch articles by student ID
@@ -41,7 +41,7 @@ export default function MyFacultyTable() {
       // Otherwise, fetch all articles
       fetchAllArticle(page);
     }
-  }, [isSearchMode]);
+  }, [isSearchMode, searchParams]);
 
   // let filteredArticles = articles;
 

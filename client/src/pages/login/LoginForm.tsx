@@ -20,7 +20,8 @@ export default function LoginForm() {
   // const [password, setPassword] = useState("guest123");
 
   const [emailError, setEmailError] = useState("");
-  const { login, isLoading, setUserFromToken,handleForgotPassword } = useAuth();
+  const { login, isLoading, setUserFromToken, handleForgotPassword } =
+    useAuth();
   const userToken = localStorage.getItem("user");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
@@ -37,17 +38,20 @@ export default function LoginForm() {
   const handleSendEmailForgotPassword = () => {
     if (email === "") {
       setEmailError("This field is required");
-      return
-      
-    } 
-      handleForgotPassword(email);
-    
-  }
+      return;
+    }
+    handleForgotPassword(email);
+  };
 
   useEffect(() => {
     if (userToken) {
       setUserFromToken(userToken);
-      if (role === "marketing coordinator") navigate("/dashboard");
+      if (
+        role === "marketing coordinator" ||
+        role === "guest" ||
+        role === "marketing manager"
+      )
+        navigate("/dashboard");
       if (role === "student") navigate("/student");
     }
   }, [navigate, role, userToken]);

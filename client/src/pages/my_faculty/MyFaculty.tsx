@@ -1,16 +1,13 @@
 import MainHeader from "../../ui/MainHeader";
-import Dropdowns from "../../ui/Dropdowns";
 import MyFacultyTable from "./MyFacultyTable";
 import ContributionFolder from "./ContributionFolder";
-
-import DropdownIcon from "../../assets/icons/caret-bottom.svg";
 
 export default function MyFaculty() {
   const role = localStorage.getItem("role");
 
   return (
     <div>
-      <MainHeader>
+      {/* <MainHeader>
         <Dropdowns>
           <Dropdowns.Dropdown>
             <Dropdowns.Toggle id="faculty">
@@ -26,6 +23,11 @@ export default function MyFaculty() {
             </Dropdowns.List>
           </Dropdowns.Dropdown>
         </Dropdowns>
+      </MainHeader> */}
+      <MainHeader>
+        <span className="flex items-center gap-3 rounded-3xl py-1 ">
+          <h1 className="text-xl font-normal">Your Submission</h1>
+        </span>
       </MainHeader>
 
       <div className="my-5 flex flex-col gap-5 xl:ps-6">

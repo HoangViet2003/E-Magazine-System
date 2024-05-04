@@ -11,6 +11,8 @@ import { useArticle } from "../../redux/hooks";
 export default function CommentedArticlesChart() {
   const { dashboard } = useArticle();
 
+  console.log(dashboard);
+
   const data = [
     {
       name: "Commented",

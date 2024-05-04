@@ -11,6 +11,7 @@ import Spinner from "../../ui/Spinner";
 
 export default function Dashboard() {
   const { isLoading, handleSetDashBoard } = useArticle();
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     handleSetDashBoard();
@@ -34,12 +35,11 @@ export default function Dashboard() {
             <div className="grid gap-5 lg:grid-cols-2 3xl:grid-cols-3">
               <SelectedRateChart />
               <CommentedArticlesChart />
-              <DailyTrafficChart />
+
+              {role !== "guest" && <DailyTrafficChart />}
             </div>
 
-            <div>
-              <SubmissionTrendsChart />
-            </div>
+            <div>{role !== "guest" && <SubmissionTrendsChart />}</div>
           </>
         )}
       </div>

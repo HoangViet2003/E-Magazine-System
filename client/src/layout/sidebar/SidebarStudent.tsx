@@ -42,36 +42,6 @@ export default function SidebarStudent() {
         <DriveIcon fill={currentPath === "/student" ? "#004AD7" : "#6B6C7E"} />
       ),
     },
-    {
-      title: "Selected Submission",
-      link: "/selectedSubmission",
-      icon: (
-        <CheckCircleIcon
-          fill={currentPath === "/selectedSubmission" ? "#004AD7" : "#6B6C7E"}
-        />
-      ),
-    },
-    {
-      title: "Recent",
-      link: "/recent",
-      icon: (
-        <TimeIcon fill={currentPath === "/recent" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Starred",
-      link: "/starred",
-      icon: (
-        <StarIcon fill={currentPath === "/starred" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
-    {
-      title: "Trash",
-      link: "/trash",
-      icon: (
-        <TrashIcon fill={currentPath === "/trash" ? "#004AD7" : "#6B6C7E"} />
-      ),
-    },
   ];
 
   async function openNewDocument() {

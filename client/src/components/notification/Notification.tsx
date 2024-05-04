@@ -13,69 +13,6 @@ const Notification = ({
 }: {
   setOpenNotification: (isOpen: boolean) => void;
 }) => {
-  // const notifications = [
-  //     {
-  //         sender: 'Jese Leos',
-  //         message: "Hey, what's up? All set for the presentation?",
-  //         time: 'a few moments ago',
-  //         avatar: 'https://example.com/avatar1.jpg',
-  //     },
-  //     {
-  //         sender: 'Joseph Mcfall',
-  //         message: '5 others started following you.',
-  //         time: '10 minutes ago',
-  //         avatar: 'https://example.com/avatar2.jpg',
-  //     },
-  //     {
-  //         sender: 'Bonnie Green',
-  //         message: '141 others love your story. See it and view more stories.',
-  //         time: '44 minutes ago',
-  //         avatar: 'https://example.com/avatar3.jpg',
-  //     },
-  //     {
-  //         sender: 'Leslie Livingston',
-  //         message: '@bonnie.green what do you say?',
-  //         time: '44 minutes ago',
-  //         avatar: 'https://example.com/avatar4.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  //     {
-  //         sender: 'Robert Brown',
-  //         message: 'Glassmorphism - learn how to implement the new design trend.',
-  //         time: '3 hours ago',
-  //         avatar: 'https://example.com/avatar5.jpg',
-  //     },
-  // ];
-
   const {
     getAllNotifications,
     notifications,
@@ -137,8 +74,6 @@ const Notification = ({
 
     return differenceHours + " hours ago";
   }
-
-  console.log(notifications);
 
   return (
     <div className="z-[20] w-[420px] rounded-lg bg-white py-4 shadow-md">
