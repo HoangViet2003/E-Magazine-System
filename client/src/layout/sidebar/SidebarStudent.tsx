@@ -6,10 +6,10 @@ import useWindowWidth from "../../redux/hooks/useWindowWidth";
 
 import MainNav from "./MainNav";
 import DriveIcon from "../../assets/icons/sidebar-icons/googleDrive";
-import CheckCircleIcon from "../../assets/icons/sidebar-icons/checkCircle";
-import TimeIcon from "../../assets/icons/sidebar-icons/time";
-import StarIcon from "../../assets/icons/sidebar-icons/star";
-import TrashIcon from "../../assets/icons/sidebar-icons/trash";
+// import CheckCircleIcon from "../../assets/icons/sidebar-icons/checkCircle";
+// import TimeIcon from "../../assets/icons/sidebar-icons/time";
+// import StarIcon from "../../assets/icons/sidebar-icons/star";
+// import TrashIcon from "../../assets/icons/sidebar-icons/trash";
 import PlusIcon from "../../assets/icons/sidebar-icons/plusIcon";
 import FileUploadIcon from "../../assets/icons/sidebar-icons/uploadLight";
 import NewDocumentIcon from "../../assets/icons/sidebar-icons/fileDocLight";

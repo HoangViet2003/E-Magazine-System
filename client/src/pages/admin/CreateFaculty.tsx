@@ -19,7 +19,7 @@ const CreateFaculty = () => {
     }
   }, [faculty]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     const data = {
       name: name,
@@ -38,7 +38,7 @@ const CreateFaculty = () => {
         {faculty ? "Update" : "Create"} Faculty
       </h1>
       <div className="flex items-center justify-center">
-        <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+        <form className="w-full max-w-lg" onSubmit={(e) => handleSubmit(e)}>
           <div className="-mx-3 mb-6 flex flex-wrap">
             <div className="mb-6  w-full px-3 md:mb-0">
               <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700">
