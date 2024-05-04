@@ -72,9 +72,9 @@ export const useFaculty = () => {
       }
       navigate("/account");
       toast.success("Account created successfully");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      toast.error("Account creation failed");
+      toast.error(error.response.data.error);
     }
   };
 
